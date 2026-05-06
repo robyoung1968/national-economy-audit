@@ -54,56 +54,21 @@
 
 <script>
     let economyData = [];
-    const currencyFormat = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-    const percentFormat = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1 });
 
-    async function init() {
-        try {
-            const response = await fetch('economic_data.json');
-            economyData = await response.json();
-            
-            // Populate Dropdown
-            const selector = document.getElementById('date-select');
-            economyData.forEach(row => {
-                const opt = document.createElement('option');
-                opt.value = row.month_date;
-                opt.textContent = new Date(row.month_date + 'T00:00:00').toLocaleDateString('en-US', {month:'long', year:'numeric'});
-                selector.appendChild(opt);
-            });
+    // PASTE THE NEW FORMATTERS AND HELPERS HERE
+    const currencyFormat = new Intl.NumberFormat('en-US', { ... });
 
-            // Initialize with the first record
-            if (economyData.length > 0) updateDashboard(economyData[0].month_date);
-
-        } catch (e) {
-            console.error("Error:", e);
-            alert("Data Load Failed. Please ensure 'economic_data.json' is in the same folder.");
-        }
+    function formatBigMoney(num) {
+        if (!num || isNaN(num)) return "N/A";
+        if (num >= 1.0e+12) return "$" + (num / 1.0e+12).toFixed(2) + " Trillion";
+        // ... rest of the function ...
     }
 
+    // THEN UPDATE YOUR updateDashboard FUNCTION BELOW
     function updateDashboard(selectedDate) {
         const idx = economyData.findIndex(r => r.month_date === selectedDate);
-        if (idx === -1) return;
-        const current = economyData[idx];
-
-        // 1. Debt
-        document.getElementById('debt-val').textContent = currencyFormat.format(current.avg_monthly_debt);
-        
-        // 2. Inflation (Look back 12 months for YoY)
-        const yearAgo = economyData[idx + 12];
-        if (yearAgo && yearAgo.cpi_index) {
-            const yoy = (current.cpi_index - yearAgo.cpi_index) / yearAgo.cpi_index;
-            document.getElementById('inflation-val').textContent = percentFormat.format(yoy);
-        } else {
-            document.getElementById('inflation-val').textContent = "N/A";
-        }
-        document.getElementById('cpi-sub').textContent = "CPI Index: " + current.cpi_index.toFixed(1);
-
-        // 3. Unemployment
-        document.getElementById('u3-val').textContent = current.u3_rate + "%";
-        document.getElementById('u6-val').textContent = current.u6_rate + "%";
+        // ... update the textContent lines here ...
     }
-
-    init();
 </script>
 
 </body>

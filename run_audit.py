@@ -1,7 +1,9 @@
 import os
 import json
 import requests
+import datetime
 import pandas as pd
+from decimal import Decimal
 from google.cloud import bigquery
 from google.oauth2 import service_account
 
@@ -15,6 +17,14 @@ credentials = service_account.Credentials.from_service_account_info(service_acco
 client = bigquery.Client(credentials=credentials, project=PROJECT_ID)
 
 # 2. HELPER FUNCTIONS
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        return obj.isoformat()
+    if isinstance(obj, Decimal):
+        return float(obj)
+    raise TypeError(f"Type {type(obj)} not serializable")
+
 def fetch_treasury_debt(days=90):
     url = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny"
     params = {'sort': '-record_date', 'page[size]': days}
@@ -31,7 +41,6 @@ def fetch_treasury_debt(days=90):
 
 def fetch_fred_data(series_id):
     api_key = os.environ.get('FRED_API_KEY')
-    # Starts at 2008-01-01 to ensure a full year of 2008 data for 2009 YoY calculations
     url = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key={api_key}&file_type=json&observation_start=2008-01-01"
     try:
         response = requests.get(url, timeout=15)
@@ -61,7 +70,6 @@ u3_df = fetch_fred_data('UNRATE')
 u6_df = fetch_fred_data('U6RATE')
 
 print("Fetching annual Phase 2 data...")
-# We rename 'value' immediately so we can merge these later
 gdp_df = fetch_fred_data('GDPCA').rename(columns={'value': 'real_gdp', 'date': 'record_date'})
 net_exports_df = fetch_fred_data('NETEXP').rename(columns={'value': 'net_exports', 'date': 'record_date'})
 goods_df = fetch_fred_data('IEAXGS').rename(columns={'value': 'goods_balance', 'date': 'record_date'})
@@ -74,56 +82,27 @@ upload_to_bq(u3_df, "fred_unemployment_u3_historical")
 upload_to_bq(u6_df, "fred_unemployment_u6_historical")
 
 # C. Merge Annual Indicators into a Single Table
+annual_df = pd.DataFrame() # Initialize
 if not gdp_df.empty:
     print("Merging annual indicators...")
     annual_df = pd.merge(gdp_df, net_exports_df, on='record_date', how='outer')
     annual_df = pd.merge(annual_df, goods_df, on='record_date', how='outer')
     annual_df = pd.merge(annual_df, services_df, on='record_date', how='outer')
     
-    # Add regime for dashboard consistency
     annual_df['regime'] = 'Historical'
-    
     upload_to_bq(annual_df, "annual_economy_indicators")
 
-# Add this at the end of your run_audit.py
-# Assuming 'final_df' is your combined indicators dataframe
-annual_df.to_json('economic_data.json', orient='records', date_format='iso')
-print("Local JSON file created for GitHub Dashboard.")
+# D. EXPORT FOR DASHBOARD
+if not annual_df.empty:
+    print("Generating local JSON package...")
+    export_data = {
+        "last_updated": datetime.datetime.now().isoformat(),
+        "data": annual_df.to_dict(orient='records')
+    }
 
-import datetime
+    with open('economic_data.json', 'w') as f:
+        json.dump(export_data, f, default=json_serial)
 
-# Create a small dictionary or add to your dataframe
-# This ensures the JSON file is technically "different" every day
-export_data = {
-    "last_updated": datetime.datetime.now().isoformat(),
-    "data": annual_df.to_dict(orient='records')
-}
-
-import json
-import datetime
-from decimal import Decimal
-
-# Helper to handle dates and decimals in JSON
-def json_serial(obj):
-    if isinstance(obj, (datetime.datetime, datetime.date)):
-        return obj.isoformat()
-    if isinstance(obj, Decimal):
-        return float(obj)
-    raise TypeError(f"Type {type(obj)} not serializable")
-
-# Create the export package
-export_data = {
-    "last_updated": datetime.datetime.now().isoformat(),
-    "data": annual_df.to_dict(orient='records')
-}
-
-# Write the file using our helper
-with open('economic_data.json', 'w') as f:
-    json.dump(export_data, f, default=json_serial)
-
-print("Local JSON file created successfully with serialized dates.")
-
-print("Local JSON file created with timestamp.")
+    print("Local JSON file created successfully with serialized dates.")
 
 print("All tasks complete. Data Refresh Success.")
-

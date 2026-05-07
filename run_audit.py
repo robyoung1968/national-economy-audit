@@ -90,5 +90,20 @@ if not gdp_df.empty:
 annual_df.to_json('economic_data.json', orient='records', date_format='iso')
 print("Local JSON file created for GitHub Dashboard.")
 
+import datetime
+
+# Create a small dictionary or add to your dataframe
+# This ensures the JSON file is technically "different" every day
+export_data = {
+    "last_updated": datetime.datetime.now().isoformat(),
+    "data": annual_df.to_dict(orient='records')
+}
+
+import json
+with open('economic_data.json', 'w') as f:
+    json.dump(export_data, f)
+
+print("Local JSON file created with timestamp.")
+
 print("All tasks complete. Data Refresh Success.")
 

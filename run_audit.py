@@ -100,8 +100,28 @@ export_data = {
 }
 
 import json
+import datetime
+from decimal import Decimal
+
+# Helper to handle dates and decimals in JSON
+def json_serial(obj):
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        return obj.isoformat()
+    if isinstance(obj, Decimal):
+        return float(obj)
+    raise TypeError(f"Type {type(obj)} not serializable")
+
+# Create the export package
+export_data = {
+    "last_updated": datetime.datetime.now().isoformat(),
+    "data": annual_df.to_dict(orient='records')
+}
+
+# Write the file using our helper
 with open('economic_data.json', 'w') as f:
-    json.dump(export_data, f)
+    json.dump(export_data, f, default=json_serial)
+
+print("Local JSON file created successfully with serialized dates.")
 
 print("Local JSON file created with timestamp.")
 

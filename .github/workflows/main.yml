@@ -41,3 +41,11 @@ jobs:
         run: |
           ls -F
           python ./run_audit.py
+
+          - name: Commit and Push JSON update
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add economic_data.json
+          git commit -m "Automated Data Refresh: Updated economic_data.json" || echo "No changes to commit"
+          git push

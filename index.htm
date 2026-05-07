@@ -15,6 +15,7 @@
         .card-title { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
         .card-value { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
         .card-subtext { font-size: 0.8rem; color: var(--accent); margin-top: 0.5rem; }
+        footer { margin-top: 3rem; color: var(--text-muted); font-size: 0.75rem; text-align: center; }
     </style>
 </head>
 <body>
@@ -52,10 +53,13 @@
     </div>
 </div>
 
+<footer id="footer-meta">
+    Audit System Active | Data Source: US Treasury & FRED
+</footer>
+
 <script>
     let economyData = [];
 
-    // Helper: Converts massive numbers to "Trillion" or "Billion" with 2 decimals
     function formatBigMoney(num) {
         if (!num || isNaN(num)) return "N/A";
         if (num >= 1.0e+12) return "$" + (num / 1.0e+12).toFixed(2) + " Trillion";
@@ -63,42 +67,57 @@
         return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
     }
 
-    // Main Function to Fetch and Load Data
     async function init() {
         try {
             const response = await fetch('economic_data.json');
-            economyData = await response.json();
+            const payload = await response.json();
+            
+            // KEY CHANGE: Extract the array from the payload container
+            economyData = payload.data || [];
+            
+            // Update the footer with the last_updated timestamp
+            if (payload.last_updated) {
+                const updateDate = new Date(payload.last_updated).toLocaleString();
+                document.getElementById('footer-meta').textContent = `Last Audit: ${updateDate} | Data Source: US Treasury & FRED`;
+            }
 
             const selector = document.getElementById('date-select');
             
-            // Populate the Dropdown
+            // Clear existing options (good for re-runs)
+            selector.innerHTML = '';
+
             economyData.forEach(row => {
                 const opt = document.createElement('option');
-                opt.value = row.month_date;
-                opt.textContent = new Date(row.month_date).toLocaleDateString('en-US', { 
+                // Use record_date or month_date depending on your column naming
+                const dKey = row.record_date || row.month_date;
+                opt.value = dKey;
+                opt.textContent = new Date(dKey).toLocaleDateString('en-US', { 
                     month: 'long', year: 'numeric', timeZone: 'UTC' 
                 });
                 selector.appendChild(opt);
             });
 
-            // Initialize display with the most recent month
             if (economyData.length > 0) {
-                updateDashboard(economyData[0].month_date);
+                const initialDate = economyData[0].record_date || economyData[0].month_date;
+                updateDashboard(initialDate);
             }
         } catch (error) {
             console.error("Error loading economy data:", error);
+            document.getElementById('footer-meta').textContent = "Error loading data. Check console.";
         }
     }
 
     function updateDashboard(selectedDate) {
-        const idx = economyData.findIndex(r => r.month_date === selectedDate);
+        const idx = economyData.findIndex(r => (r.record_date || r.month_date) === selectedDate);
         if (idx === -1) return;
         const current = economyData[idx];
 
-        // 1. Debt - 2 Decimal Shorthand
-        document.getElementById('debt-val').textContent = formatBigMoney(current.avg_monthly_debt);
+        // 1. Debt
+        // Note: Check if column name is still avg_monthly_debt or tot_pub_debt_out_amt
+        const debtValue = current.avg_monthly_debt || current.tot_pub_debt_out_amt;
+        document.getElementById('debt-val').textContent = formatBigMoney(debtValue);
         
-        // 2. Inflation (YoY Calculation)
+        // 2. Inflation
         const yearAgo = economyData[idx + 12];
         if (yearAgo && yearAgo.cpi_index) {
             const yoy = (current.cpi_index - yearAgo.cpi_index) / yearAgo.cpi_index;
@@ -106,17 +125,16 @@
         } else {
             document.getElementById('inflation-val').textContent = "N/A";
         }
-        document.getElementById('cpi-sub').textContent = "CPI Index: " + parseFloat(current.cpi_index).toFixed(1);
+        document.getElementById('cpi-sub').textContent = "CPI Index: " + (current.cpi_index ? parseFloat(current.cpi_index).toFixed(1) : "--");
 
-        // 3. Unemployment - Fixing the U3/U6 display
-        const u3 = parseFloat(current.u3_rate);
+        // 3. Unemployment
+        const u3 = parseFloat(current.u3_rate || current.value); // Fallback to 'value' if merging failed
         const u6 = parseFloat(current.u6_rate);
         
         document.getElementById('u3-val').textContent = !isNaN(u3) ? u3.toFixed(1) + "%" : "N/A";
         document.getElementById('u6-val').textContent = !isNaN(u6) ? u6.toFixed(1) + "%" : "N/A";
     }
 
-    // Start the app
     init();
 </script>
 

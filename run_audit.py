@@ -85,4 +85,10 @@ if not gdp_df.empty:
     
     upload_to_bq(annual_df, "annual_economy_indicators")
 
+# Add this at the end of your run_audit.py
+# Assuming 'final_df' is your combined indicators dataframe
+final_df.to_json('economic_data.json', orient='records', date_format='iso')
+print("Local JSON file created for GitHub Dashboard.")
+
 print("All tasks complete. Data Refresh Success.")
+

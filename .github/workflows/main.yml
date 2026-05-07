@@ -12,28 +12,32 @@ name: National Economy Data Refresh
 
 on:
   schedule:
-    - cron: '0 6 * * *'
+    - cron: '0 10 * * *'
   workflow_dispatch:
 
 jobs:
   refresh-data:
     runs-on: ubuntu-latest
-    # No environment override needed here
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4.1.7 # Specific point release for Node 24 support
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5.1.1 # Specific point release for Node 24 support
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
       - name: Install Dependencies
         run: |
-          pip install pandas google-cloud-bigquery pandas-gbq requests db-dtypes
+          pip install pandas google-cloud-bigquery pandas-gbq requests db-dtypes pyarrow
 
       - name: Run Ingestor
         env:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-        run: python run_audit.py
+        # We use './' to tell Python exactly where to look
+        run: |
+          ls -F
+          python ./run_audit.py

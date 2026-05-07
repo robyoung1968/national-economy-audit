@@ -1,70 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>National Economy Audit Dashboard</title>
-    <style>
-        :root { --bg-color: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --border: #334155; }
-        body { background-color: var(--bg-color); color: var(--text-main); font-family: system-ui, sans-serif; margin: 0; padding: 2rem; display: flex; flex-direction: column; align-items: center; }
-        header { text-align: center; margin-bottom: 2rem; width: 100%; max-width: 1000px; }
-        .controls { background: var(--card-bg); padding: 1rem 2rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; border: 1px solid var(--border); }
-        select { background: var(--bg-color); color: var(--text-main); border: 1px solid #475569; padding: 0.5rem 1rem; border-radius: 6px; font-size: 1rem; cursor: pointer; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; width: 100%; max-width: 1000px; }
-        .card { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .card-title { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
-        .card-value { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
-        .card-subtext { font-size: 0.8rem; color: var(--accent); margin-top: 0.5rem; }
-        footer { margin-top: 3rem; color: var(--text-muted); font-size: 0.75rem; text-align: center; }
-    </style>
-</head>
-<body>
-
-<header>
-    <h1>National Economy Audit</h1>
-    <p style="color: var(--text-muted);">Interactive Macroeconomic Monitoring System</p>
-</header>
-
-<div class="controls">
-    <label for="date-select">Select Audit Date:</label>
-    <select id="date-select" onchange="updateDashboard(this.value)"></select>
-</div>
-
 <div class="grid">
     <div class="card">
-        <div class="card-title">Public Debt</div>
-        <div id="debt-val" class="card-value">--</div>
-        <div class="card-subtext">Total Outstanding</div>
+        <div class="card-title">Real GDP</div>
+        <div id="gdp-val" class="card-value">--</div>
+        <div class="card-subtext">Annualized (Billions)</div>
     </div>
     <div class="card">
-        <div class="card-title">Inflation (YoY)</div>
-        <div id="inflation-val" class="card-value">--</div>
-        <div id="cpi-sub" class="card-subtext">CPI Index: --</div>
+        <div class="card-title">Net Exports</div>
+        <div id="exports-val" class="card-value">--</div>
+        <div class="card-subtext">Trade Balance</div>
     </div>
     <div class="card">
-        <div class="card-title">Unemployment (U3)</div>
-        <div id="u3-val" class="card-value">--</div>
-        <div class="card-subtext">Official Metric</div>
+        <div class="card-title">Goods Balance</div>
+        <div id="goods-val" class="card-value">--</div>
+        <div class="card-subtext">Monthly Trade</div>
     </div>
     <div class="card">
-        <div class="card-title">Unemployment (U6)</div>
-        <div id="u6-val" class="card-value">--</div>
-        <div class="card-subtext">Broad Rate</div>
+        <div class="card-title">Services Balance</div>
+        <div id="services-val" class="card-value">--</div>
+        <div class="card-subtext">Monthly Trade</div>
     </div>
 </div>
-
-<footer id="footer-meta">
-    Audit System Active | Data Source: US Treasury & FRED
-</footer>
 
 <script>
     let economyData = [];
 
-    function formatBigMoney(num) {
-        if (!num || isNaN(num)) return "N/A";
-        if (num >= 1.0e+12) return "$" + (num / 1.0e+12).toFixed(2) + " Trillion";
-        if (num >= 1.0e+09) return "$" + (num / 1.0e+09).toFixed(2) + " Billion";
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+    // Helper to format the specific scale of this quarterly data
+    function formatEconomyValue(num) {
+        if (num === null || isNaN(num)) return "N/A";
+        // GDP is already in Billions in this dataset
+        return "$" + parseFloat(num).toLocaleString(undefined, {minimumFractionDigits: 1}) + "B";
     }
 
     async function init() {
@@ -72,71 +36,42 @@
             const response = await fetch('economic_data.json');
             const payload = await response.json();
             
-            // KEY CHANGE: Extract the array from the payload container
+            // Extract the array
             economyData = payload.data || [];
             
-            // Update the footer with the last_updated timestamp
-            if (payload.last_updated) {
-                const updateDate = new Date(payload.last_updated).toLocaleString();
-                document.getElementById('footer-meta').textContent = `Last Audit: ${updateDate} | Data Source: US Treasury & FRED`;
-            }
+            // Sort data so most recent is first
+            economyData.sort((a, b) => new Date(b.record_date) - new Date(a.record_date));
 
             const selector = document.getElementById('date-select');
-            
-            // Clear existing options (good for re-runs)
             selector.innerHTML = '';
 
             economyData.forEach(row => {
                 const opt = document.createElement('option');
-                // Use record_date or month_date depending on your column naming
-                const dKey = row.record_date || row.month_date;
-                opt.value = dKey;
-                opt.textContent = new Date(dKey).toLocaleDateString('en-US', { 
+                opt.value = row.record_date;
+                opt.textContent = new Date(row.record_date).toLocaleDateString('en-US', { 
                     month: 'long', year: 'numeric', timeZone: 'UTC' 
                 });
                 selector.appendChild(opt);
             });
 
             if (economyData.length > 0) {
-                const initialDate = economyData[0].record_date || economyData[0].month_date;
-                updateDashboard(initialDate);
+                updateDashboard(economyData[0].record_date);
             }
         } catch (error) {
-            console.error("Error loading economy data:", error);
-            document.getElementById('footer-meta').textContent = "Error loading data. Check console.";
+            console.error("Error:", error);
         }
     }
 
     function updateDashboard(selectedDate) {
-        const idx = economyData.findIndex(r => (r.record_date || r.month_date) === selectedDate);
-        if (idx === -1) return;
-        const current = economyData[idx];
+        const current = economyData.find(r => r.record_date === selectedDate);
+        if (!current) return;
 
-        // 1. Debt
-        // Note: Check if column name is still avg_monthly_debt or tot_pub_debt_out_amt
-        const debtValue = current.avg_monthly_debt || current.tot_pub_debt_out_amt;
-        document.getElementById('debt-val').textContent = formatBigMoney(debtValue);
-        
-        // 2. Inflation
-        const yearAgo = economyData[idx + 12];
-        if (yearAgo && yearAgo.cpi_index) {
-            const yoy = (current.cpi_index - yearAgo.cpi_index) / yearAgo.cpi_index;
-            document.getElementById('inflation-val').textContent = (yoy * 100).toFixed(1) + "%";
-        } else {
-            document.getElementById('inflation-val').textContent = "N/A";
-        }
-        document.getElementById('cpi-sub').textContent = "CPI Index: " + (current.cpi_index ? parseFloat(current.cpi_index).toFixed(1) : "--");
-
-        // 3. Unemployment
-        const u3 = parseFloat(current.u3_rate || current.value); // Fallback to 'value' if merging failed
-        const u6 = parseFloat(current.u6_rate);
-        
-        document.getElementById('u3-val').textContent = !isNaN(u3) ? u3.toFixed(1) + "%" : "N/A";
-        document.getElementById('u6-val').textContent = !isNaN(u6) ? u6.toFixed(1) + "%" : "N/A";
+        // Map the new JSON keys to the UI
+        document.getElementById('gdp-val').textContent = formatEconomyValue(current.real_gdp);
+        document.getElementById('exports-val').textContent = formatEconomyValue(current.net_exports);
+        document.getElementById('goods-val').textContent = formatEconomyValue(current.goods_balance / 1000); // Scale to Billions
+        document.getElementById('services-val').textContent = formatEconomyValue(current.services_balance / 1000);
     }
 
     init();
 </script>
-
-</body>
-</html>

@@ -30,22 +30,19 @@ if not gdp_df.empty:
     annual_df['regime'] = 'Historical'
     upload_to_bq(annual_df, "annual_economy_indicators")
 
-# D. EXPORT FOR DASHBOARD (Sanitized)
+# D. EXPORT FOR DASHBOARD
 if not annual_df.empty:
-    print("Generating sanitized local JSON package...")
-    
-    # SANITIZATION STEP: Replace NaN with None for JSON compatibility
+    # Sanitization
     annual_df_sanitized = annual_df.where(pd.notnull(annual_df), None)
 
     export_data = {
         "last_updated": datetime.datetime.now().isoformat(),
-        "data": annual_df_sanitized.to_dict(orient='records')
+        "data": annual_df_sanitized.to_dict(orient='records') # This 'data' key is vital
     }
 
-    # Ensure we use 'data.json' as requested for the HTML mapping
-    with open('data.json', 'w') as f:
+    with open('economic_data.json', 'w') as f: # Filename alignment
         json.dump(export_data, f, default=json_serial, indent=4)
 
     print("Local data.json created successfully with null handling.")
 
-print("All tasks complete. Data Refresh Success.")
+    print("All tasks complete. Data Refresh Success.")

@@ -3,6 +3,7 @@ import json
 import requests
 import datetime
 import pandas as pd
+import math
 from decimal import Decimal
 from google.cloud import bigquery
 from google.oauth2 import service_account
@@ -12,7 +13,6 @@ PROJECT_ID = "march-2026-projects"
 DATASET_ID = "national_economy_staging"
 
 # 1. AUTHENTICATION
-# Ensure GCP_SA_KEY is set in GitHub Secrets
 service_account_info = json.loads(os.environ.get('GCP_SA_KEY'))
 credentials = service_account.Credentials.from_service_account_info(service_account_info)
 client = bigquery.Client(credentials=credentials, project=PROJECT_ID)
@@ -93,25 +93,27 @@ if not gdp_df.empty:
     annual_df['regime'] = 'Historical'
     upload_to_bq(annual_df, "annual_economy_indicators")
 
-# D. EXPORT FOR DASHBOARD
+# D. EXPORT FOR DASHBOARD (SANITY CHECKED)
 if not annual_df.empty:
     print("Generating sanitized local JSON package...")
     
-    # Use a custom function to intercept NaN values during serialization
-    def clean_nan(obj):
-        if isinstance(obj, float) and (obj != obj): # Standard check for NaN
+    # Use to_dict to get raw data
+    data_list = annual_df.to_dict(orient='records')
+    
+    # Scrub function to replace NaN/Inf with None (null in JSON)
+    def scrub_value(v):
+        if isinstance(v, float) and not math.isfinite(v):
             return None
-        return json_serial(obj)
+        return v
+
+    final_data = [{k: scrub_value(v) for k, v in row.items()} for row in data_list]
 
     export_data = {
         "last_updated": datetime.datetime.now().isoformat(),
-        "data": annual_df.to_dict(orient='records')
+        "data": final_data
     }
 
-    # Write using the default handler to catch any missed NaNs
     with open('economic_data.json', 'w') as f:
-        # This replaces every NaN in the entire dictionary with 'null'
-        json_payload = json.dumps(export_data, default=clean_nan, indent=4)
-        f.write(json_payload)
+        json.dump(export_data, f, default=json_serial, indent=4)
 
     print("Success: economic_data.json is now strictly valid JSON.")

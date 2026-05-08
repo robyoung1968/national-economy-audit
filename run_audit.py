@@ -97,17 +97,31 @@ if not gdp_df.empty:
 if not annual_df.empty:
     print("Generating sanitized local JSON package...")
     
-    # 1. Force all non-finite values (NaN, inf) to None for JSON compliance
-    clean_df = annual_df.replace({pd.NA: None, float('nan'): None})
+    # 1. Convert to a list of dictionaries first
+    data_list = annual_df.to_dict(orient='records')
+
+    # 2. FAIL-SAFE SCRUB: Manually replace float('nan') with None
+    # This ensures the json library writes 'null' instead of 'NaN'
+    import math
+
+    def scrub_data(obj):
+        if isinstance(obj, list):
+            return [scrub_data(v) for v in obj]
+        elif isinstance(obj, dict):
+            return {k: scrub_data(v) for k, v in obj.items()}
+        elif isinstance(obj, float) and not math.isfinite(obj):
+            return None # This converts NaN and Inf to None (JSON null)
+        return obj
+
+    final_data = scrub_data(data_list)
 
     export_data = {
         "last_updated": datetime.datetime.now().isoformat(),
-        "data": clean_df.to_dict(orient='records')
+        "data": final_data
     }
 
-    # 2. Write to economic_data.json
+    # 3. Write to economic_data.json
     with open('economic_data.json', 'w') as f:
         json.dump(export_data, f, default=json_serial, indent=4)
 
-    print("Success: economic_data.json created and sanitized.")
-    print("All tasks complete. Data Refresh Success.")
+    print("Success: economic_data.json is now strictly valid JSON (NaN replaced with null).")

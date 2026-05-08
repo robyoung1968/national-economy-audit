@@ -2,45 +2,54 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>National Economy Audit - Phase 2</title>
+    <title>National Economy Audit - Economic Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: sans-serif; margin: 20px; }
-        .container { width: 80%; margin: auto; }
-        .chart-box { margin-bottom: 50px; }
+        body { font-family: -apple-system, sans-serif; margin: 40px; background: #f4f7f6; color: #333; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .chart-box { margin-bottom: 60px; }
+        h1 { text-align: center; color: #2c3e50; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Economic Indicators Dashboard</h1>
+        <h1>National Economic Indicators</h1>
+        <p id="update-tag" style="text-align:center; font-size: 0.8em; color: #666;"></p>
         
         <div class="chart-box">
+            <h3>Real GDP (Annual)</h3>
             <canvas id="gdpChart"></canvas>
         </div>
 
         <div class="chart-box">
+            <h3>Net Exports (Trade Balance)</h3>
             <canvas id="tradeChart"></canvas>
         </div>
     </div>
 
     <script>
-       async function loadDashboard() {
-    try {
-        // Step 1: Fetch the correct filename
-        const response = await fetch('economic_data.json'); 
-        if (!response.ok) throw new Error(`Could not find economic_data.json`);
-        
-        const rawData = await response.json();
+        function formatBigMoney(num) {
+            if (num === null || num === undefined || isNaN(num)) return "N/A";
+            const absNum = Math.abs(num);
+            if (absNum >= 1.0e+12) return "$" + (num / 1.0e+12).toFixed(2) + "T";
+            if (absNum >= 1.0e+09) return "$" + (num / 1.0e+09).toFixed(2) + "B";
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+        }
 
-        // Step 2: Drill into the 'data' key defined in Python
-        const records = rawData.data; 
+        async function loadDashboard() {
+            try {
+                const response = await fetch('economic_data.json'); 
+                if (!response.ok) throw new Error(`Could not find economic_data.json`);
+                
+                const payload = await response.json();
+                document.getElementById('update-tag').innerText = "Last Updated: " + new Date(payload.last_updated).toLocaleString();
 
-        // Step 3: Map the record_date and metrics
-        const labels = records.map(entry => entry.record_date);
-        const gdpData = records.map(entry => entry.real_gdp ?? 0);
-        const tradeData = records.map(entry => entry.net_exports ?? 0);
+                const records = payload.data; 
 
-        // ... rest of Chart.js logic
+                // Process labels to show only the Year for cleaner X-axis
+                const labels = records.map(entry => new Date(entry.record_date).getFullYear());
+                const gdpData = records.map(entry => entry.real_gdp);
+                const tradeData = records.map(entry => entry.net_exports);
 
                 // GDP Chart
                 new Chart(document.getElementById('gdpChart'), {
@@ -48,11 +57,16 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: 'GDP Growth (%)',
+                            label: 'Real GDP (Billions of Chained 2017 Dollars)',
                             data: gdpData,
-                            borderColor: 'rgb(75, 192, 192)',
-                            tension: 0.1
+                            borderColor: '#2ecc71',
+                            backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                            fill: true,
+                            tension: 0.3
                         }]
+                    },
+                    options: {
+                        scales: { y: { ticks: { callback: value => formatBigMoney(value * 1e9) } } }
                     }
                 });
 
@@ -62,17 +76,19 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: 'Trade Balance (USD)',
+                            label: 'Net Exports (Billions of USD)',
                             data: tradeData,
-                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                            borderColor: 'rgb(255, 99, 132)',
-                            borderWidth: 1
+                            backgroundColor: tradeData.map(v => v < 0 ? '#e74c3c' : '#3498db')
                         }]
+                    },
+                    options: {
+                        scales: { y: { ticks: { callback: value => formatBigMoney(value * 1e9) } } }
                     }
                 });
 
             } catch (error) {
-                console.error("Error loading or parsing JSON:", error);
+                console.error("Dashboard Error:", error);
+                document.body.innerHTML += `<p style="color:red; text-align:center;">Error: ${error.message}</p>`;
             }
         }
 

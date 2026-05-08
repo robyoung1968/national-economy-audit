@@ -1,77 +1,75 @@
-<div class="grid">
-    <div class="card">
-        <div class="card-title">Real GDP</div>
-        <div id="gdp-val" class="card-value">--</div>
-        <div class="card-subtext">Annualized (Billions)</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>National Economy Audit - Phase 2</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        .container { width: 80%; margin: auto; }
+        .chart-box { margin-bottom: 50px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Economic Indicators Dashboard</h1>
+        
+        <div class="chart-box">
+            <canvas id="gdpChart"></canvas>
+        </div>
+
+        <div class="chart-box">
+            <canvas id="tradeChart"></canvas>
+        </div>
     </div>
-    <div class="card">
-        <div class="card-title">Net Exports</div>
-        <div id="exports-val" class="card-value">--</div>
-        <div class="card-subtext">Trade Balance</div>
-    </div>
-    <div class="card">
-        <div class="card-title">Goods Balance</div>
-        <div id="goods-val" class="card-value">--</div>
-        <div class="card-subtext">Monthly Trade</div>
-    </div>
-    <div class="card">
-        <div class="card-title">Services Balance</div>
-        <div id="services-val" class="card-value">--</div>
-        <div class="card-subtext">Monthly Trade</div>
-    </div>
-</div>
 
-<script>
-    let economyData = [];
+    <script>
+        async function loadDashboard() {
+            try {
+                const response = await fetch('data.json');
+                const rawData = await response.json();
 
-    // Helper to format the specific scale of this quarterly data
-    function formatEconomyValue(num) {
-        if (num === null || isNaN(num)) return "N/A";
-        // GDP is already in Billions in this dataset
-        return "$" + parseFloat(num).toLocaleString(undefined, {minimumFractionDigits: 1}) + "B";
-    }
+                // Mapping and sanitizing nulls for Chart.js
+                const labels = rawData.map(entry => entry.Year || entry.Date);
+                
+                const gdpData = rawData.map(entry => entry.GDP ?? 0);
+                const tradeData = rawData.map(entry => entry.Trade ?? 0);
 
-    async function init() {
-        try {
-            const response = await fetch('economic_data.json');
-            const payload = await response.json();
-            
-            // Extract the array
-            economyData = payload.data || [];
-            
-            // Sort data so most recent is first
-            economyData.sort((a, b) => new Date(b.record_date) - new Date(a.record_date));
-
-            const selector = document.getElementById('date-select');
-            selector.innerHTML = '';
-
-            economyData.forEach(row => {
-                const opt = document.createElement('option');
-                opt.value = row.record_date;
-                opt.textContent = new Date(row.record_date).toLocaleDateString('en-US', { 
-                    month: 'long', year: 'numeric', timeZone: 'UTC' 
+                // GDP Chart
+                new Chart(document.getElementById('gdpChart'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'GDP Growth (%)',
+                            data: gdpData,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    }
                 });
-                selector.appendChild(opt);
-            });
 
-            if (economyData.length > 0) {
-                updateDashboard(economyData[0].record_date);
+                // Trade Balance Chart
+                new Chart(document.getElementById('tradeChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Trade Balance (USD)',
+                            data: tradeData,
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            borderWidth: 1
+                        }]
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error loading or parsing JSON:", error);
             }
-        } catch (error) {
-            console.error("Error:", error);
         }
-    }
 
-    function updateDashboard(selectedDate) {
-        const current = economyData.find(r => r.record_date === selectedDate);
-        if (!current) return;
-
-        // Map the new JSON keys to the UI
-        document.getElementById('gdp-val').textContent = formatEconomyValue(current.real_gdp);
-        document.getElementById('exports-val').textContent = formatEconomyValue(current.net_exports);
-        document.getElementById('goods-val').textContent = formatEconomyValue(current.goods_balance / 1000); // Scale to Billions
-        document.getElementById('services-val').textContent = formatEconomyValue(current.services_balance / 1000);
-    }
-
-    init();
-</script>
+        loadDashboard();
+    </script>
+</body>
+</html>

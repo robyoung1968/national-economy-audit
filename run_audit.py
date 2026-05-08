@@ -77,6 +77,18 @@ net_exports_df = fetch_fred_data('NETEXP').rename(columns={'value': 'net_exports
 goods_df = fetch_fred_data('IEAXGS').rename(columns={'value': 'goods_balance', 'date': 'record_date'})
 services_df = fetch_fred_data('IEAXS').rename(columns={'value': 'services_balance', 'date': 'record_date'})
 
+# Sanitize the DataFrame before conversion
+# Use None so it translates to JSON null
+df_sanitized = df.where(pd.notnull(df), None)
+
+# Convert to dictionary/JSON
+data_dict = df_sanitized.to_dict(orient='records')
+
+# If writing to a file for the dashboard:
+with open('data.json', 'w') as f:
+    json.dump(data_dict, f, indent=4)
+
+
 # B. Upload Individual Monthly/Daily Tables
 upload_to_bq(debt_df, "treasury_debt_historical")
 upload_to_bq(cpi_df, "fred_cpi_historical")

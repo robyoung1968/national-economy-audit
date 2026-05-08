@@ -83,22 +83,22 @@ if not gdp_df.empty:
     annual_df['regime'] = 'Historical'
     upload_to_bq(annual_df, "annual_economy_indicators")
 
-# D. SANITIZED EXPORT
-if not annual_df.empty:
-    data_list = annual_df.to_dict(orient='records')
-    
+# D. SANITIZED EXPORT (Now including Monthly KPIs)
+if True: # Always run export
     def scrub(v):
-        # This replaces NaN/Inf with None, which json.dump converts to 'null'
         if isinstance(v, float) and not math.isfinite(v):
             return None
         return v
 
-    # Rebuild data list with scrubbed values
-    final_data = [{k: scrub(v) for k, v in row.items()} for row in data_list]
+    # Prepare the payload
+    export_payload = {
+        "last_updated": datetime.datetime.now().isoformat(),
+        "annual_data": [{k: scrub(v) for k, v in row.items()} for row in annual_df.to_dict(orient='records')],
+        "debt_data": [{k: scrub(v) for k, v in row.items()} for row in debt_df.to_dict(orient='records')],
+        "unemployment_data": [{k: scrub(v) for k, v in row.items()} for row in u3_df.to_dict(orient='records')],
+        "cpi_data": [{k: scrub(v) for k, v in row.items()} for row in cpi_df.to_dict(orient='records')]
+    }
 
     with open('economic_data.json', 'w') as f:
-        json.dump({
-            "last_updated": datetime.datetime.now().isoformat(),
-            "data": final_data
-        }, f, default=json_serial, indent=4)
-    print("Success: Generated strictly valid JSON.")
+        json.dump(export_payload, f, default=json_serial, indent=4)
+    print("Success: JSON now contains Monthly and Annual data.")

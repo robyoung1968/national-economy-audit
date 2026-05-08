@@ -1,3 +1,20 @@
+# FILE: .github/workflows/main.yml
+# DESCRIPTION: Orchestrates the daily data pipeline for the National Economy Dashboard.
+# AUTHOR: Rob Young
+# 
+# WORKFLOW LOGIC:
+# 1. Triggers daily to pull latest Treasury and FRED data via 'run_audit.py'.
+# 2. Authenticates via Service Account JSON stored in GitHub Secrets.
+# 3. Updates BigQuery staging tables using WRITE_TRUNCATE to ensure data freshness.
+# 4. Acts as the primary engine for the Looker Studio data source.
+
+name: National Economy Data Refresh
+
+on:
+  schedule:
+    - cron: '0 10 * * *'
+  workflow_dispatch:
+
 jobs:
   refresh-data:
     runs-on: ubuntu-latest

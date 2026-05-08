@@ -1,3 +1,66 @@
+import os
+import json
+import requests
+import datetime
+import pandas as pd
+from decimal import Decimal
+from google.cloud import bigquery
+from google.oauth2 import service_account
+
+# --- CONFIGURATION ---
+PROJECT_ID = "march-2026-projects"
+DATASET_ID = "national_economy_staging"
+
+# 1. AUTHENTICATION
+# Ensure GCP_SA_KEY is set in GitHub Secrets
+service_account_info = json.loads(os.environ.get('GCP_SA_KEY'))
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
+client = bigquery.Client(credentials=credentials, project=PROJECT_ID)
+
+# 2. HELPER FUNCTIONS
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        return obj.isoformat()
+    if isinstance(obj, Decimal):
+        return float(obj)
+    raise TypeError(f"Type {type(obj)} not serializable")
+
+def fetch_treasury_debt(days=90):
+    url = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny"
+    params = {'sort': '-record_date', 'page[size]': days}
+    try:
+        response = requests.get(url, timeout=15)
+        response.raise_for_status()
+        df = pd.DataFrame(response.json()['data'])
+        df['record_date'] = pd.to_datetime(df['record_date'])
+        df['tot_pub_debt_out_amt'] = pd.to_numeric(df['tot_pub_debt_out_amt'])
+        return df[['record_date', 'tot_pub_debt_out_amt']]
+    except Exception as e:
+        print(f"Error fetching Treasury: {e}")
+        return pd.DataFrame()
+
+def fetch_fred_data(series_id):
+    api_key = os.environ.get('FRED_API_KEY')
+    url = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key={api_key}&file_type=json&observation_start=2008-01-01"
+    try:
+        response = requests.get(url, timeout=15)
+        response.raise_for_status()
+        df = pd.DataFrame(response.json()['observations'])
+        df['date'] = pd.to_datetime(df['date'])
+        df['value'] = pd.to_numeric(df['value'], errors='coerce')
+        return df[['date', 'value']]
+    except Exception as e:
+        print(f"Error fetching {series_id}: {e}")
+        return pd.DataFrame()
+
+def upload_to_bq(df, table_name):
+    if not df.empty:
+        table_id = f"{PROJECT_ID}.{DATASET_ID}.{table_name}"
+        job_config = bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE")
+        client.load_table_from_dataframe(df, table_id, job_config=job_config).result()
+        print(f"Successfully uploaded: {table_name}")
+
 # --- EXECUTION ---
 
 # A. Fetch Data
@@ -34,8 +97,7 @@ if not gdp_df.empty:
 if not annual_df.empty:
     print("Generating sanitized local JSON package...")
     
-    # 1. Force all non-finite values (NaN, inf) to None
-    # This is the most reliable way to ensure JSON compliance
+    # 1. Force all non-finite values (NaN, inf) to None for JSON compliance
     clean_df = annual_df.replace({pd.NA: None, float('nan'): None})
 
     export_data = {
@@ -45,12 +107,7 @@ if not annual_df.empty:
 
     # 2. Write to economic_data.json
     with open('economic_data.json', 'w') as f:
-        # We use default=json_serial to handle the dates, 
-        # but the NaN values are now already handled by the replace() above.
         json.dump(export_data, f, default=json_serial, indent=4)
 
-    print("Success: economic_data.json is now valid JSON.")
-
-    print("Local data.json created successfully with null handling.")
-
+    print("Success: economic_data.json created and sanitized.")
     print("All tasks complete. Data Refresh Success.")

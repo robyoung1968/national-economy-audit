@@ -26,7 +26,7 @@
     <script>
         async function loadDashboard() {
             try {
-                const response = await fetch('data.json');
+                const response = await fetch('economic_data.json');
                 const rawData = await response.json();
 
                 // Mapping and sanitizing nulls for Chart.js

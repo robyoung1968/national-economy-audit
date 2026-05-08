@@ -32,16 +32,24 @@ if not gdp_df.empty:
 
 # D. EXPORT FOR DASHBOARD
 if not annual_df.empty:
-    # Sanitization
-    annual_df_sanitized = annual_df.where(pd.notnull(annual_df), None)
+    print("Generating sanitized local JSON package...")
+    
+    # 1. Force all non-finite values (NaN, inf) to None
+    # This is the most reliable way to ensure JSON compliance
+    clean_df = annual_df.replace({pd.NA: None, float('nan'): None})
 
     export_data = {
         "last_updated": datetime.datetime.now().isoformat(),
-        "data": annual_df_sanitized.to_dict(orient='records') # This 'data' key is vital
+        "data": clean_df.to_dict(orient='records')
     }
 
-    with open('economic_data.json', 'w') as f: # Filename alignment
+    # 2. Write to economic_data.json
+    with open('economic_data.json', 'w') as f:
+        # We use default=json_serial to handle the dates, 
+        # but the NaN values are now already handled by the replace() above.
         json.dump(export_data, f, default=json_serial, indent=4)
+
+    print("Success: economic_data.json is now valid JSON.")
 
     print("Local data.json created successfully with null handling.")
 

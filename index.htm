@@ -29,70 +29,76 @@
 
     <script>
         function formatBigMoney(num) {
-            if (num === null || num === undefined || isNaN(num)) return "N/A";
-            const absNum = Math.abs(num);
-            if (absNum >= 1.0e+12) return "$" + (num / 1.0e+12).toFixed(2) + "T";
-            if (absNum >= 1.0e+09) return "$" + (num / 1.0e+09).toFixed(2) + "B";
-            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
-        }
+    if (num === null || num === undefined || isNaN(num)) return "N/A";
+    const absNum = Math.abs(num);
+    if (absNum >= 1.0e+12) return "$" + (num / 1.0e+12).toFixed(2) + "T";
+    if (absNum >= 1.0e+09) return "$" + (num / 1.0e+09).toFixed(2) + "B";
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+}
 
-        async function loadDashboard() {
-            try {
-                const response = await fetch('economic_data.json'); 
-                if (!response.ok) throw new Error(`Could not find economic_data.json`);
-                
-                const payload = await response.json();
-                document.getElementById('update-tag').innerText = "Last Updated: " + new Date(payload.last_updated).toLocaleString();
+async function loadDashboard() {
+    try {
+        const response = await fetch('economic_data.json'); 
+        if (!response.ok) throw new Error(`Could not find economic_data.json`);
+        
+        const payload = await response.json();
+        document.getElementById('update-tag').innerText = "Last Updated: " + new Date(payload.last_updated).toLocaleString();
 
-                const records = payload.data; 
+        const records = payload.data; 
 
-                // Process labels to show only the Year for cleaner X-axis
-                const labels = records.map(entry => new Date(entry.record_date).getFullYear());
-                const gdpData = records.map(entry => entry.real_gdp);
-                const tradeData = records.map(entry => entry.net_exports);
+        // Process labels to show only the Year for cleaner X-axis
+        const labels = records.map(entry => new Date(entry.record_date).getFullYear());
+        
+        // Updated Mapping: Explicitly handle nulls from the sanitized JSON
+        const gdpData = records.map(entry => entry.real_gdp ?? null);
+        const tradeData = records.map(entry => entry.net_exports ?? null);
 
-                // GDP Chart
-                new Chart(document.getElementById('gdpChart'), {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Real GDP (Billions of Chained 2017 Dollars)',
-                            data: gdpData,
-                            borderColor: '#2ecc71',
-                            backgroundColor: 'rgba(46, 204, 113, 0.1)',
-                            fill: true,
-                            tension: 0.3
-                        }]
-                    },
-                    options: {
-                        scales: { y: { ticks: { callback: value => formatBigMoney(value * 1e9) } } }
-                    }
-                });
-
-                // Trade Balance Chart
-                new Chart(document.getElementById('tradeChart'), {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Net Exports (Billions of USD)',
-                            data: tradeData,
-                            backgroundColor: tradeData.map(v => v < 0 ? '#e74c3c' : '#3498db')
-                        }]
-                    },
-                    options: {
-                        scales: { y: { ticks: { callback: value => formatBigMoney(value * 1e9) } } }
-                    }
-                });
-
-            } catch (error) {
-                console.error("Dashboard Error:", error);
-                document.body.innerHTML += `<p style="color:red; text-align:center;">Error: ${error.message}</p>`;
+        // GDP Chart
+        new Chart(document.getElementById('gdpChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Real GDP (Billions of Chained 2017 Dollars)',
+                    data: gdpData,
+                    borderColor: '#2ecc71',
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    spanGaps: true // REVISION: Connects lines across null quarterly data points
+                }]
+            },
+            options: {
+                scales: { y: { ticks: { callback: value => formatBigMoney(value * 1e9) } } }
             }
-        }
+        });
 
-        loadDashboard();
+        // Trade Balance Chart
+        new Chart(document.getElementById('tradeChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Net Exports (Billions of USD)',
+                    data: tradeData,
+                    backgroundColor: tradeData.map(v => v < 0 ? '#e74c3c' : '#3498db')
+                }]
+            },
+            options: {
+                scales: { y: { ticks: { callback: value => formatBigMoney(value * 1e9) } } }
+            }
+        });
+
+    } catch (error) {
+        console.error("Dashboard Error:", error);
+        // Added check to prevent duplicate error messages on refresh
+        if (!document.getElementById('error-msg')) {
+            document.body.innerHTML += `<p id="error-msg" style="color:red; text-align:center;">Error: ${error.message}</p>`;
+        }
+    }
+}
+
+loadDashboard();
     </script>
 </body>
 </html>

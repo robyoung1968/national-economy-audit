@@ -38,66 +38,34 @@
 
 async function loadDashboard() {
     try {
-        const response = await fetch('economic_data.json'); 
-        if (!response.ok) throw new Error(`Could not find economic_data.json`);
-        
-        const payload = await response.json();
-        document.getElementById('update-tag').innerText = "Last Updated: " + new Date(payload.last_updated).toLocaleString();
+        const response = await fetch('economic_data.json');
+        const rawData = await response.json();
 
-        const records = payload.data; 
+        // New mappings for your missing data
+        const debtLabels = rawData.debt_data.map(d => d.record_date);
+        const debtValues = rawData.debt_data.map(d => d.tot_pub_debt_out_amt);
 
-        // Process labels to show only the Year for cleaner X-axis
-        const labels = records.map(entry => new Date(entry.record_date).getFullYear());
-        
-        // Updated Mapping: Explicitly handle nulls from the sanitized JSON
-        const gdpData = records.map(entry => entry.real_gdp ?? null);
-        const tradeData = records.map(entry => entry.net_exports ?? null);
+        const unempLabels = rawData.unemployment_data.map(d => d.date);
+        const unempValues = rawData.unemployment_data.map(d => d.value);
 
-        // GDP Chart
-        new Chart(document.getElementById('gdpChart'), {
+        // Update the "Update Tag"
+        document.getElementById('update-tag').innerText = `Last Updated: ${rawData.last_updated}`;
+
+        // ... (Existing GDP/Trade chart code here) ...
+
+        // NEW: Unemployment Chart
+        new Chart(document.getElementById('unemploymentChart'), {
             type: 'line',
             data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Real GDP (Billions of Chained 2017 Dollars)',
-                    data: gdpData,
-                    borderColor: '#2ecc71',
-                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
-                    fill: true,
-                    tension: 0.3,
-                    spanGaps: true // REVISION: Connects lines across null quarterly data points
-                }]
-            },
-            options: {
-                scales: { y: { ticks: { callback: value => formatBigMoney(value * 1e9) } } }
-            }
-        });
-
-        // Trade Balance Chart
-        new Chart(document.getElementById('tradeChart'), {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Net Exports (Billions of USD)',
-                    data: tradeData,
-                    backgroundColor: tradeData.map(v => v < 0 ? '#e74c3c' : '#3498db')
-                }]
-            },
-            options: {
-                scales: { y: { ticks: { callback: value => formatBigMoney(value * 1e9) } } }
+                labels: unempLabels,
+                datasets: [{ label: 'U3 Unemployment Rate', data: unempValues, borderColor: '#e67e22' }]
             }
         });
 
     } catch (error) {
         console.error("Dashboard Error:", error);
-        // Added check to prevent duplicate error messages on refresh
-        if (!document.getElementById('error-msg')) {
-            document.body.innerHTML += `<p id="error-msg" style="color:red; text-align:center;">Error: ${error.message}</p>`;
-        }
     }
 }
-
 loadDashboard();
     </script>
 </body>

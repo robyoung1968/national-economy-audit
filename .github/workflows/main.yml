@@ -1,0 +1,38 @@
+name: National Economy Data Refresh
+
+on:
+  schedule:
+    - cron: '0 10 * * *'
+  workflow_dispatch:
+
+jobs:
+  refresh-data:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # CRITICAL: Allows the 'git push' to succeed
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          pip install pandas google-cloud-bigquery pandas-gbq requests db-dtypes pyarrow
+
+      - name: Run Ingestor
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        run: python ./run_audit.py
+
+      - name: Commit and Push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add economic_data.json
+          git commit -m "Auto-update economic data" || echo "No changes to commit"
+          git push

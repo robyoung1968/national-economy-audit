@@ -64,7 +64,7 @@
             economyData = await response.json();
             const selector = document.getElementById('date-select');
             
-            // Filter dropdown to Obama start (Jan 2009)
+            // Filter dropdown to show only Jan 2009 onwards
             const displayData = economyData.filter(row => new Date(row.month_date) >= new Date('2009-01-01'));
             
             displayData.forEach(row => {

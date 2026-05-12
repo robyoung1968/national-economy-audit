@@ -1,5 +1,5 @@
 {
-    "last_updated": "2026-05-12 13:04",
+    "last_updated": "2026-05-12 13:07",
     "metrics": [
         {
             "label": "Total National Debt",
@@ -9,8 +9,8 @@
         },
         {
             "label": "Unemployment (U3)",
-            "value": 0,
-            "sub": "Released N/A",
+            "value": 4.3,
+            "sub": "Released 2026-04-01",
             "type": "percent"
         },
         {

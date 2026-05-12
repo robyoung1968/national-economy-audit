@@ -2,71 +2,94 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>National Economy Audit - Economic Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Economy Audit | Monthly Pulse</title>
     <style>
-        body { font-family: -apple-system, sans-serif; margin: 40px; background: #f4f7f6; color: #333; }
-        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .chart-box { margin-bottom: 60px; }
-        h1 { text-align: center; color: #2c3e50; }
+        body { 
+            background-color: #000000; 
+            color: #ffffff; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container { width: 90%; max-width: 1100px; text-align: center; }
+        h1 { font-weight: 200; letter-spacing: 4px; margin-bottom: 50px; color: #58a6ff; }
+        
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+            gap: 20px; 
+        }
+        
+        .card { 
+            background: #111111; 
+            border: 1px solid #222222; 
+            padding: 40px 20px; 
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .card:hover { border-color: #58a6ff; background: #161b22; }
+        
+        .label { color: #888; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
+        .value { font-size: 2.5rem; font-weight: 700; font-family: "Courier New", monospace; color: #ffffff; }
+        .subtext { color: #444; font-size: 0.7rem; margin-top: 15px; }
+
+        .nav-link { 
+            display: inline-block;
+            margin-top: 60px; 
+            padding: 10px 20px;
+            border: 1px solid #333;
+            color: #666;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+        .nav-link:hover { color: #fff; border-color: #fff; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>National Economic Indicators</h1>
-        <p id="update-tag" style="text-align:center; font-size: 0.8em; color: #666;"></p>
-        
-        <div class="chart-box">
-            <h3>Real GDP (Annual)</h3>
-            <canvas id="gdpChart"></canvas>
-        </div>
 
-        <div class="chart-box">
-            <h3>Net Exports (Trade Balance)</h3>
-            <canvas id="tradeChart"></canvas>
+    <div class="container">
+        <h1>MONTHLY PULSE</h1>
+        
+        <div class="grid" id="kpi-grid">
+            </div>
+
+        <div>
+            <a href="annual.html" class="nav-link">VIEW ANNUAL AUDIT (GDP & TRADE) →</a>
         </div>
     </div>
 
     <script>
-        function formatBigMoney(num) {
-    if (num === null || num === undefined || isNaN(num)) return "N/A";
-    const absNum = Math.abs(num);
-    if (absNum >= 1.0e+12) return "$" + (num / 1.0e+12).toFixed(2) + "T";
-    if (absNum >= 1.0e+09) return "$" + (num / 1.0e+09).toFixed(2) + "B";
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
-}
+        function format(val, type) {
+            if (type === 'currency') return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
+            if (type === 'percent') return val.toFixed(1) + '%';
+            return val.toLocaleString();
+        }
 
-async function loadDashboard() {
-    try {
-        const response = await fetch('economic_data.json');
-        const rawData = await response.json();
-
-        // New mappings for your missing data
-        const debtLabels = rawData.debt_data.map(d => d.record_date);
-        const debtValues = rawData.debt_data.map(d => d.tot_pub_debt_out_amt);
-
-        const unempLabels = rawData.unemployment_data.map(d => d.date);
-        const unempValues = rawData.unemployment_data.map(d => d.value);
-
-        // Update the "Update Tag"
-        document.getElementById('update-tag').innerText = `Last Updated: ${rawData.last_updated}`;
-
-        // ... (Existing GDP/Trade chart code here) ...
-
-        // NEW: Unemployment Chart
-        new Chart(document.getElementById('unemploymentChart'), {
-            type: 'line',
-            data: {
-                labels: unempLabels,
-                datasets: [{ label: 'U3 Unemployment Rate', data: unempValues, borderColor: '#e67e22' }]
+        async function init() {
+            try {
+                const res = await fetch('economic_data.json');
+                const data = await res.json();
+                const grid = document.getElementById('kpi-grid');
+                
+                grid.innerHTML = data.metrics.map(m => `
+                    <div class="card">
+                        <div class="label">${m.label}</div>
+                        <div class="value">${format(m.value, m.type)}</div>
+                        <div class="subtext">${m.sub}</div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error("Data Fetch Error:", e);
+                document.getElementById('kpi-grid').innerHTML = "<p style='color:red'>Data temporarily unavailable. Check GitHub Actions.</p>";
             }
-        });
-
-    } catch (error) {
-        console.error("Dashboard Error:", error);
-    }
-}
-loadDashboard();
+        }
+        init();
     </script>
 </body>
 </html>

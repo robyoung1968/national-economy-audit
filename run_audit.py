@@ -42,3 +42,6 @@ for cpi in cpi_data:
 
 with open('economic_data.json', 'w') as f:
     json.dump(economy_data, f, indent=4)
+
+# Temporary print to troubleshoot u6 ingestion.
+print(u6_data[:5])

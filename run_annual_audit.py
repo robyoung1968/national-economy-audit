@@ -2,7 +2,7 @@ import os, json, requests
 
 def fetch_fred_data(series_id):
     api_key = os.environ.get('FRED_API_KEY')
-    url = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key={api_key}&file_type=json&sort_order=desc&observation_start=2008-01-01"
+    url = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key_key={api_key}&file_type=json&sort_order=desc&observation_start=2008-01-01"
     try:
         res = requests.get(url).json()
         return res.get('observations', [])
@@ -25,19 +25,18 @@ def aggregate_yearly(observations, mode='average'):
             final_data[year] = sum(values) / len(values)
     return final_data
 
-# Fetch raw data
+# Fetching Net Goods and Net Services
 gdp_obs = fetch_fred_data('GDP') 
-goods_obs = fetch_fred_data('BOPGTB')
-services_obs = fetch_fred_data('BOPSTB')
+goods_obs = fetch_fred_data('BOPGNET') # Net Goods
+services_obs = fetch_fred_data('BOPSNET') # Net Services
 
-# Process: GDP is an annualized rate (Average); Trade is a monthly balance (Sum)
 gdp_final = aggregate_yearly(gdp_obs, mode='average')
 goods_final = aggregate_yearly(goods_obs, mode='sum')
 services_final = aggregate_yearly(services_obs, mode='sum')
 
 annual_economy = []
 for year in sorted(gdp_final.keys(), reverse=True):
-    # Convert Trade Millions to Billions
+    # Data is in Millions, convert to Billions
     g_billions = goods_final.get(year, 0) / 1000
     s_billions = services_final.get(year, 0) / 1000
     
@@ -51,4 +50,3 @@ for year in sorted(gdp_final.keys(), reverse=True):
 
 with open('annual_data.json', 'w') as f:
     json.dump(annual_economy, f, indent=4)
-print(f"Annual Update Complete: {len(annual_economy)} years processed.")

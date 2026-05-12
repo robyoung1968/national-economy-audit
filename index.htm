@@ -62,10 +62,9 @@
         try {
             const response = await fetch('economic_data.json');
             economyData = await response.json();
-            
             const selector = document.getElementById('date-select');
-            if (!selector) throw new Error("Could not find date-select element");
-
+            
+            // Filter dropdown to Obama start (Jan 2009)
             const displayData = economyData.filter(row => new Date(row.month_date) >= new Date('2009-01-01'));
             
             displayData.forEach(row => {
@@ -76,9 +75,7 @@
             });
 
             if (displayData.length > 0) updateDashboard(displayData[0].month_date);
-        } catch (e) {
-            console.error("Initialization Error:", e);
-        }
+        } catch (e) { console.error(e); }
     }
 
     function updateDashboard(selectedDate) {
@@ -96,12 +93,11 @@
         } else {
             document.getElementById('inflation-val').textContent = "N/A";
         }
+        
         document.getElementById('cpi-sub').textContent = "CPI Index: " + current.cpi_index.toFixed(1);
-
         document.getElementById('u3-val').textContent = current.u3_rate.toFixed(1) + "%";
         document.getElementById('u6-val').textContent = current.u6_rate.toFixed(1) + "%";
     }
-
     init();
 </script>
 </body>

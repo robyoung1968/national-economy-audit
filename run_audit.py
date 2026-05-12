@@ -1,6 +1,5 @@
-import os, json, requests, datetime
+import os, json, requests, datetime, math
 
-# --- CONFIGURATION ---
 def fetch_treasury_debt():
     url = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny"
     try:
@@ -14,31 +13,25 @@ def fetch_fred_latest(series_id):
     url = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key={api_key}&file_type=json&sort_order=desc&limit=1"
     try:
         res = requests.get(url).json()
-        if 'observations' in res and len(res['observations']) > 0:
-            obs = res['observations'][0]
-            val = obs['value']
-            return {"value": float(val) if val != '.' else 0, "date": obs['date']}
-        return {"value": 0, "date": "N/A"}
+        obs = res['observations'][0]
+        return {"value": float(obs['value']), "date": obs['date']}
     except: return {"value": 0, "date": "N/A"}
 
 # EXECUTION
-print("Refreshing Monthly Audit Data...")
 debt = fetch_treasury_debt()
 u3 = fetch_fred_latest('UNRATE')
 u6 = fetch_fred_latest('U6RATE')
 cpi = fetch_fred_latest('CPIAUCSL')
 
-# PACKAGING FOR THE DASHBOARD
-payload = {
-    "last_updated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
-    "metrics": [
-        {"label": "Total National Debt", "value": debt['value'], "sub": f"As of {debt['date']}", "type": "currency"},
-        {"label": "Unemployment (U3)", "value": u3['value'], "sub": f"Released {u3['date']}", "type": "percent"},
-        {"label": "Real Unemployment (U6)", "value": u6['value'], "sub": f"Released {u6['date']}", "type": "percent"},
-        {"label": "Consumer Price Index", "value": cpi['value'], "sub": f"Ref: {cpi['date']}", "type": "number"}
-    ]
-}
+# PACKAGING: Reverting to the "List of Records" format used in your original index.htm
+# We create a list with one record (the latest) to satisfy the original HTML's logic
+payload = [{
+    "month_date": debt['date'],
+    "avg_monthly_debt": debt['value'],
+    "u3_rate": u3['value'] / 100, # Original HTML expected decimal (0.04) for percentFormat
+    "u6_rate": u6['value'] / 100,
+    "cpi_index": cpi['value']
+}]
 
 with open('economic_data.json', 'w') as f:
     json.dump(payload, f, indent=4)
-print("Monthly JSON Package Ready.")

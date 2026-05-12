@@ -2,96 +2,134 @@
     {
         "year": "2026",
         "gdp_nominal": 31856.257,
-        "trade_balance": -892.431
+        "trade_total": 82.712,
+        "trade_goods": 0.0,
+        "trade_services": 82.712
     },
     {
         "year": "2025",
-        "gdp_nominal": 30042.113,
-        "trade_balance": -1264.604
+        "gdp_nominal": 30762.09875,
+        "trade_total": 329.129,
+        "trade_goods": 0.0,
+        "trade_services": 329.129
     },
     {
         "year": "2024",
-        "gdp_nominal": 28708.161,
-        "trade_balance": -822.478
+        "gdp_nominal": 29298.01275,
+        "trade_total": 311.871,
+        "trade_goods": 0.0,
+        "trade_services": 311.871
     },
     {
         "year": "2023",
-        "gdp_nominal": 27216.445,
-        "trade_balance": -794.917
+        "gdp_nominal": 27811.517,
+        "trade_total": 283.292,
+        "trade_goods": 0.0,
+        "trade_services": 283.292
     },
     {
         "year": "2022",
-        "gdp_nominal": 25250.347,
-        "trade_balance": -1049.17
+        "gdp_nominal": 26054.61425,
+        "trade_total": 250.837,
+        "trade_goods": 0.0,
+        "trade_services": 250.837
     },
     {
         "year": "2021",
-        "gdp_nominal": 22680.693,
-        "trade_balance": -789.049
+        "gdp_nominal": 23725.6455,
+        "trade_total": 245.916,
+        "trade_goods": 0.0,
+        "trade_services": 245.916
     },
     {
         "year": "2020",
-        "gdp_nominal": 21751.238,
-        "trade_balance": -501.596
+        "gdp_nominal": 21375.2815,
+        "trade_total": 266.833,
+        "trade_goods": 0.0,
+        "trade_services": 266.833
     },
     {
         "year": "2019",
-        "gdp_nominal": 21111.6,
-        "trade_balance": -592.294
+        "gdp_nominal": 21539.9815,
+        "trade_total": 297.989,
+        "trade_goods": 0.0,
+        "trade_services": 297.989
     },
     {
         "year": "2018",
-        "gdp_nominal": 20328.553,
-        "trade_balance": -576.031
+        "gdp_nominal": 20656.515499999998,
+        "trade_total": 301.253,
+        "trade_goods": 0.0,
+        "trade_services": 301.253
     },
     {
         "year": "2017",
-        "gdp_nominal": 19280.084,
-        "trade_balance": -533.42
+        "gdp_nominal": 19612.1025,
+        "trade_total": 282.404,
+        "trade_goods": 0.0,
+        "trade_services": 282.404
     },
     {
         "year": "2016",
-        "gdp_nominal": 18525.933,
-        "trade_balance": -511.682
+        "gdp_nominal": 18804.91325,
+        "trade_total": 270.343,
+        "trade_goods": 0.0,
+        "trade_services": 270.343
     },
     {
         "year": "2015",
-        "gdp_nominal": 18063.529,
-        "trade_balance": -526.432
+        "gdp_nominal": 18295.019,
+        "trade_total": 271.093,
+        "trade_goods": 0.0,
+        "trade_services": 271.093
     },
     {
         "year": "2014",
-        "gdp_nominal": 17197.738,
-        "trade_balance": -510.088
+        "gdp_nominal": 17608.13825,
+        "trade_total": 265.966,
+        "trade_goods": 0.0,
+        "trade_services": 265.966
     },
     {
         "year": "2013",
-        "gdp_nominal": 16648.189,
-        "trade_balance": -499.348
+        "gdp_nominal": 16880.683250000002,
+        "trade_total": 253.678,
+        "trade_goods": 0.0,
+        "trade_services": 253.678
     },
     {
         "year": "2012",
-        "gdp_nominal": 16068.805,
-        "trade_balance": -602.271
+        "gdp_nominal": 16253.97,
+        "trade_total": 215.213,
+        "trade_goods": 0.0,
+        "trade_services": 215.213
     },
     {
         "year": "2011",
-        "gdp_nominal": 15351.448,
-        "trade_balance": -568.476
+        "gdp_nominal": 15599.731500000002,
+        "trade_total": 186.477,
+        "trade_goods": 0.0,
+        "trade_services": 186.477
     },
     {
         "year": "2010",
-        "gdp_nominal": 14764.61,
-        "trade_balance": -509.192
+        "gdp_nominal": 15048.971,
+        "trade_total": 145.586,
+        "trade_goods": 0.0,
+        "trade_services": 145.586
     },
     {
         "year": "2009",
-        "gdp_nominal": 14430.902,
-        "trade_balance": -420.992
+        "gdp_nominal": 14478.06725,
+        "trade_total": 114.922,
+        "trade_goods": 0.0,
+        "trade_services": 114.922
     },
     {
         "year": "2008",
-        "gdp_nominal": 14706.538,
-        "trade_balance": -771.248
+        "gdp_nominal": 14769.86175,
+        "trade_total": 120.143,
+        "trade_goods": 0.0,
+        "trade_services": 120.143
     }
 ]

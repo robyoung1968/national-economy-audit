@@ -1,17 +1,6 @@
-import os, json, requests, datetime, math
-import pandas as pd
-from google.cloud import bigquery
-from google.oauth2 import service_account
+import os, json, requests, datetime
 
 # --- CONFIGURATION ---
-PROJECT_ID = "march-2026-projects"
-DATASET_ID = "national_economy_staging"
-
-# AUTHENTICATION
-service_account_info = json.loads(os.environ.get('GCP_SA_KEY'))
-credentials = service_account.Credentials.from_service_account_info(service_account_info)
-client = bigquery.Client(credentials=credentials, project=PROJECT_ID)
-
 def fetch_treasury_debt():
     url = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny"
     try:
@@ -24,10 +13,12 @@ def fetch_fred_latest(series_id):
     api_key = os.environ.get('FRED_API_KEY')
     url = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key={api_key}&file_type=json&sort_order=desc&limit=1"
     try:
-        obs = requests.get(url).json()['observations'][0]
-        # Handle cases where FRED returns '.' for a value
-        val = obs['value']
-        return {"value": float(val) if val != '.' else 0, "date": obs['date']}
+        res = requests.get(url).json()
+        if 'observations' in res and len(res['observations']) > 0:
+            obs = res['observations'][0]
+            val = obs['value']
+            return {"value": float(val) if val != '.' else 0, "date": obs['date']}
+        return {"value": 0, "date": "N/A"}
     except: return {"value": 0, "date": "N/A"}
 
 # EXECUTION
@@ -37,7 +28,7 @@ u3 = fetch_fred_latest('UNRATE')
 u6 = fetch_fred_latest('U6RATE')
 cpi = fetch_fred_latest('CPIAUCSL')
 
-# FORMATTING PAYLOAD
+# PACKAGING FOR THE DASHBOARD
 payload = {
     "last_updated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
     "metrics": [
@@ -48,7 +39,6 @@ payload = {
     ]
 }
 
-# EXPORT
 with open('economic_data.json', 'w') as f:
     json.dump(payload, f, indent=4)
-print("Success: Monthly JSON generated.")
+print("Monthly JSON Package Ready.")

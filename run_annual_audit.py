@@ -1,33 +1,54 @@
 import os, json, requests
-from datetime import datetime
 
-def fetch_fred_annual(series_id):
+def fetch_fred_data(series_id):
     api_key = os.environ.get('FRED_API_KEY')
-    # Fetching from 2005 to ensure we have enough padding for any YoY calcs if needed
-    url = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key={api_key}&file_type=json&sort_order=desc&observation_start=2005-01-01"
+    url = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key={api_key}&file_type=json&sort_order=desc&observation_start=2008-01-01"
     try:
         res = requests.get(url).json()
-        return {obs['date'][:4]: float(obs['value']) for obs in res.get('observations', []) if obs['value'] != '.'}
+        return res.get('observations', [])
     except:
-        return {}
+        return []
 
-# GDP is usually Billions of Dollars, Annual
-gdp_data = fetch_fred_annual('GDP') 
-# Trade Balance (Net Exports), Annual
-trade_data = fetch_fred_annual('NETEXP')
+def aggregate_yearly(observations, mode='average'):
+    yearly_map = {}
+    for obs in observations:
+        if obs['value'] == '.': continue
+        year = obs['date'][:4]
+        if year not in yearly_map: yearly_map[year] = []
+        yearly_map[year].append(float(obs['value']))
+    
+    final_data = {}
+    for year, values in yearly_map.items():
+        if mode == 'sum':
+            final_data[year] = sum(values)
+        else: # Average for GDP (Annualized Rates)
+            final_data[year] = sum(values) / len(values)
+    return final_data
+
+# Fetch raw data
+gdp_obs = fetch_fred_data('GDP') 
+goods_obs = fetch_fred_data('BOPGTB')
+services_obs = fetch_fred_data('BOPSTB')
+
+# Process: GDP is an annualized rate (Average); Trade is a monthly balance (Sum)
+gdp_final = aggregate_yearly(gdp_obs, mode='average')
+goods_final = aggregate_yearly(goods_obs, mode='sum')
+services_final = aggregate_yearly(services_obs, mode='sum')
 
 annual_economy = []
-# Use GDP years as the master list
-for year in sorted(gdp_data.keys(), reverse=True):
-    if int(year) < 2008: continue  # Keep it focused on the relevant timeframe
+for year in sorted(gdp_final.keys(), reverse=True):
+    # Convert Trade Millions to Billions
+    g_billions = goods_final.get(year, 0) / 1000
+    s_billions = services_final.get(year, 0) / 1000
     
     annual_economy.append({
         "year": year,
-        "gdp_nominal": gdp_data.get(year, 0),
-        "trade_balance": trade_data.get(year, 0)
+        "gdp_nominal": gdp_final[year],
+        "trade_total": g_billions + s_billions,
+        "trade_goods": g_billions,
+        "trade_services": s_billions
     })
 
 with open('annual_data.json', 'w') as f:
     json.dump(annual_economy, f, indent=4)
-
 print(f"Annual Update Complete: {len(annual_economy)} years processed.")

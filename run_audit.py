@@ -22,7 +22,6 @@ def fetch_fred_series(series_id, limit=300):
         return [{"value": float(obs['value']), "date": obs['date']} for obs in res.get('observations', []) if obs['value'] != '.']
     except: return []
 
-# EXECUTION
 debt_map = fetch_treasury_debt()
 cpi_data = fetch_fred_series('CPIAUCSL')
 u3_data = fetch_fred_series('UNRATE')
@@ -43,4 +42,3 @@ for cpi in cpi_data:
 
 with open('economic_data.json', 'w') as f:
     json.dump(economy_data, f, indent=4)
-print(f"Update Complete: {len(economy_data)} records written.")

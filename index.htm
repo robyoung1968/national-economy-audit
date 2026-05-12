@@ -60,11 +60,11 @@
 
     async function init() {
         try {
-            const response = await fetch('economic_data.json');
+            // Append timestamp to URL to bypass browser cache
+            const response = await fetch('economic_data.json?v=' + new Date().getTime());
             economyData = await response.json();
             const selector = document.getElementById('date-select');
             
-            // Filter dropdown to show only Jan 2009 onwards
             const displayData = economyData.filter(row => new Date(row.month_date) >= new Date('2009-01-01'));
             
             displayData.forEach(row => {
@@ -75,7 +75,7 @@
             });
 
             if (displayData.length > 0) updateDashboard(displayData[0].month_date);
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Load Error:", e); }
     }
 
     function updateDashboard(selectedDate) {
@@ -87,7 +87,7 @@
         document.getElementById('debt-val').textContent = (debtTrillions > 0) ? "$" + debtTrillions.toFixed(2) + "T" : "N/A";
         
         const yearAgo = economyData[idx + 12];
-        if (yearAgo && yearAgo.cpi_index) {
+        if (yearAgo) {
             const yoy = (current.cpi_index - yearAgo.cpi_index) / yearAgo.cpi_index;
             document.getElementById('inflation-val').textContent = percentFormat.format(yoy);
         } else {

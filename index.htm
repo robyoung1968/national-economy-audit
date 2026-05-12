@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Economy Audit | Monthly Pulse</title>
+    <title>National Economy Audit | Monthly Pulse</title>
     <style>
         body { 
             background-color: #000000; 
@@ -16,7 +16,7 @@
             min-height: 100vh;
         }
         .container { width: 90%; max-width: 1100px; text-align: center; }
-        h1 { font-weight: 200; letter-spacing: 4px; margin-bottom: 50px; color: #58a6ff; }
+        h1 { font-weight: 200; letter-spacing: 4px; margin-bottom: 50px; color: #58a6ff; text-transform: uppercase; }
         
         .grid { 
             display: grid; 
@@ -29,9 +29,7 @@
             border: 1px solid #222222; 
             padding: 40px 20px; 
             border-radius: 4px;
-            transition: all 0.3s ease;
         }
-        .card:hover { border-color: #58a6ff; background: #161b22; }
         
         .label { color: #888; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
         .value { font-size: 2.5rem; font-weight: 700; font-family: "Courier New", monospace; color: #ffffff; }
@@ -54,7 +52,7 @@
 <body>
 
     <div class="container">
-        <h1>MONTHLY PULSE</h1>
+        <h1>Monthly Pulse</h1>
         
         <div class="grid" id="kpi-grid">
             </div>
@@ -85,8 +83,8 @@
                     </div>
                 `).join('');
             } catch (e) {
-                console.error("Data Fetch Error:", e);
-                document.getElementById('kpi-grid').innerHTML = "<p style='color:red'>Data temporarily unavailable. Check GitHub Actions.</p>";
+                console.error("Dashboard Render Error:", e);
+                document.getElementById('kpi-grid').innerHTML = "<p style='color:#444'>Syncing Latest Audit Data...</p>";
             }
         }
         init();

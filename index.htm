@@ -1,3 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>National Economy Audit Dashboard</title>
+    <style>
+        :root { --bg-color: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --border: #334155; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: system-ui, sans-serif; margin: 0; padding: 2rem; display: flex; flex-direction: column; align-items: center; }
+        header { text-align: center; margin-bottom: 2rem; width: 100%; max-width: 1000px; }
+        .controls { background: var(--card-bg); padding: 1rem 2rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; border: 1px solid var(--border); }
+        select { background: var(--bg-color); color: var(--text-main); border: 1px solid #475569; padding: 0.5rem 1rem; border-radius: 6px; font-size: 1rem; cursor: pointer; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; width: 100%; max-width: 1000px; }
+        .card { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .card-title { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
+        .card-value { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
+        .card-subtext { font-size: 0.8rem; color: var(--accent); margin-top: 0.5rem; }
+        .nav-link { margin-top: 3rem; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>National Economy Audit</h1>
+    <p style="color: var(--text-muted);">Interactive Macroeconomic Monitoring System</p>
+</header>
+
+<div class="controls">
+    <label for="date-select">Select Audit Date:</label>
+    <select id="date-select" onchange="updateDashboard(this.value)"></select>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <div class="card-title">Public Debt</div>
+        <div id="debt-val" class="card-value">--</div>
+        <div class="card-subtext">Total Outstanding</div>
+    </div>
+    <div class="card">
+        <div class="card-title">Inflation (YoY)</div>
+        <div id="inflation-val" class="card-value">--</div>
+        <div id="cpi-sub" class="card-subtext">CPI Index: --</div>
+    </div>
+    <div class="card">
+        <div class="card-title">Unemployment (U3)</div>
+        <div id="u3-val" class="card-value">--</div>
+        <div class="card-subtext">Official Metric</div>
+    </div>
+    <div class="card">
+        <div class="card-title">Unemployment (U6)</div>
+        <div id="u6-val" class="card-value">--</div>
+        <div class="card-subtext">Broad Rate</div>
+    </div>
+</div>
+
+<a href="annual.html" class="nav-link">VIEW ANNUAL AUDIT (GDP & TRADE) →</a>
+
 <script>
     let economyData = [];
     const percentFormat = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1 });
@@ -8,8 +64,8 @@
             economyData = await response.json();
             
             const selector = document.getElementById('date-select');
-            
-            // Only show dates from Jan 2009 (Obama start) to present in the dropdown
+            if (!selector) throw new Error("Could not find date-select element");
+
             const displayData = economyData.filter(row => new Date(row.month_date) >= new Date('2009-01-01'));
             
             displayData.forEach(row => {
@@ -20,9 +76,8 @@
             });
 
             if (displayData.length > 0) updateDashboard(displayData[0].month_date);
-
         } catch (e) {
-            console.error("Error:", e);
+            console.error("Initialization Error:", e);
         }
     }
 
@@ -31,11 +86,9 @@
         if (idx === -1) return;
         const current = economyData[idx];
 
-        // 1. Debt in Trillions
         const debtTrillions = current.avg_monthly_debt / 1_000_000_000_000;
         document.getElementById('debt-val').textContent = (debtTrillions > 0) ? "$" + debtTrillions.toFixed(2) + "T" : "N/A";
         
-        // 2. Inflation (YoY) - This will now work for 2009 because 2008 data is in economyData
         const yearAgo = economyData[idx + 12];
         if (yearAgo && yearAgo.cpi_index) {
             const yoy = (current.cpi_index - yearAgo.cpi_index) / yearAgo.cpi_index;
@@ -45,10 +98,11 @@
         }
         document.getElementById('cpi-sub').textContent = "CPI Index: " + current.cpi_index.toFixed(1);
 
-        // 3. Unemployment
         document.getElementById('u3-val').textContent = current.u3_rate.toFixed(1) + "%";
         document.getElementById('u6-val').textContent = current.u6_rate.toFixed(1) + "%";
     }
 
     init();
 </script>
+</body>
+</html>

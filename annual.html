@@ -67,17 +67,16 @@
             if (displayData.length > 0) updateDashboard(displayData[0].year);
         } catch (e) { console.error("Load Error:", e); }
     }
-
-    function updateDashboard(selectedYear) {
+function updateDashboard(selectedYear) {
         const idx = annualData.findIndex(r => r.year === selectedYear);
         if (idx === -1) return;
         const current = annualData[idx];
 
-        // 1. Year Header with YTD Label
+        // 1. Year Header
         const isCurrentYear = current.year === new Date().getFullYear().toString();
         document.getElementById('page-title').textContent = current.year + (isCurrentYear ? " (YTD)" : "") + " Annual Economic Audit";
 
-        // 2. GDP Formatting (Annualized Rate)
+        // 2. GDP
         const gdpVal = current.gdp_nominal >= 1000 ? 
             "$" + (current.gdp_nominal / 1000).toFixed(2) + " Trillion" : 
             "$" + current.gdp_nominal.toLocaleString() + " Billion";
@@ -89,16 +88,21 @@
             document.getElementById('gdp-growth').textContent = "Annual Change: " + percentFormat.format(growth);
         }
 
-        // 3. Trade Balance (Summed Totals)
+        // 3. Trade Balance - MATCHING THE PYTHON KEYS
         const total = current.trade_total;
+        const goods = current.trade_goods;
+        const services = current.trade_services;
+
         document.getElementById('trade-val').textContent = (total < 0 ? "-$" : "$") + Math.abs(total).toLocaleString() + " Billion";
         
         const formatSub = (val) => (val < 0 ? "-$" : "+$") + Math.abs(val).toLocaleString() + "B";
+        
+        // ... previous code for trade-breakdown ...
         document.getElementById('trade-breakdown').innerHTML = 
-            `Goods: <span style="color:${current.trade_goods < 0 ? '#f87171' : '#4ade80'}">${formatSub(current.trade_goods)}</span> | ` +
-            `Services: <span style="color:${current.trade_services < 0 ? '#f87171' : '#4ade80'}">${formatSub(current.trade_services)}</span>`;
-    }
-    init();
+            `Goods: <span style="color:${goods < 0 ? '#f87171' : '#4ade80'}">${formatSub(goods)}</span> | ` +
+            `Services: <span style="color:${services < 0 ? '#f87171' : '#4ade80'}">${formatSub(services)}</span>`;
+    } // This closes updateDashboard
+    init(); // This calls the initialization
 </script>
 </body>
 </html>

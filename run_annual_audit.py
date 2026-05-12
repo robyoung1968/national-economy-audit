@@ -32,24 +32,30 @@ def aggregate_yearly(observations, mode='average'):
 
 # GDP (Quarterly, Annualized Rate)
 gdp_obs = fetch_fred_data('GDP') 
-# Trade Components (Quarterly Net Balances)
-# Using 'NETEXP' for total, 'GNETB' for goods, 'SNETB' for services
+
+# Total Trade (Quarterly, Annualized Rate)
 total_trade_obs = fetch_fred_data('NETEXP')
-goods_obs = fetch_fred_data('GNETB')
-services_obs = fetch_fred_data('SNETB')
+
+# Component Trade (Monthly Balance of Payments - MORE RELIABLE)
+# BOPGTB = Goods Balance | BOPSTB = Services Balance
+goods_obs = fetch_fred_data('BOPGTB')
+services_obs = fetch_fred_data('BOPSTB')
 
 gdp_final = aggregate_yearly(gdp_obs, mode='average')
-total_final = aggregate_yearly(total_trade_obs, mode='average') # NETEXP is already annualized
-goods_final = aggregate_yearly(goods_obs, mode='average') 
-services_final = aggregate_yearly(services_obs, mode='average')
+total_final = aggregate_yearly(total_trade_obs, mode='average')
+
+# Use 'sum' for monthly trade series to get the annual total
+goods_final = aggregate_yearly(goods_obs, mode='sum')
+services_final = aggregate_yearly(services_obs, mode='sum')
 
 annual_economy = []
 for year in sorted(gdp_final.keys(), reverse=True):
-    # GDP and NETEXP are already in Billions
-    # Goods and Services (GNETB/SNETB) are in Billions too
-    g_val = goods_final.get(year, 0)
-    s_val = services_final.get(year, 0)
-    t_val = total_final.get(year, g_val + s_val) # Fallback to sum if NETEXP missing
+    # Convert Millions to Billions for the monthly series
+    g_val = goods_final.get(year, 0) / 1000
+    s_val = services_final.get(year, 0) / 1000
+    
+    # Use the official Total if available, otherwise sum the components
+    t_val = total_final.get(year, g_val + s_val)
     
     annual_economy.append({
         "year": year,

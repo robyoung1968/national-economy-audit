@@ -1,17 +1,18 @@
-name: National Economy Data Refresh
+name: Auto-update economic data
 
 on:
   schedule:
-    - cron: '0 10 * * *'
-  workflow_dispatch:
+    - cron: '0 0 * * *' # Runs daily at midnight
+  workflow_dispatch: # Allows you to run it manually for testing
+
+permissions:
+  contents: write # Crucial for allowing the bot to push the JSON update
 
 jobs:
-  refresh-data:
+  update-data:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # Allows the 'git push' to update economic_data.json
     steps:
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -20,19 +21,16 @@ jobs:
           python-version: '3.10'
 
       - name: Install Dependencies
-        run: |
-          pip install pandas google-cloud-bigquery pandas-gbq requests db-dtypes pyarrow
+        run: pip install requests
 
-      - name: Run Ingestor
+      - name: Run Audit Script
         env:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-        run: python ./run_audit.py
+        run: python run_audit.py
 
-      - name: Commit and Push changes
+      - name: Commit and Push if JSON changed
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add economic_data.json
-          git commit -m "Auto-update economic data" || echo "No changes to commit"
-          git push
+          git diff --quiet && git diff --staged --quiet || (git commit -m "data: automated economic data update" && git push)

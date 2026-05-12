@@ -1,0 +1,97 @@
+[
+    {
+        "year": "2026",
+        "gdp_nominal": 31856.257,
+        "trade_balance": -892.431
+    },
+    {
+        "year": "2025",
+        "gdp_nominal": 30042.113,
+        "trade_balance": -1264.604
+    },
+    {
+        "year": "2024",
+        "gdp_nominal": 28708.161,
+        "trade_balance": -822.478
+    },
+    {
+        "year": "2023",
+        "gdp_nominal": 27216.445,
+        "trade_balance": -794.917
+    },
+    {
+        "year": "2022",
+        "gdp_nominal": 25250.347,
+        "trade_balance": -1049.17
+    },
+    {
+        "year": "2021",
+        "gdp_nominal": 22680.693,
+        "trade_balance": -789.049
+    },
+    {
+        "year": "2020",
+        "gdp_nominal": 21751.238,
+        "trade_balance": -501.596
+    },
+    {
+        "year": "2019",
+        "gdp_nominal": 21111.6,
+        "trade_balance": -592.294
+    },
+    {
+        "year": "2018",
+        "gdp_nominal": 20328.553,
+        "trade_balance": -576.031
+    },
+    {
+        "year": "2017",
+        "gdp_nominal": 19280.084,
+        "trade_balance": -533.42
+    },
+    {
+        "year": "2016",
+        "gdp_nominal": 18525.933,
+        "trade_balance": -511.682
+    },
+    {
+        "year": "2015",
+        "gdp_nominal": 18063.529,
+        "trade_balance": -526.432
+    },
+    {
+        "year": "2014",
+        "gdp_nominal": 17197.738,
+        "trade_balance": -510.088
+    },
+    {
+        "year": "2013",
+        "gdp_nominal": 16648.189,
+        "trade_balance": -499.348
+    },
+    {
+        "year": "2012",
+        "gdp_nominal": 16068.805,
+        "trade_balance": -602.271
+    },
+    {
+        "year": "2011",
+        "gdp_nominal": 15351.448,
+        "trade_balance": -568.476
+    },
+    {
+        "year": "2010",
+        "gdp_nominal": 14764.61,
+        "trade_balance": -509.192
+    },
+    {
+        "year": "2009",
+        "gdp_nominal": 14430.902,
+        "trade_balance": -420.992
+    },
+    {
+        "year": "2008",
+        "gdp_nominal": 14706.538,
+        "trade_balance": -771.248
+    }
+]

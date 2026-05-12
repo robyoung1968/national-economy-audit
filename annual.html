@@ -13,14 +13,14 @@
         .card { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border); }
         .card-title { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
         .card-value { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
-        .card-subtext { font-size: 0.8rem; color: var(--accent); margin-top: 0.5rem; }
+        .card-subtext { font-size: 0.85rem; color: var(--accent); margin-top: 0.5rem; }
         .nav-link { margin-top: 3rem; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Annual Economic Audit</h1>
+    <h1 id="page-title">Annual Economic Audit</h1>
     <p style="color: var(--text-muted);">Macro Perspective: GDP & Trade Balance</p>
 </header>
 
@@ -36,9 +36,9 @@
         <div id="gdp-growth" class="card-subtext">Annual Change: --</div>
     </div>
     <div class="card">
-        <div class="card-title">Trade Balance (Net Exports)</div>
+        <div class="card-title">Trade Balance (Total)</div>
         <div id="trade-val" class="card-value">--</div>
-        <div id="trade-status" class="card-subtext">--</div>
+        <div id="trade-breakdown" class="card-subtext">--</div>
     </div>
 </div>
 
@@ -46,7 +46,6 @@
 
 <script>
     let annualData = [];
-    const currencyFormat = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
     const percentFormat = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1 });
 
     async function init() {
@@ -55,14 +54,17 @@
             annualData = await response.json();
             const selector = document.getElementById('year-select');
             
-            annualData.forEach(row => {
+            // Filter dropdown to 2009+; 2008 remains in array for calculations
+            const displayData = annualData.filter(row => parseInt(row.year) >= 2009);
+            
+            displayData.forEach(row => {
                 const opt = document.createElement('option');
                 opt.value = row.year;
                 opt.textContent = row.year;
                 selector.appendChild(opt);
             });
 
-            if (annualData.length > 0) updateDashboard(annualData[0].year);
+            if (displayData.length > 0) updateDashboard(displayData[0].year);
         } catch (e) { console.error("Load Error:", e); }
     }
 
@@ -71,27 +73,30 @@
         if (idx === -1) return;
         const current = annualData[idx];
 
-        // Format GDP (Value is in Billions in FRED)
-        // Convert Billions to readable Trillions or keep as Billions
+        // 1. Year Header with YTD Label
+        const isCurrentYear = current.year === new Date().getFullYear().toString();
+        document.getElementById('page-title').textContent = current.year + (isCurrentYear ? " (YTD)" : "") + " Annual Economic Audit";
+
+        // 2. GDP Formatting (Annualized Rate)
         const gdpVal = current.gdp_nominal >= 1000 ? 
-            (current.gdp_nominal / 1000).toFixed(2) + " Trillion" : 
+            "$" + (current.gdp_nominal / 1000).toFixed(2) + " Trillion" : 
             "$" + current.gdp_nominal.toLocaleString() + " Billion";
         document.getElementById('gdp-val').textContent = gdpVal;
 
-        // Calculate GDP Growth YoY
         const prev = annualData[idx + 1];
-        if (prev && prev.gdp_nominal) {
+        if (prev) {
             const growth = (current.gdp_nominal - prev.gdp_nominal) / prev.gdp_nominal;
             document.getElementById('gdp-growth').textContent = "Annual Change: " + percentFormat.format(growth);
-        } else {
-            document.getElementById('gdp-growth').textContent = "Annual Change: N/A";
         }
 
-        // Format Trade Balance (Net Exports)
-        const tradeVal = current.trade_balance;
-        document.getElementById('trade-val').textContent = "$" + Math.abs(tradeVal).toLocaleString() + " Billion";
-        document.getElementById('trade-status').textContent = tradeVal < 0 ? "Trade Deficit" : "Trade Surplus";
-        document.getElementById('trade-status').style.color = tradeVal < 0 ? "#f87171" : "#4ade80";
+        // 3. Trade Balance (Summed Totals)
+        const total = current.trade_total;
+        document.getElementById('trade-val').textContent = (total < 0 ? "-$" : "$") + Math.abs(total).toLocaleString() + " Billion";
+        
+        const formatSub = (val) => (val < 0 ? "-$" : "+$") + Math.abs(val).toLocaleString() + "B";
+        document.getElementById('trade-breakdown').innerHTML = 
+            `Goods: <span style="color:${current.trade_goods < 0 ? '#f87171' : '#4ade80'}">${formatSub(current.trade_goods)}</span> | ` +
+            `Services: <span style="color:${current.trade_services < 0 ? '#f87171' : '#4ade80'}">${formatSub(current.trade_services)}</span>`;
     }
     init();
 </script>

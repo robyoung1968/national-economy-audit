@@ -1,5 +1,5 @@
 {
-    "last_updated": "2026-05-12 12:44",
+    "last_updated": "2026-05-12 13:04",
     "metrics": [
         {
             "label": "Total National Debt",
@@ -9,8 +9,8 @@
         },
         {
             "label": "Unemployment (U3)",
-            "value": 4.3,
-            "sub": "Released 2026-04-01",
+            "value": 0,
+            "sub": "Released N/A",
             "type": "percent"
         },
         {
@@ -21,8 +21,8 @@
         },
         {
             "label": "Consumer Price Index",
-            "value": 330.293,
-            "sub": "Ref: 2026-03-01",
+            "value": 332.407,
+            "sub": "Ref: 2026-04-01",
             "type": "number"
         }
     ]

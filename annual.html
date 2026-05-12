@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>National Economy Audit | Annual Data</title>
+    <style>
+        :root { --bg-color: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --border: #334155; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: system-ui, sans-serif; margin: 0; padding: 2rem; display: flex; flex-direction: column; align-items: center; }
+        header { text-align: center; margin-bottom: 2rem; width: 100%; max-width: 1000px; }
+        .controls { background: var(--card-bg); padding: 1rem 2rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; border: 1px solid var(--border); }
+        select { background: var(--bg-color); color: var(--text-main); border: 1px solid #475569; padding: 0.5rem 1rem; border-radius: 6px; font-size: 1rem; cursor: pointer; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; width: 100%; max-width: 1000px; }
+        .card { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border); }
+        .card-title { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
+        .card-value { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
+        .card-subtext { font-size: 0.8rem; color: var(--accent); margin-top: 0.5rem; }
+        .nav-link { margin-top: 3rem; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Annual Economic Audit</h1>
+    <p style="color: var(--text-muted);">Macro Perspective: GDP & Trade Balance</p>
+</header>
+
+<div class="controls">
+    <label for="year-select">Select Audit Year:</label>
+    <select id="year-select" onchange="updateDashboard(this.value)"></select>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <div class="card-title">Nominal GDP</div>
+        <div id="gdp-val" class="card-value">--</div>
+        <div id="gdp-growth" class="card-subtext">Annual Change: --</div>
+    </div>
+    <div class="card">
+        <div class="card-title">Trade Balance (Net Exports)</div>
+        <div id="trade-val" class="card-value">--</div>
+        <div id="trade-status" class="card-subtext">--</div>
+    </div>
+</div>
+
+<a href="index.htm" class="nav-link">← BACK TO MONTHLY DASHBOARD</a>
+
+<script>
+    let annualData = [];
+    const currencyFormat = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+    const percentFormat = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1 });
+
+    async function init() {
+        try {
+            const response = await fetch('annual_data.json?v=' + new Date().getTime());
+            annualData = await response.json();
+            const selector = document.getElementById('year-select');
+            
+            annualData.forEach(row => {
+                const opt = document.createElement('option');
+                opt.value = row.year;
+                opt.textContent = row.year;
+                selector.appendChild(opt);
+            });
+
+            if (annualData.length > 0) updateDashboard(annualData[0].year);
+        } catch (e) { console.error("Load Error:", e); }
+    }
+
+    function updateDashboard(selectedYear) {
+        const idx = annualData.findIndex(r => r.year === selectedYear);
+        if (idx === -1) return;
+        const current = annualData[idx];
+
+        // Format GDP (Value is in Billions in FRED)
+        // Convert Billions to readable Trillions or keep as Billions
+        const gdpVal = current.gdp_nominal >= 1000 ? 
+            (current.gdp_nominal / 1000).toFixed(2) + " Trillion" : 
+            "$" + current.gdp_nominal.toLocaleString() + " Billion";
+        document.getElementById('gdp-val').textContent = gdpVal;
+
+        // Calculate GDP Growth YoY
+        const prev = annualData[idx + 1];
+        if (prev && prev.gdp_nominal) {
+            const growth = (current.gdp_nominal - prev.gdp_nominal) / prev.gdp_nominal;
+            document.getElementById('gdp-growth').textContent = "Annual Change: " + percentFormat.format(growth);
+        } else {
+            document.getElementById('gdp-growth').textContent = "Annual Change: N/A";
+        }
+
+        // Format Trade Balance (Net Exports)
+        const tradeVal = current.trade_balance;
+        document.getElementById('trade-val').textContent = "$" + Math.abs(tradeVal).toLocaleString() + " Billion";
+        document.getElementById('trade-status').textContent = tradeVal < 0 ? "Trade Deficit" : "Trade Surplus";
+        document.getElementById('trade-status').style.color = tradeVal < 0 ? "#f87171" : "#4ade80";
+    }
+    init();
+</script>
+</body>
+</html>

@@ -1,7 +1,6 @@
 import os, json, requests, datetime
 
 def fetch_treasury_debt(limit=250):
-    # Starting from 2008-01-01 to support 2009 YoY calculations
     url = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny"
     params = {
         'sort': '-record_date', 
@@ -15,7 +14,6 @@ def fetch_treasury_debt(limit=250):
 
 def fetch_fred_series(series_id, limit=250):
     api_key = os.environ.get('FRED_API_KEY')
-    # Fetching back to 2008-01-01
     url = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key={api_key}&file_type=json&sort_order=desc&limit={limit}&observation_start=2008-01-01"
     try:
         res = requests.get(url).json()
@@ -23,24 +21,18 @@ def fetch_fred_series(series_id, limit=250):
     except: return []
 
 # EXECUTION
-print("Fetching historical data starting from 2008...")
 debt_data = fetch_treasury_debt()
 u3_data = fetch_fred_series('UNRATE')
 u6_data = fetch_fred_series('U6RATE')
 cpi_data = fetch_fred_series('CPIAUCSL')
 
-# ZIP DATA
 economy_data = []
-# Aligning data by date
 for i in range(len(cpi_data)):
     date_str = cpi_data[i]['date']
-    # Match other series by date string
     debt_val = next((d['value'] for d in debt_data if d['date'][:7] == date_str[:7]), 0)
     u3_val = next((d['value'] for d in u3_data if d['date'][:7] == date_str[:7]), 0)
     u6_val = next((d['value'] for d in u6_data if d['date'][:7] == date_str[:7]), 0)
     
-    # We only include records from 2009 onwards in the visible dashboard, 
-    # but keep 2008 in the JSON for the YoY calculation lookback.
     economy_data.append({
         "month_date": date_str,
         "avg_monthly_debt": debt_val,
@@ -51,4 +43,3 @@ for i in range(len(cpi_data)):
 
 with open('economic_data.json', 'w') as f:
     json.dump(economy_data, f, indent=4)
-print(f"Success: Packaged {len(economy_data)} months of data.")

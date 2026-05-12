@@ -9,7 +9,7 @@ jobs:
   refresh-data:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # CRITICAL: Allows the 'git push' to succeed
+      contents: write # Allows the 'git push' to update economic_data.json
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4

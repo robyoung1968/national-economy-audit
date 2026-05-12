@@ -1,37 +1,42 @@
 import os, json, requests, datetime, math
 
-def fetch_treasury_debt():
+def fetch_treasury_debt(limit=24):
     url = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny"
     try:
-        response = requests.get(url, params={'sort': '-record_date', 'page[size]': 1}, timeout=15)
-        data = response.json()['data'][0]
-        return {"value": float(data['tot_pub_debt_out_amt']), "date": data['record_date']}
-    except: return {"value": 0, "date": "N/A"}
+        response = requests.get(url, params={'sort': '-record_date', 'page[size]': limit}, timeout=15)
+        return [{"value": float(d['tot_pub_debt_out_amt']), "date": d['record_date']} for d in response.json()['data']]
+    except: return []
 
-def fetch_fred_latest(series_id):
+def fetch_fred_series(series_id, limit=24):
     api_key = os.environ.get('FRED_API_KEY')
-    url = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key={api_key}&file_type=json&sort_order=desc&limit=1"
+    url = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key={api_key}&file_type=json&sort_order=desc&limit={limit}"
     try:
         res = requests.get(url).json()
-        obs = res['observations'][0]
-        return {"value": float(obs['value']), "date": obs['date']}
-    except: return {"value": 0, "date": "N/A"}
+        return [{"value": float(obs['value']), "date": obs['date']} for obs in res['observations'] if obs['value'] != '.']
+    except: return []
 
 # EXECUTION
-debt = fetch_treasury_debt()
-u3 = fetch_fred_latest('UNRATE')
-u6 = fetch_fred_latest('U6RATE')
-cpi = fetch_fred_latest('CPIAUCSL')
+print("Rebuilding Classic Data Package...")
+debt_data = fetch_treasury_debt()
+u3_data = fetch_fred_series('UNRATE')
+u6_data = fetch_fred_series('U6RATE')
+cpi_data = fetch_fred_series('CPIAUCSL')
 
-# PACKAGING: Reverting to the "List of Records" format used in your original index.htm
-# We create a list with one record (the latest) to satisfy the original HTML's logic
-payload = [{
-    "month_date": debt['date'],
-    "avg_monthly_debt": debt['value'],
-    "u3_rate": u3['value'] / 100, # Original HTML expected decimal (0.04) for percentFormat
-    "u6_rate": u6['value'] / 100,
-    "cpi_index": cpi['value']
-}]
+# ZIP DATA BY DATE (Matching the Reference index.htm's expected structure)
+economy_data = []
+for i in range(len(cpi_data)):
+    try:
+        # We use CPI dates as the anchor
+        date_str = cpi_data[i]['date']
+        economy_data.append({
+            "month_date": date_str,
+            "avg_monthly_debt": debt_data[i]['value'] if i < len(debt_data) else 0,
+            "u3_rate": u3_data[i]['value'] / 100 if i < len(u3_data) else 0,
+            "u6_rate": u6_data[i]['value'] / 100 if i < len(u6_data) else 0,
+            "cpi_index": cpi_data[i]['value']
+        })
+    except: continue
 
 with open('economic_data.json', 'w') as f:
-    json.dump(payload, f, indent=4)
+    json.dump(economy_data, f, indent=4)
+print(f"Success: {len(economy_data)} months packaged.")

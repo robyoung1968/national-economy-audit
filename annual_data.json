@@ -3,133 +3,133 @@
         "year": "2026",
         "gdp_nominal": 31856.257,
         "trade_total": -892.431,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -255.472,
+        "trade_services": 82.712
     },
     {
         "year": "2025",
         "gdp_nominal": 30762.09875,
         "trade_total": -926.4870000000001,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -1240.815,
+        "trade_services": 329.129
     },
     {
         "year": "2024",
         "gdp_nominal": 29298.01275,
         "trade_total": -898.45975,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -1215.403,
+        "trade_services": 311.871
     },
     {
         "year": "2023",
         "gdp_nominal": 27811.517,
         "trade_total": -786.4955,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -1057.496,
+        "trade_services": 283.292
     },
     {
         "year": "2022",
         "gdp_nominal": 26054.61425,
         "trade_total": -937.889,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -1174.565,
+        "trade_services": 250.837
     },
     {
         "year": "2021",
         "gdp_nominal": 23725.6455,
         "trade_total": -849.23325,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -1083.191,
+        "trade_services": 245.916
     },
     {
         "year": "2020",
         "gdp_nominal": 21375.2815,
         "trade_total": -618.55375,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -912.875,
+        "trade_services": 266.833
     },
     {
         "year": "2019",
         "gdp_nominal": 21539.9815,
         "trade_total": -577.2905,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -857.261,
+        "trade_services": 297.989
     },
     {
         "year": "2018",
         "gdp_nominal": 20656.515499999998,
         "trade_total": -593.07675,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -878.747,
+        "trade_services": 301.253
     },
     {
         "year": "2017",
         "gdp_nominal": 19612.1025,
         "trade_total": -543.3285,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -799.343,
+        "trade_services": 282.404
     },
     {
         "year": "2016",
         "gdp_nominal": 18804.91325,
         "trade_total": -503.27175000000005,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -749.803,
+        "trade_services": 270.343
     },
     {
         "year": "2015",
         "gdp_nominal": 18295.019,
         "trade_total": -524.3197500000001,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -761.868,
+        "trade_services": 271.093
     },
     {
         "year": "2014",
         "gdp_nominal": 17608.13825,
         "trade_total": -508.9,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -749.917,
+        "trade_services": 265.966
     },
     {
         "year": "2013",
         "gdp_nominal": 16880.683250000002,
         "trade_total": -478.45349999999996,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -700.539,
+        "trade_services": 253.678
     },
     {
         "year": "2012",
         "gdp_nominal": 16253.97,
         "trade_total": -551.61725,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -741.121,
+        "trade_services": 215.213
     },
     {
         "year": "2011",
         "gdp_nominal": 15599.731500000002,
         "trade_total": -579.61675,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -741.0,
+        "trade_services": 186.477
     },
     {
         "year": "2010",
         "gdp_nominal": 15048.971,
         "trade_total": -532.30875,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -648.671,
+        "trade_services": 145.586
     },
     {
         "year": "2009",
         "gdp_nominal": 14478.06725,
         "trade_total": -419.15299999999996,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -509.694,
+        "trade_services": 114.922
     },
     {
         "year": "2008",
         "gdp_nominal": 14769.86175,
         "trade_total": -740.87,
-        "trade_goods": 0,
-        "trade_services": 0
+        "trade_goods": -832.492,
+        "trade_services": 120.143
     }
 ]

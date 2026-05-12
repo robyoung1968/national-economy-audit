@@ -1,71 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>National Economy Audit Dashboard</title>
-    <style>
-        :root { --bg-color: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --border: #334155; }
-        body { background-color: var(--bg-color); color: var(--text-main); font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 2rem; display: flex; flex-direction: column; align-items: center; }
-        header { text-align: center; margin-bottom: 2rem; width: 100%; max-width: 1000px; }
-        .controls { background: var(--card-bg); padding: 1rem 2rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; border: 1px solid var(--border); }
-        select { background: var(--bg-color); color: var(--text-main); border: 1px solid #475569; padding: 0.5rem 1rem; border-radius: 6px; font-size: 1rem; cursor: pointer; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; width: 100%; max-width: 1000px; }
-        .card { background: var(--card-bg); padding: 2rem; border-radius: 12px; border: 1px solid var(--border); transition: transform 0.2s; }
-        .card:hover { transform: translateY(-4px); border-color: var(--accent); }
-        .card-label { color: var(--text-muted); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
-        .card-value { font-size: 2.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem; }
-        .card-subtext { color: var(--text-muted); font-size: 0.75rem; }
-        .footer-nav { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); width: 100%; max-width: 1000px; text-align: center; }
-        .nav-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; letter-spacing: 1px; transition: 0.3s; }
-        .nav-link:hover { color: var(--accent); }
-    </style>
-</head>
-<body>
-
-<header>
-    <h1 style="margin-bottom: 0.5rem;">National Economy Audit</h1>
-    <p style="color: var(--text-muted); margin-top: 0;">Interactive Macroeconomic Monitoring System</p>
-</header>
-
-<div class="controls">
-    <span>Select Audit Date:</span>
-    <select id="date-selector" onchange="updateDashboard(this.value)"></select>
-</div>
-
-<div class="grid">
-    <div class="card">
-        <div class="card-label">Public Debt</div>
-        <div id="debt-val" class="card-value">--</div>
-        <div class="card-subtext">Total Outstanding</div>
-    </div>
-
-    <div class="card">
-        <div class="card-label">Inflation (YoY)</div>
-        <div id="inflation-val" class="card-value">--</div>
-        <div id="cpi-sub" class="card-subtext">CPI Index: --</div>
-    </div>
-
-    <div class="card">
-        <div class="card-label">Unemployment (U3)</div>
-        <div id="u3-val" class="card-value">--</div>
-        <div class="card-subtext">Official Metric</div>
-    </div>
-
-    <div class="card">
-        <div class="card-label">Unemployment (U6)</div>
-        <div id="u6-val" class="card-value">--</div>
-        <div class="card-subtext">Broad Rate</div>
-    </div>
-</div>
-
-<div class="footer-nav">
-    <a href="annual.html" class="nav-link">VIEW ANNUAL AUDIT (GDP & TRADE) →</a>
-</div>
-
 <script>
     let economyData = [];
-    const currencyFormat = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
     const percentFormat = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1 });
 
     async function init() {
@@ -73,17 +7,22 @@
             const response = await fetch('economic_data.json');
             economyData = await response.json();
             
-            const selector = document.getElementById('date-selector');
-            economyData.forEach(record => {
+            const selector = document.getElementById('date-select');
+            
+            // Only show dates from Jan 2009 (Obama start) to present in the dropdown
+            const displayData = economyData.filter(row => new Date(row.month_date) >= new Date('2009-01-01'));
+            
+            displayData.forEach(row => {
                 const opt = document.createElement('option');
-                opt.value = record.month_date;
-                opt.textContent = new Date(record.month_date).toLocaleDateString('en-US', {month:'long', year:'numeric'});
+                opt.value = row.month_date;
+                opt.textContent = new Date(row.month_date + 'T00:00:00').toLocaleDateString('en-US', {month:'long', year:'numeric'});
                 selector.appendChild(opt);
             });
 
-            if (economyData.length > 0) updateDashboard(economyData[0].month_date);
+            if (displayData.length > 0) updateDashboard(displayData[0].month_date);
+
         } catch (e) {
-            console.error("Initialization Failed:", e);
+            console.error("Error:", e);
         }
     }
 
@@ -92,23 +31,24 @@
         if (idx === -1) return;
         const current = economyData[idx];
 
-        document.getElementById('debt-val').textContent = currencyFormat.format(current.avg_monthly_debt);
+        // 1. Debt in Trillions
+        const debtTrillions = current.avg_monthly_debt / 1_000_000_000_000;
+        document.getElementById('debt-val').textContent = (debtTrillions > 0) ? "$" + debtTrillions.toFixed(2) + "T" : "N/A";
         
-        // YoY Inflation logic (current vs 12 months ago)
+        // 2. Inflation (YoY) - This will now work for 2009 because 2008 data is in economyData
         const yearAgo = economyData[idx + 12];
         if (yearAgo && yearAgo.cpi_index) {
             const yoy = (current.cpi_index - yearAgo.cpi_index) / yearAgo.cpi_index;
             document.getElementById('inflation-val').textContent = percentFormat.format(yoy);
         } else {
-            document.getElementById('inflation-val').textContent = "---";
+            document.getElementById('inflation-val').textContent = "N/A";
         }
         document.getElementById('cpi-sub').textContent = "CPI Index: " + current.cpi_index.toFixed(1);
 
-        document.getElementById('u3-val').textContent = percentFormat.format(current.u3_rate);
-        document.getElementById('u6-val').textContent = percentFormat.format(current.u6_rate);
+        // 3. Unemployment
+        document.getElementById('u3-val').textContent = current.u3_rate.toFixed(1) + "%";
+        document.getElementById('u6-val').textContent = current.u6_rate.toFixed(1) + "%";
     }
 
     init();
 </script>
-</body>
-</html>

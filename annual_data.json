@@ -1,1 +1,135 @@
-[]
+[
+    {
+        "year": "2026",
+        "gdp_nominal": 31856.257,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2025",
+        "gdp_nominal": 30762.09875,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2024",
+        "gdp_nominal": 29298.01275,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2023",
+        "gdp_nominal": 27811.517,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2022",
+        "gdp_nominal": 26054.61425,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2021",
+        "gdp_nominal": 23725.6455,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2020",
+        "gdp_nominal": 21375.2815,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2019",
+        "gdp_nominal": 21539.9815,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2018",
+        "gdp_nominal": 20656.515499999998,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2017",
+        "gdp_nominal": 19612.1025,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2016",
+        "gdp_nominal": 18804.91325,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2015",
+        "gdp_nominal": 18295.019,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2014",
+        "gdp_nominal": 17608.13825,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2013",
+        "gdp_nominal": 16880.683250000002,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2012",
+        "gdp_nominal": 16253.97,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2011",
+        "gdp_nominal": 15599.731500000002,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2010",
+        "gdp_nominal": 15048.971,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2009",
+        "gdp_nominal": 14478.06725,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    },
+    {
+        "year": "2008",
+        "gdp_nominal": 14769.86175,
+        "trade_total": 0.0,
+        "trade_goods": 0.0,
+        "trade_services": 0.0
+    }
+]

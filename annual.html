@@ -14,6 +14,7 @@
         .card-title { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
         .card-value { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
         .card-subtext { font-size: 0.85rem; color: var(--accent); margin-top: 0.5rem; }
+        .disclaimer { max-width: 1000px; width: 100%; font-size: 0.85rem; color: var(--text-muted); margin-top: 1.5rem; text-align: center; display: none; padding: 0.5rem; }
         .nav-link { margin-top: 3rem; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
     </style>
 </head>
@@ -33,7 +34,7 @@
     <div class="card">
         <div class="card-title">Nominal GDP</div>
         <div id="gdp-val" class="card-value">--</div>
-        <div id="gdp-growth" class="card-subtext">Annual Change: --</div>
+        <div id="gdp-growth" class="card-subtext">Annual Real Change: --</div>
     </div>
     <div class="card">
         <div class="card-title">Trade Balance (Total)</div>
@@ -42,7 +43,9 @@
     </div>
 </div>
 
-<a href="index.htm" class="nav-link">← BACK TO MONTHLY DASHBOARD</a>
+<div id="annualization-disclaimer" class="disclaimer"></div>
+
+<a href="index.html" class="nav-link">← BACK TO MONTHLY DASHBOARD</a>
 
 <script>
     let annualData = [];
@@ -50,7 +53,8 @@
 
     async function init() {
         try {
-            const response = await fetch('annual_data.json?v=' + new Date().getTime());
+            // Updated file path target to map against your Python backend pipeline output
+            const response = await fetch('data/annual_economy.json?v=' + new Date().getTime());
             annualData = await response.json();
             const selector = document.getElementById('year-select');
             
@@ -67,28 +71,38 @@
             if (displayData.length > 0) updateDashboard(displayData[0].year);
         } catch (e) { console.error("Load Error:", e); }
     }
-function updateDashboard(selectedYear) {
-        const idx = annualData.findIndex(r => r.year === selectedYear);
+
+    function updateDashboard(selectedYear) {
+        // Find the index of the object matching the selected year
+        const idx = annualData.findIndex(row => row.year === selectedYear);
         if (idx === -1) return;
+
         const current = annualData[idx];
+        const currentRealYear = new Date().getFullYear().toString();
 
-        // 1. Year Header
-        const isCurrentYear = current.year === new Date().getFullYear().toString();
-        document.getElementById('page-title').textContent = current.year + (isCurrentYear ? " (YTD)" : "") + " Annual Economic Audit";
+        // 1. Title Header & Dynamic Tooltip Visibility
+        const titleElement = document.getElementById('page-title'); 
+        const disclaimerDiv = document.getElementById('annualization-disclaimer');
 
-        // 2. GDP
+        if (current.year === currentRealYear) {
+            titleElement.textContent = current.year + " (YTD) Annual Economic Audit";
+            disclaimerDiv.textContent = `Note: ${current.year} components are linearly annualized from raw YTD datasets to match seasonally adjusted aggregate series run-rates.`;
+            disclaimerDiv.style.display = 'block';
+        } else {
+            titleElement.textContent = current.year + " Annual Economic Audit";
+            disclaimerDiv.style.display = 'none';
+        }
+
+        // 2. Render Nominal GDP Level Scale Label
         const gdpVal = current.gdp_nominal >= 1000 ? 
             "$" + (current.gdp_nominal / 1000).toFixed(2) + " Trillion" : 
             "$" + current.gdp_nominal.toLocaleString() + " Billion";
         document.getElementById('gdp-val').textContent = gdpVal;
 
-        const prev = annualData[idx + 1];
-        if (prev) {
-            const growth = (current.gdp_nominal - prev.gdp_nominal) / prev.gdp_nominal;
-            document.getElementById('gdp-growth').textContent = "Annual Change: " + percentFormat.format(growth);
-        }
+        // 3. Render Real Headline Growth Change Rate
+        document.getElementById('gdp-growth').textContent = "Annual Real Change: " + percentFormat.format(current.gdp_growth_real);
 
-        // 3. Trade Balance - MATCHING THE PYTHON KEYS
+        // 4. Trade Balance Matrix Mapping
         const total = current.trade_total;
         const goods = current.trade_goods;
         const services = current.trade_services;
@@ -97,12 +111,12 @@ function updateDashboard(selectedYear) {
         
         const formatSub = (val) => (val < 0 ? "-$" : "+$") + Math.abs(val).toLocaleString() + "B";
         
-        // ... previous code for trade-breakdown ...
         document.getElementById('trade-breakdown').innerHTML = 
             `Goods: <span style="color:${goods < 0 ? '#f87171' : '#4ade80'}">${formatSub(goods)}</span> | ` +
             `Services: <span style="color:${services < 0 ? '#f87171' : '#4ade80'}">${formatSub(services)}</span>`;
-    } // This closes updateDashboard
-    init(); // This calls the initialization
+    }
+
+    init();
 </script>
 </body>
 </html>

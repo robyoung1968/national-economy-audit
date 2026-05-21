@@ -53,8 +53,8 @@
 
     async function init() {
         try {
-            // Updated file path target to map against your Python backend pipeline output
-            const response = await fetch('data/annual_economy.json?v=' + new Date().getTime());
+            // Path corrected to pull directly from the repository root directory
+            const response = await fetch('annual_data.json?v=' + new Date().getTime());
             annualData = await response.json();
             const selector = document.getElementById('year-select');
             

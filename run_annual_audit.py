@@ -29,11 +29,8 @@ def aggregate_yearly(observations, mode='average'):
     return final_data
 
 # --- FETCH DATA SERIES ---
-# GDP (Quarterly, Annualized Rates)
 gdp_nominal_obs = fetch_fred_data('GDP')     # For Nominal GDP scale volume
 gdp_real_obs = fetch_fred_data('GDPC1')       # For Headline Real GDP growth rates
-
-# Total Trade Balance (Quarterly, Annualized Rate)
 total_trade_obs = fetch_fred_data('NETEXP')
 
 # Component Trade (Monthly Balance of Payments)
@@ -45,7 +42,6 @@ gdp_nom_final = aggregate_yearly(gdp_nominal_obs, mode='average')
 gdp_real_final = aggregate_yearly(gdp_real_obs, mode='average')
 total_final = aggregate_yearly(total_trade_obs, mode='average')
 
-# Use 'sum' for monthly series to capture cumulative raw values
 goods_raw = aggregate_yearly(goods_obs, mode='sum')
 services_raw = aggregate_yearly(services_obs, mode='sum')
 
@@ -54,24 +50,19 @@ current_year = str(datetime.datetime.now().year)
 
 annual_economy = []
 for year in sorted(gdp_nom_final.keys(), reverse=True):
-    # Convert Millions to Billions for monthly component trade data
     g_val = goods_raw.get(year, 0) / 1000
     s_val = services_raw.get(year, 0) / 1000
     
-    # PATH 1: Handle Current-Year Linear Annualization for Monthly Subsets
+    # Handle Current-Year Linear Annualization for Monthly Subsets
     if year == current_year:
-        # Determine how many unique monthly values have been populated so far this year
         months_reported = len([o for o in goods_obs if o['date'].startswith(current_year) and o['value'] not in ['.', '']])
-        
-        # Apply a proportional run-rate multiplier if the year is active and incomplete
         if 0 < months_reported < 12:
             g_val = (g_val / months_reported) * 12
             s_val = (s_val / months_reported) * 12
 
-    # Pull pre-annualized Net Exports total from FRED, fallback to sum of parts
     t_val = total_final.get(year, g_val + s_val)
     
-    # Calculate inflation-adjusted Real Headline growth rate using the GDPC1 series
+    # Calculate inflation-adjusted Real Headline growth rate
     real_growth = 0.0
     current_real = gdp_real_final.get(year)
     prev_year = str(int(year) - 1)
@@ -80,19 +71,18 @@ for year in sorted(gdp_nom_final.keys(), reverse=True):
     if current_real and prev_real:
         real_growth = (current_real - prev_real) / prev_real
 
-    # Populate verified database schema objects
     annual_economy.append({
         "year": year,
         "gdp_nominal": gdp_nom_final.get(year, 0),
-        "gdp_growth_real": real_growth,   # Replaces old nominal math key
+        "gdp_growth_real": real_growth,
         "trade_total": t_val,
         "trade_goods": g_val,
         "trade_services": s_val
     })
 
 # --- PIPELINE DEPLOYMENT WRITE ---
-# Save directly to the root directory to match your repository layout
-with open('annual_data.json', 'w') as f:  
+# Saved straight to the root directory file to match repository setup
+with open('annual_data.json', 'w') as f:
     json.dump(annual_economy, f, indent=4)
 
 print(f"Annual Update Complete: {len(annual_economy)} records. Sample 2024 Real Growth: {gdp_real_final.get('2024')}")

@@ -92,7 +92,7 @@ for year in sorted(gdp_nom_final.keys(), reverse=True):
 
 # --- PIPELINE DEPLOYMENT WRITE ---
 os.makedirs('data', exist_ok=True)
-with open('data/annual_economy.json', 'w') as f:
+with open('data/annual_data.json', 'w') as f:  # Aligned to match your repository file
     json.dump(annual_economy, f, indent=4)
 
-print(f"Annual Update Complete: {len(annual_economy)} records. Sample
+print(f"Annual Update Complete: {len(annual_economy)} records. Sample 2024 Real Growth: {gdp_real_final.get('2024')}")

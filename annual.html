@@ -3,26 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <title>National Economy Audit | Annual Data</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <style>
-        :root { --bg-color: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --border: #334155; }
-        body { background-color: var(--bg-color); color: var(--text-main); font-family: system-ui, sans-serif; margin: 0; padding: 2rem; display: flex; flex-direction: column; align-items: center; }
-        header { text-align: center; margin-bottom: 2rem; width: 100%; max-width: 1000px; }
-        .controls { background: var(--card-bg); padding: 1rem 2rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; border: 1px solid var(--border); }
-        select { background: var(--bg-color); color: var(--text-main); border: 1px solid #475569; padding: 0.5rem 1rem; border-radius: 6px; font-size: 1rem; cursor: pointer; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; width: 100%; max-width: 1000px; }
-        .card { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border); }
-        .card-title { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
+        :root { 
+            --bg-color: #0f172a; 
+            --card-bg: #1e293b; 
+            --text-main: #f8fafc; 
+            --text-muted: #94a3b8; 
+            --accent: #38bdf8; 
+            --border: #334155; 
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            font-family: system-ui, -apple-system, sans-serif; 
+            margin: 0; 
+            padding: 2rem; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        header { text-align: center; margin-bottom: 2rem; width: 100%; max-width: 1200px; }
+        .controls { 
+            background: var(--card-bg); 
+            padding: 1rem 2rem; 
+            border-radius: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+            margin-bottom: 2rem; 
+            border: 1px solid var(--border); 
+        }
+        select { 
+            background: var(--bg-color); 
+            color: var(--text-main); 
+            border: 1px solid #475569; 
+            padding: 0.5rem 1rem; 
+            border-radius: 6px; 
+            font-size: 1rem; 
+            cursor: pointer; 
+        }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 1.5rem; 
+            width: 100%; 
+            max-width: 1200px; 
+            margin-bottom: 2rem; 
+        }
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 16px; 
+            padding: 1.5rem; 
+            border: 1px solid var(--border); 
+        }
+        .card-title { 
+            color: var(--text-muted); 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+            margin-bottom: 0.75rem; 
+        }
         .card-value { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
         .card-subtext { font-size: 0.85rem; color: var(--accent); margin-top: 0.5rem; }
-        .disclaimer { max-width: 1000px; width: 100%; font-size: 0.85rem; color: var(--text-muted); margin-top: 1.5rem; text-align: center; display: none; padding: 0.5rem; }
-        .nav-link { margin-top: 3rem; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+        
+        .viz-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+            gap: 1.5rem; 
+            width: 100%; 
+            max-width: 1200px; 
+        }
+        .chart-card { 
+            background: var(--card-bg); 
+            border-radius: 16px; 
+            padding: 1.5rem; 
+            border: 1px solid var(--border); 
+            min-height: 380px; 
+        }
+        .chart-card.wide { grid-column: span 1; }
+        @media (min-width: 900px) { .chart-card.wide { grid-column: span 2; } }
+        .chart-title { 
+            font-size: 0.95rem; 
+            font-weight: 600; 
+            color: var(--text-main); 
+            margin-bottom: 1.25rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+        }
+        .disclaimer { 
+            max-width: 1200px; 
+            width: 100%; 
+            font-size: 0.85rem; 
+            color: var(--text-muted); 
+            margin-top: 1.5rem; 
+            text-align: center; 
+            display: none; 
+            padding: 0.5rem; 
+        }
+        .nav-link { 
+            margin-top: 3rem; 
+            color: var(--text-muted); 
+            text-decoration: none; 
+            font-size: 0.9rem; 
+            border-bottom: 1px solid var(--border); 
+            padding-bottom: 4px; 
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: var(--accent); }
     </style>
 </head>
 <body>
 
 <header>
     <h1 id="page-title">Annual Economic Audit</h1>
-    <p style="color: var(--text-muted);">Macro Perspective: GDP & Trade Balance</p>
+    <p style="color: var(--text-muted);">Macro Perspective: GDP & Trade Balance Matrix</p>
 </header>
 
 <div class="controls">
@@ -43,44 +141,235 @@
     </div>
 </div>
 
+<div class="viz-grid">
+    <div class="chart-card">
+        <div class="chart-title">Nominal GDP Trend (Trillions)</div>
+        <canvas id="chart-gdp-nominal"></canvas>
+    </div>
+    <div class="chart-card">
+        <div class="chart-title">Real GDP Headline Growth Rate</div>
+        <canvas id="chart-gdp-growth"></canvas>
+    </div>
+    <div class="chart-card wide">
+        <div class="chart-title">Trade Balance Matrix Component Breakdown (Billions)</div>
+        <canvas id="chart-trade-matrix"></canvas>
+    </div>
+</div>
+
 <div id="annualization-disclaimer" class="disclaimer"></div>
 
-<a href="index.htm" class="nav-link">← BACK TO MONTHLY DASHBOARD</a>
+<a href="index.html" class="nav-link">← BACK TO MONTHLY DASHBOARD</a>
 
 <script>
     let annualData = [];
+    let chartGdpNominal, chartGdpGrowth, chartTradeMatrix;
     const percentFormat = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1 });
+
+    const chartStyleDefaults = {
+        color: '#94a3b8',
+        borderColor: '#334155',
+        fontFamily: 'system-ui, sans-serif',
+        gridColor: 'rgba(51, 65, 85, 0.4)'
+    };
+
+    // Register ChartDataLabels extension globally across instances
+    Chart.register(ChartDataLabels);
 
     async function init() {
         try {
-            // Path corrected to pull directly from the repository root directory
-            const response = await fetch('annual_data.json?v=' + new Date().getTime());
+            // Appends a unique millisecond timestamp to force a live server request
+            const response = await fetch(`annual_data.json?v=${new Date().getTime()}`);
             annualData = await response.json();
-            const selector = document.getElementById('year-select');
             
-            // Filter dropdown to 2009+; 2008 remains in array for calculations
+            // Sort to ensure chronological tracking from left to right
+            annualData.sort((a, b) => parseInt(a.year) - parseInt(b.year));
+
+            const selector = document.getElementById('year-select');
             const displayData = annualData.filter(row => parseInt(row.year) >= 2009);
             
-            displayData.forEach(row => {
+            // Reverse chronological order for the interactive selector dropdown
+            [...displayData].reverse().forEach(row => {
                 const opt = document.createElement('option');
                 opt.value = row.year;
                 opt.textContent = row.year;
                 selector.appendChild(opt);
             });
 
-            if (displayData.length > 0) updateDashboard(displayData[0].year);
-        } catch (e) { console.error("Load Error:", e); }
+            buildCharts(displayData);
+
+            if (displayData.length > 0) {
+                updateDashboard(displayData[displayData.length - 1].year);
+            }
+        } catch (e) { console.error("Data Initialization Error:", e); }
+    }
+
+    function buildCharts(dataset) {
+        const labels = dataset.map(row => row.year);
+        
+        // --- CHART 1: NOMINAL GDP (AREA) ---
+        const ctxGdp = document.getElementById('chart-gdp-nominal').getContext('2d');
+        chartGdpNominal = new Chart(ctxGdp, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Nominal GDP ($T)',
+                    data: dataset.map(row => row.gdp_nominal / 1000),
+                    borderColor: '#38bdf8',
+                    backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                    fill: true,
+                    tension: 0.15,
+                    borderWidth: 2.5
+                }]
+            },
+            options: {
+                ...getBaseChartOptions(false, ' Trillion'),
+                plugins: {
+                    ...getBaseChartOptions(false, ' Trillion').plugins,
+                    datalabels: { display: false } // Deactivate labels on linear macro area chart
+                }
+            }
+        });
+
+        // --- CHART 2: REAL GROWTH RATE (BAR) ---
+        const ctxGrowth = document.getElementById('chart-gdp-growth').getContext('2d');
+        chartGdpGrowth = new Chart(ctxGrowth, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Real Growth Rate (%)',
+                    data: dataset.map(row => row.gdp_growth_real * 100),
+                    backgroundColor: dataset.map(row => row.gdp_growth_real >= 0 ? 'rgba(56, 189, 248, 0.75)' : 'rgba(239, 68, 68, 0.75)'),
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                ...getBaseChartOptions(true, '%'),
+                plugins: {
+                    ...getBaseChartOptions(true, '%').plugins,
+                    datalabels: { display: false } // Deactivate labels to match dashboard simplicity
+                }
+            }
+        });
+
+        // --- CHART 3: COMBO MATRIX TRADE BALANCE ---
+        const ctxTrade = document.getElementById('chart-trade-matrix').getContext('2d');
+        chartTradeMatrix = new Chart(ctxTrade, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        type: 'line',
+                        label: 'Total Net Balance',
+                        data: dataset.map(row => row.trade_total),
+                        borderColor: '#38bdf8',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#38bdf8',
+                        fill: false,
+                        tension: 0.1,
+                        order: 1,
+                        datalabels: { display: false } // Line shouldn't generate text metrics tags
+                    },
+                    {
+                        label: 'Goods Balance',
+                        data: dataset.map(row => row.trade_goods),
+                        backgroundColor: 'rgba(239, 68, 68, 0.75)',
+                        borderColor: '#ef4444',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        order: 2
+                    },
+                    {
+                        label: 'Services Balance',
+                        data: dataset.map(row => row.trade_services),
+                        backgroundColor: 'rgba(16, 185, 129, 0.75)',
+                        borderColor: '#10b981',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        order: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: { padding: { top: 15, bottom: 5 } },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        align: 'start', // Shifts the component box keys to the clean lower-left corner
+                        labels: { 
+                            color: chartStyleDefaults.color, 
+                            font: { family: chartStyleDefaults.fontFamily, size: 12.5 } // 25% Larger Text
+                        }
+                    },
+                    tooltip: { padding: 10, cornerRadius: 8 },
+                    datalabels: {
+                        color: '#f8fafc',
+                        font: { weight: 'bold', size: 9 },
+                        rotation: -90, // Vertical stacking format matching internal layout profile
+                        anchor: 'center',
+                        align: 'center', // Locks text center-mass safely inside the component bars
+                        formatter: function(value) {
+                            return (value >= 0 ? '+' : '-') + Math.abs(Math.round(value)).toLocaleString();
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: chartStyleDefaults.gridColor },
+                        ticks: { color: chartStyleDefaults.color, font: { family: chartStyleDefaults.fontFamily } }
+                    },
+                    y: {
+                        grid: { color: chartStyleDefaults.gridColor },
+                        ticks: {
+                            color: chartStyleDefaults.color,
+                            font: { family: chartStyleDefaults.fontFamily },
+                            callback: (value) => (value >= 0 ? '$' : '-$') + Math.abs(value).toLocaleString() + 'B'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function getBaseChartOptions(isPercent, suffix) {
+        return {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: chartStyleDefaults.color, font: { family: chartStyleDefaults.fontFamily } } },
+                tooltip: { padding: 10, cornerRadius: 8 }
+            },
+            scales: {
+                x: {
+                    grid: { color: chartStyleDefaults.gridColor },
+                    ticks: { color: chartStyleDefaults.color, font: { family: chartStyleDefaults.fontFamily } }
+                },
+                y: {
+                    grid: { color: chartStyleDefaults.gridColor },
+                    ticks: {
+                        color: chartStyleDefaults.color,
+                        font: { family: chartStyleDefaults.fontFamily },
+                        callback: function(value) {
+                            if (isPercent) return value.toFixed(1) + suffix;
+                            return (value >= 0 ? '$' : '-$') + Math.abs(value).toLocaleString() + suffix;
+                        }
+                    }
+                }
+            }
+        };
     }
 
     function updateDashboard(selectedYear) {
-        // Find the index of the object matching the selected year
         const idx = annualData.findIndex(row => row.year === selectedYear);
         if (idx === -1) return;
 
         const current = annualData[idx];
         const currentRealYear = new Date().getFullYear().toString();
 
-        // 1. Title Header & Dynamic Tooltip Visibility
         const titleElement = document.getElementById('page-title'); 
         const disclaimerDiv = document.getElementById('annualization-disclaimer');
 
@@ -93,30 +382,26 @@
             disclaimerDiv.style.display = 'none';
         }
 
-        // 2. Render Nominal GDP Level Scale Label
         const gdpVal = current.gdp_nominal >= 1000 ? 
             "$" + (current.gdp_nominal / 1000).toFixed(2) + " Trillion" : 
             "$" + current.gdp_nominal.toLocaleString() + " Billion";
         document.getElementById('gdp-val').textContent = gdpVal;
-
-        // 3. Render Real Headline Growth Change Rate
         document.getElementById('gdp-growth').textContent = "Annual Real Change: " + percentFormat.format(current.gdp_growth_real);
 
-        // 4. Trade Balance Matrix Mapping
         const total = current.trade_total;
         const goods = current.trade_goods;
         const services = current.trade_services;
 
         document.getElementById('trade-val').textContent = (total < 0 ? "-$" : "$") + Math.abs(total).toLocaleString() + " Billion";
-        
         const formatSub = (val) => (val < 0 ? "-$" : "+$") + Math.abs(val).toLocaleString() + "B";
         
         document.getElementById('trade-breakdown').innerHTML = 
             `Goods: <span style="color:${goods < 0 ? '#f87171' : '#4ade80'}">${formatSub(goods)}</span> | ` +
-            `Services: <span style="color:${services < 0 ? '#f87171' : '#4ade80'}">${formatSub(services)}</span>`;
+            ``Services: <span style="color:${services < 0 ? '#f87171' : '#4ade80'}">${formatSub(services)}</span>`;
     }
 
-    init();
+    // Safely fire initialization on window loading
+    window.onload = init;
 </script>
 </body>
 </html>

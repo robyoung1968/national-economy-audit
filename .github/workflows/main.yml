@@ -5,12 +5,11 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
   update-data:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Restricts write access exclusively to this specific runner job
     steps:
       - name: Checkout
         uses: actions/checkout@v4

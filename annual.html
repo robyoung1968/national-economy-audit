@@ -177,7 +177,8 @@
 
     async function init() {
         try {
-            const response = await fetch('annual_data.json');
+            // Appends a unique millisecond timestamp to force a live server request
+            const response = await fetch(`annual_data.json?v=${new Date().getTime()}`);
             annualData = await response.json();
             
             // Sort to ensure chronological tracking from left to right
@@ -396,10 +397,11 @@
         
         document.getElementById('trade-breakdown').innerHTML = 
             `Goods: <span style="color:${goods < 0 ? '#f87171' : '#4ade80'}">${formatSub(goods)}</span> | ` +
-            `Services: <span style="color:${services < 0 ? '#f87171' : '#4ade80'}">${formatSub(services)}</span>`;
+            ``Services: <span style="color:${services < 0 ? '#f87171' : '#4ade80'}">${formatSub(services)}</span>`;
     }
 
-    init();
+    // Safely fire initialization on window loading
+    window.onload = init;
 </script>
 </body>
 </html>

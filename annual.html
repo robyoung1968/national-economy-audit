@@ -82,16 +82,20 @@
             border-radius: 16px; 
             padding: 1.5rem; 
             border: 1px solid var(--border); 
-            height: 380px;            /* Forces a fixed bounding box */
+            height: 380px;            
             min-height: 380px; 
-            box-sizing: border-box;   /* Includes padding in the height calculation */
-            position: relative;       /* Allows Chart.js to scale safely inside */
+            box-sizing: border-box;   
+            position: relative;       
         }
         .chart-card canvas {
             max-height: 100% !important;
             width: 100% !important;
         }
-        .chart-card.wide { grid-column: span 1; }
+        .chart-card.wide { 
+            grid-column: span 1; 
+            height: 550px;       /* Increased height to allow data labels to render safely */
+            min-height: 550px;
+        }
         @media (min-width: 900px) { .chart-card.wide { grid-column: span 2; } }
         .disclaimer { 
             max-width: 1200px; 
@@ -225,7 +229,8 @@
                 ...getBaseChartOptions(false, ' Trillion'),
                 plugins: {
                     ...getBaseChartOptions(false, ' Trillion').plugins,
-                    datalabels: { display: false } // Deactivate labels on linear macro area chart
+                    legend: { display: false }, // Hides redundant layout icon bounding box
+                    datalabels: { display: false } 
                 }
             }
         });
@@ -247,7 +252,8 @@
                 ...getBaseChartOptions(true, '%'),
                 plugins: {
                     ...getBaseChartOptions(true, '%').plugins,
-                    datalabels: { display: false } // Deactivate labels to match dashboard simplicity
+                    legend: { display: false }, // Hides confusing color-matched starting year bounding box
+                    datalabels: { display: false } 
                 }
             }
         });
@@ -269,7 +275,7 @@
                         fill: false,
                         tension: 0.1,
                         order: 1,
-                        datalabels: { display: false } // Line shouldn't generate text metrics tags
+                        datalabels: { display: false } 
                     },
                     {
                         label: 'Goods Balance',
@@ -298,19 +304,19 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        align: 'start', // Shifts the component box keys to the clean lower-left corner
+                        align: 'start', 
                         labels: { 
                             color: chartStyleDefaults.color, 
-                            font: { family: chartStyleDefaults.fontFamily, size: 12.5 } // 25% Larger Text
+                            font: { family: chartStyleDefaults.fontFamily, size: 12.5 } 
                         }
                     },
                     tooltip: { padding: 10, cornerRadius: 8 },
                     datalabels: {
                         color: '#f8fafc',
                         font: { weight: 'bold', size: 9 },
-                        rotation: -90, // Vertical stacking format matching internal layout profile
+                        rotation: -90, 
                         anchor: 'center',
-                        align: 'center', // Locks text center-mass safely inside the component bars
+                        align: 'center', 
                         formatter: function(value) {
                             return (value >= 0 ? '+' : '-') + Math.abs(Math.round(value)).toLocaleString();
                         }

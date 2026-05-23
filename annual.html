@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>National Economy Audit | Annual Data</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <style>
         :root { 
             --bg-color: #0f172a; 
@@ -69,7 +69,7 @@
         }
         .card-value { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
         .card-subtext { font-size: 0.85rem; color: var(--accent); margin-top: 0.5rem; }
-        
+         
         .viz-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
@@ -397,11 +397,11 @@
         
         document.getElementById('trade-breakdown').innerHTML = 
             `Goods: <span style="color:${goods < 0 ? '#f87171' : '#4ade80'}">${formatSub(goods)}</span> | ` +
-            ``Services: <span style="color:${services < 0 ? '#f87171' : '#4ade80'}">${formatSub(services)}</span>`;
+            `Services: <span style="color:${services < 0 ? '#f87171' : '#4ade80'}">${formatSub(services)}</span>`;
     }
 
-    // Safely fire initialization on window loading
-    window.onload = init;
+    // Direct entry point execution
+    init();
 </script>
 </body>
 </html>

@@ -481,7 +481,7 @@
         // Dynamic Page Title Assignment
         if (current.year === currentRealYear) {
             titleElement.textContent = current.year + " (YTD) Annual Key Economic Indicators";
-            disclaimerDiv.textContent = `Note: ${current.year} components are linearly annualized from raw YTD datasets to match seasonally adjusted aggregate series run-runs.`;
+            disclaimerDiv.textContent = `Note: ${current.year} components are linearly annualized from raw YTD datasets to match seasonally adjusted aggregate series run-rates.`;
             disclaimerDiv.style.display = 'block';
         } else {
             titleElement.textContent = current.year + " Annual Key Economic Indicators";

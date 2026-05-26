@@ -189,10 +189,8 @@
             economyData = await response.json();
             const selector = document.getElementById('date-select');
             
-            // Filter historical timeline starting from Jan 2009
             const displayData = economyData.filter(row => new Date(row.month_date) >= new Date('2009-01-01'));
             
-            // Dropdown selector population (Reverse chronological order)
             displayData.forEach(row => {
                 const opt = document.createElement('option');
                 opt.value = row.month_date;
@@ -200,7 +198,6 @@
                 selector.appendChild(opt);
             });
 
-            // Timeline mapping for charts (Chronological order: past to present)
             const chronologicalData = [...displayData].reverse();
             buildCharts(chronologicalData);
 
@@ -209,11 +206,11 @@
     }
 
     function buildCharts(dataset) {
+        // Formatted to display explicit 4-digit years on X axis
         const labels = dataset.map(row => {
-            return new Date(row.month_date + 'T00:00:00').toLocaleDateString('en-US', {month:'short', year:'2-digit'});
+            return new Date(row.month_date + 'T00:00:00').toLocaleDateString('en-US', {month:'short', year:'numeric'});
         });
 
-        // Pre-calculate inflation sequence dynamically for line charting
         const inflationTimeline = dataset.map(row => {
             const currentIdx = economyData.findIndex(r => r.month_date === row.month_date);
             const yearAgoRow = economyData[currentIdx + 12];
@@ -229,7 +226,32 @@
             },
             plugins: {
                 legend: { display: false },
-                tooltip: { padding: 10, cornerRadius: 8 }
+                tooltip: { 
+                    padding: 10, 
+                    cornerRadius: 8,
+                    callbacks: {
+                        // Enforce 4-digit year format inside the tooltip title block
+                        title: function(context) {
+                            const index = context[0].dataIndex;
+                            const rawDate = dataset[index].month_date;
+                            return new Date(rawDate + 'T00:00:00').toLocaleDateString('en-US', {month:'long', year:'numeric'});
+                        },
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            let value = context.parsed.y;
+                            const chartId = context.chart.canvas.id;
+                            
+                            if (chartId === 'chart-debt') {
+                                return ' Public Debt: $' + value.toFixed(1) + 'T';
+                            } else if (chartId === 'chart-inflation') {
+                                return ' Inflation YoY: ' + value.toFixed(1) + '%';
+                            } else if (chartId === 'chart-unemployment') {
+                                return ' ' + label + ': ' + value.toFixed(1) + '%';
+                            }
+                            return ' ' + value;
+                        }
+                    }
+                }
             },
             scales: {
                 x: {
@@ -241,7 +263,7 @@
                     ticks: { color: chartStyleDefaults.color, font: { family: chartStyleDefaults.fontFamily } }
                 }
             }
-        }; // <-- Extra closing scope brackets cleanly removed here
+        };
 
         // --- PUBLIC DEBT (AREA) ---
         chartDebt = new Chart(document.getElementById('chart-debt').getContext('2d'), {
@@ -306,21 +328,22 @@
             type: 'line',
             data: {
                 labels: labels,
+                // Dataset array sorting order: U3 defined first loads it on left of legend and top of tooltip stack
                 datasets: [
+                    {
+                        label: 'U3 Rate',
+                        data: dataset.map(row => row.u3_rate),
+                        borderColor: '#38bdf8',
+                        borderWidth: 2.5,
+                        pointRadius: 0,
+                        tension: 0.15
+                    },
                     {
                         label: 'U6 Rate',
                         data: dataset.map(row => row.u6_rate),
                         borderColor: '#94a3b8',
                         borderWidth: 2,
                         borderDash: [4, 4],
-                        pointRadius: 0,
-                        tension: 0.15
-                    },
-                    {
-                        label: 'U3 Rate',
-                        data: dataset.map(row => row.u3_rate),
-                        borderColor: '#38bdf8',
-                        borderWidth: 2.5,
                         pointRadius: 0,
                         tension: 0.15
                     }

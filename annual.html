@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>National Economy Audit | Annual Data</title>
+    <title>Annual Key Economic Indicators</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <style>
@@ -70,6 +70,27 @@
         .card-value { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
         .card-subtext { font-size: 0.85rem; color: var(--accent); margin-top: 0.5rem; }
           
+        .section-divider {
+            width: 100%;
+            max-width: 1200px;
+            border: 0;
+            height: 1px;
+            background: var(--border);
+            margin: 2rem 0;
+        }
+
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 0 0 1.5rem 0;
+            text-align: left;
+            width: 100%;
+            max-width: 1200px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
         .viz-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
@@ -82,18 +103,26 @@
             border-radius: 16px; 
             padding: 1.5rem; 
             border: 1px solid var(--border); 
-            height: 380px;            
+            height: 380px;             
             min-height: 380px; 
             box-sizing: border-box;   
-            position: relative;       
+            position: relative;        
+        }
+        .chart-title {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
         }
         .chart-card canvas {
-            max-height: 100% !important;
+            max-height: calc(100% - 2rem) !important;
             width: 100% !important;
         }
         .chart-card.wide { 
             grid-column: span 1; 
-            height: 650px;       /* Elongated container to 650px (Approach 1) to grant bars vertical breathing room */
+            height: 650px;       
             min-height: 650px;
         }
         @media (min-width: 900px) { .chart-card.wide { grid-column: span 2; } }
@@ -107,8 +136,16 @@
             display: none; 
             padding: 0.5rem; 
         }
+        footer {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
         .nav-link { 
-            margin-top: 3rem; 
             color: var(--text-muted); 
             text-decoration: none; 
             font-size: 0.9rem; 
@@ -117,12 +154,22 @@
             transition: color 0.2s;
         }
         .nav-link:hover { color: var(--accent); }
+
+        .download-link {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-decoration: underline;
+            transition: color 0.2s ease;
+        }
+        .download-link:hover {
+            color: var(--text-main);
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1 id="page-title">Annual Economic Audit</h1>
+    <h1 id="page-title">Annual Key Economic Indicators</h1>
     <p style="color: var(--text-muted);">Macro Perspective: GDP & Trade Balance Matrix</p>
 </header>
 
@@ -144,6 +191,10 @@
     </div>
 </div>
 
+<hr class="section-divider">
+
+<div id="trends-subtitle" class="section-subtitle">Trends 2009 — Present</div>
+
 <div class="viz-grid">
     <div class="chart-card">
         <div class="chart-title">Nominal GDP Trend (Trillions)</div>
@@ -161,7 +212,14 @@
 
 <div id="annualization-disclaimer" class="disclaimer"></div>
 
-<a href="index.htm" class="nav-link">← BACK TO MONTHLY DASHBOARD</a>
+<footer>
+    <a href="index.htm" class="nav-link">← BACK TO MONTHLY DASHBOARD</a>
+    <div style="margin-top: 1rem;">
+        <a class="download-link" href="https://robyoung1968.github.io/national-economy-audit/annual_data.csv">
+            Download raw annual data file (CSV) for use in spreadsheets
+        </a>
+    </div>
+</footer>
 
 <script>
     let annualData = [];
@@ -193,6 +251,12 @@
                 opt.textContent = row.year;
                 selector.appendChild(opt);
             });
+
+            // Set section trend bounds text using latest data sequence element
+            if (displayData.length > 0) {
+                const maxYear = displayData[displayData.length - 1].year;
+                document.getElementById('trends-subtitle').innerText = `Trends 2009 — ${maxYear}`;
+            }
 
             buildCharts(displayData);
 
@@ -232,7 +296,6 @@
                         callbacks: {
                             label: function(context) {
                                 let value = context.parsed.y;
-                                // Injects explicit padding space between the colored status square and string label literal
                                 return ' Nominal GDP: $' + value.toFixed(2) + 'T';
                             }
                         }
@@ -266,7 +329,6 @@
                         callbacks: {
                             label: function(context) {
                                 let value = context.parsed.y;
-                                // Spaces icon and forces 1-decimal-point format parsing
                                 return ' Real Growth Rate: ' + value.toFixed(1) + '%';
                             }
                         }
@@ -336,8 +398,8 @@
                                 let label = context.dataset.label || '';
                                 let value = context.parsed.y;
                                 const prefix = value >= 0 ? '$' : '-$';
-                                // Spaces label block and limits mouseover inspection to exactly 3 decimal points ($valueB)
-                                return ' ' + label + ': ' + prefix + Math.abs(value).toFixed(3) + 'B';
+                                // Modified: Locked mouseover values to exact 2-decimal bounds
+                                return ' ' + label + ': ' + prefix + Math.abs(value).toFixed(2) + 'B';
                             }
                         }
                     },
@@ -349,8 +411,8 @@
                         align: 'center', 
                         formatter: function(value) {
                             const prefix = value >= 0 ? '$' : '-$';
-                            // Formats on-bar text strings to standard institutional $valueB rules (rounding to whole values for readability)
-                            return prefix + Math.abs(Math.round(value)).toLocaleString() + 'B';
+                            // Modified: Changed on-bar label metrics to display fixed 2-decimal layout bounds
+                            return prefix + Math.abs(value).toFixed(2) + 'B';
                         }
                     }
                 },
@@ -410,28 +472,28 @@
         const titleElement = document.getElementById('page-title'); 
         const disclaimerDiv = document.getElementById('annualization-disclaimer');
 
+        // Dynamic Page Title Assignment
         if (current.year === currentRealYear) {
-            titleElement.textContent = current.year + " (YTD) Annual Economic Audit";
+            titleElement.textContent = current.year + " (YTD) Annual Key Economic Indicators";
             disclaimerDiv.textContent = `Note: ${current.year} components are linearly annualized from raw YTD datasets to match seasonally adjusted aggregate series run-runs.`;
             disclaimerDiv.style.display = 'block';
         } else {
-            titleElement.textContent = current.year + " Annual Economic Audit";
+            titleElement.textContent = current.year + " Annual Key Economic Indicators";
             disclaimerDiv.style.display = 'none';
         }
 
-        // Expanded metric display block inside KPI card component to exactly 3 decimal points
-        const gdpVal = current.gdp_nominal >= 1000 ? 
-            "$" + (current.gdp_nominal / 1000).toFixed(3) + " Trillion" : 
-            "$" + current.gdp_nominal.toLocaleString() + " Billion";
-        document.getElementById('gdp-val').textContent = gdpVal;
+        // Modified: Nominal GDP box set to lock exactly onto a clean 2-decimal limit
+        const gdpTrillions = current.gdp_nominal / 1000;
+        document.getElementById('gdp-val').textContent = "$" + gdpTrillions.toFixed(2) + " Trillion";
         document.getElementById('gdp-growth').textContent = "Annual Real Change: " + percentFormat.format(current.gdp_growth_real);
 
         const total = current.trade_total;
         const goods = current.trade_goods;
         const services = current.trade_services;
 
-        document.getElementById('trade-val').textContent = (total < 0 ? "-$" : "$") + Math.abs(total).toLocaleString() + " Billion";
-        const formatSub = (val) => (val < 0 ? "-$" : "+$") + Math.abs(val).toLocaleString() + "B";
+        // Modified: Trade Balance Box total tracking set to a clean 2-decimal presentation framework
+        document.getElementById('trade-val').textContent = (total < 0 ? "-$" : "$") + Math.abs(total).toFixed(2) + " Billion";
+        const formatSub = (val) => (val < 0 ? "-$" : "+$") + Math.abs(val).toFixed(2) + "B";
         
         document.getElementById('trade-breakdown').innerHTML = 
             `Goods: <span style="color:${goods < 0 ? '#f87171' : '#4ade80'}">${formatSub(goods)}</span> | ` +

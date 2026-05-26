@@ -223,6 +223,12 @@
         const commonOptions = {
             responsive: true,
             maintainAspectRatio: false,
+            // --- ADD THIS PERFORMANCE BLOCK ---
+            interaction: {
+                mode: 'index',       // Looks up data by chronological index (lightning fast)
+                intersect: false     // Tooltip triggers anywhere along the vertical slice of that month
+            },
+            // ----------------------------------
             plugins: {
                 legend: { display: false },
                 tooltip: { padding: 10, cornerRadius: 8 }
@@ -237,6 +243,7 @@
                     ticks: { color: chartStyleDefaults.color, font: { family: chartStyleDefaults.fontFamily } }
                 }
             }
+        };
         };
 
         // --- PUBLIC DEBT (AREA) ---

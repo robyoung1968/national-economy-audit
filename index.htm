@@ -1,207 +1,450 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>National Key Economic Indicators</title>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        header {
-            text-align: center;
-            margin-bottom: 10px;
-            width: 100%;
-            max-width: 1000px;
-        }
-        h1 {
-            color: #ffffff;
-            margin: 0 0 5px 0;
-            font-size: 2.2rem;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-        }
-        .subtitle {
-            color: #888888;
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 400;
-        }
-        .divider {
-            width: 100%;
-            max-width: 1000px;
-            height: 1px;
-            background-color: #2c2c2c;
-            margin: 20px 0;
-        }
-        .section-subtitle {
-            color: #aaaaaa;
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin: 0 0 15px 0;
-            text-align: left;
-            width: 100%;
-            max-width: 1000px;
-            letter-spacing: 0.5px;
-        }
-        .chart-container {
-            width: 100%;
-            max-width: 1000px;
-            height: 500px;
-            background-color: #1e1e1e;
-            border: 1px solid #2c2c2c;
-            border-radius: 8px;
-            padding: 15px;
-            box-sizing: border-box;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            margin-bottom: 30px;
-        }
-        footer {
-            margin-top: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        .download-link {
-            color: #888888;
-            font-size: 0.85rem;
-            text-decoration: underline;
-            transition: color 0.2s ease;
-        }
-        .download-link:hover {
-            color: #ffffff;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>National Key Economic Indicators</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root { 
+--bg-color: #0f172a; 
+--card-bg: #1e293b; 
+--text-main: #f8fafc; 
+--text-muted: #94a3b8; 
+--accent: #38bdf8; 
+--border: #334155; 
+--grid-color: rgba(51, 65, 85, 0.4);
+}
+body { 
+background-color: var(--bg-color); 
+color: var(--text-main); 
+font-family: system-ui, sans-serif; 
+margin: 0; 
+padding: 2rem; 
+display: flex; 
+flex-direction: column; 
+align-items: center; 
+}
+header { text-align: center; margin-bottom: 2rem; width: 100%; max-width: 1200px; }
+.controls { 
+background: var(--card-bg); 
+padding: 1rem 2rem; 
+border-radius: 12px; 
+display: flex; 
+align-items: center; 
+gap: 1rem; 
+margin-bottom: 2rem; 
+border: 1px solid var(--border); 
+}
+select { 
+background: var(--bg-color); 
+color: var(--text-main); 
+border: 1px solid #475569; 
+padding: 0.5rem 1rem; 
+border-radius: 6px; 
+font-size: 1rem; 
+cursor: pointer; 
+}
+.grid { 
+display: grid; 
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+gap: 1.5rem; 
+width: 100%; 
+max-width: 1200px; 
+margin-bottom: 2rem;
+}
+.card { 
+background: var(--card-bg); 
+border-radius: 16px; 
+padding: 1.5rem; 
+border: 1px solid var(--border); 
+box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); 
+}
+.card-title { 
+color: var(--text-muted); 
+font-size: 0.85rem; 
+text-transform: uppercase; 
+letter-spacing: 0.05em; 
+margin-bottom: 0.75rem; 
+}
+.card-value { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
+.card-subtext { font-size: 0.8rem; color: var(--accent); margin-top: 0.5rem; }
+
+.section-divider {
+width: 100%;
+max-width: 1200px;
+border: 0;
+height: 1px;
+background: var(--border);
+margin: 2rem 0;
+}
+
+.section-subtitle {
+color: var(--text-muted);
+font-size: 1.2rem;
+font-weight: 500;
+margin: 0 0 1.5rem 0;
+text-align: left;
+width: 100%;
+max-width: 1200px;
+letter-spacing: 0.05em;
+text-transform: uppercase;
+}
+
+.viz-grid { 
+display: flex;
+flex-direction: column;
+gap: 2rem; 
+width: 100%; 
+max-width: 1200px; 
+}
+.chart-card { 
+background: var(--card-bg); 
+border-radius: 16px; 
+padding: 1.5rem; 
+border: 1px solid var(--border); 
+height: 400px;             
+min-height: 400px; 
+box-sizing: border-box;   
+position: relative;        
+}
+.chart-title {
+color: var(--text-muted);
+font-size: 0.9rem;
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+margin-bottom: 1rem;
+}
+.chart-card canvas {
+max-height: calc(100% - 2rem) !important;
+width: 100% !important;
+}
+footer {
+margin-top: 3rem;
+margin-bottom: 2rem;
+text-align: center;
+display: flex;
+flex-direction: column;
+gap: 1rem;
+align-items: center;
+}
+.nav-link { 
+color: var(--text-muted); 
+text-decoration: none; 
+font-size: 0.9rem; 
+border-bottom: 1px solid var(--border); 
+padding-bottom: 4px; 
+transition: color 0.2s;
+}
+.nav-link:hover { color: var(--accent); }
+
+.download-link {
+color: var(--text-muted);
+font-size: 0.85rem;
+text-decoration: underline;
+transition: color 0.2s ease;
+}
+.download-link:hover {
+color: var(--text-main);
+}
+</style>
 </head>
 <body>
 
-    <header>
-        <h1>National Key Economic Indicators</h1>
-        <p class="subtitle">Interactive Macroeconomic Monitoring System</p>
-    </header>
+<header>
+<h1>National Key Economic Indicators</h1>
+<p style="color: var(--text-muted); margin: 0;">Interactive Macroeconomic Monitoring System</p>
+</header>
 
-    <div class="divider"></div>
+<div class="controls">
+<label for="date-select">Select Reporting Date:</label>
+<select id="date-select" onchange="updateDashboard(this.value)"></select>
+</div>
 
-    <div id="trends-subtitle" class="section-subtitle">Trends 2009 — Present</div>
+<div class="grid">
+<div class="card">
+<div class="card-title">Public Debt</div>
+<div id="debt-val" class="card-value">--</div>
+<div class="card-subtext">Total Outstanding</div>
+</div>
+<div class="card">
+<div class="card-title">Inflation (YoY)</div>
+<div id="inflation-val" class="card-value">--</div>
+<div id="cpi-sub" class="card-subtext">CPI Index: --</div>
+</div>
+<div class="card">
+<div class="card-title">Unemployment (U3)</div>
+<div id="u3-val" class="card-value">--</div>
+<div class="card-subtext">Official Metric</div>
+</div>
+<div class="card">
+<div class="card-title">Unemployment (U6)</div>
+<div id="u6-val" class="card-value">--</div>
+<div class="card-subtext">Broad Rate</div>
+</div>
+</div>
 
-    <div id="debt-chart" class="chart-container"></div>
+<hr class="section-divider">
 
-    <footer>
+<div id="trends-subtitle" class="section-subtitle">Trends 2009 — Present</div>
+
+<div class="viz-grid">
+<div class="chart-card">
+<div class="chart-title">Public Debt Trend</div>
+<canvas id="chart-debt"></canvas>
+</div>
+<div class="chart-card">
+<div class="chart-title">Inflation YoY Trend</div>
+<canvas id="chart-inflation"></canvas>
+</div>
+<div class="chart-card">
+<div class="chart-title">Unemployment Trajectory (U3 vs U6)</div>
+<canvas id="chart-unemployment"></canvas>
+</div>
+</div>
+
+<footer>
+    <a href="annual.html" class="nav-link">VIEW ANNUAL ANALYSIS (GDP & TRADE) →</a>
+    <div style="margin-top: 1rem;">
         <a class="download-link" href="https://robyoung1968.github.io/national-economy-audit/economic_data.csv">
             Download Raw Monthly Telemetry Matrix (CSV)
         </a>
-    </footer>
+    </div>
+</footer>
 
-    <script>
-        // Initialize the ECharts instance
-        const chartDom = document.getElementById('debt-chart');
-        const myChart = echarts.init(chartDom, 'dark');
+<script>
+let economyData = [];
+let chartDebt, chartInflation, chartUnemployment;
+const percentFormat = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1 });
 
-        // Fetch data and update chart dynamically
-        fetch('economic_data.json')
-            .then(response => response.json())
-            .then(rawData => {
-                // Reverse data array to ensure proper chronological order (left-to-right)
-                const data = rawData.reverse();
+const chartStyleDefaults = {
+color: '#94a3b8',
+fontFamily: 'system-ui, sans-serif',
+};
 
-                // Dynamic subtitle adjustment based on data availability
-                if (data.length > 0) {
-                    const lastEntry = data[data.length - 1].month_date; // Expected format: YYYY-MM-DD
-                    const dateParts = lastEntry.split('-');
-                    if (dateParts.length >= 2) {
-                        const dateObj = new Date(dateParts[0], dateParts[1] - 1);
-                        const lastMonthStr = dateObj.toLocaleString('default', { month: 'long', year: 'numeric' });
-                        document.getElementById('trends-subtitle').innerText = `Trends 2009 — ${lastMonthStr}`;
-                    }
-                }
+async function init() {
+try {
+const response = await fetch('economic_data.json?v=' + new Date().getTime());
+economyData = await response.json();
+const selector = document.getElementById('date-select');
 
-                const dates = data.map(item => item.month_date);
-                const debtValues = data.map(item => item.avg_monthly_debt);
+// Filter historical timeline starting from Jan 2009
+const displayData = economyData.filter(row => new Date(row.month_date) >= new Date('2009-01-01'));
 
-                const option = {
-                    backgroundColor: '#1e1e1e',
-                    title: {
-                        text: 'U.S. Public Debt Trend',
-                        left: 'center',
-                        textStyle: { color: '#ffffff', fontSize: 16, fontWeight: 500 }
-                    },
-                    tooltip: {
-                        trigger: 'axis',
-                        backgroundColor: '#2a2a2a',
-                        borderColor: '#444444',
-                        textStyle: { color: '#e0e0e0' },
-                        // Enforced strict 2-decimal formatting rule for trillions
-                        formatter: function(params) {
-                            let param = params[0];
-                            let val = param.value;
-                            let formattedVal = val;
-                            
-                            if (val >= 1e12) {
-                                formattedVal = '$' + (val / 1e12).toFixed(2) + 'T';
-                            } else if (val >= 1e9) {
-                                formattedVal = '$' + (val / 1e9).toFixed(2) + 'B';
-                            } else {
-                                formattedVal = '$' + val.toLocaleString();
-                            }
-                            return `${param.name}<br/><strong>${param.seriesName}:</strong> ${formattedVal}`;
-                        }
-                    },
-                    grid: {
-                        left: '4%',
-                        right: '4%',
-                        bottom: '10%',
-                        containLabel: true
-                    },
-                    xAxis: {
-                        type: 'category',
-                        data: dates,
-                        axisLine: { lineStyle: { color: '#444444' } },
-                        axisLabel: { color: '#aaaaaa', fontSize: 11 }
-                    },
-                    yAxis: {
-                        type: 'value',
-                        axisLine: { lineStyle: { color: '#444444' } },
-                        splitLine: { lineStyle: { color: '#2c2c2c' } },
-                        axisLabel: {
-                            color: '#aaaaaa',
-                            fontSize: 11,
-                            formatter: function(value) {
-                                return '$' + (value / 1e12).toFixed(0) + 'T';
-                            }
-                        }
-                    },
-                    series: [{
-                        name: 'Public Debt',
-                        type: 'line',
-                        data: debtValues,
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: { color: '#4fade6', width: 2.5 },
-                        itemStyle: { color: '#4fade6' },
-                        areaStyle: {
-                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                                { offset: 0, color: 'rgba(79, 173, 230, 0.2)' },
-                                { offset: 1, color: 'rgba(79, 173, 230, 0.0)' }
-                            ])
-                        }
-                    }]
-                };
+// Update Section Subtitle text to match latest actual monthly record date bounds dynamically
+if (displayData.length > 0) {
+    const latestDateStr = displayData[0].month_date;
+    const dateObj = new Date(latestDateStr + 'T00:00:00');
+    const displayMonthYear = dateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    document.getElementById('trends-subtitle').innerText = `Trends 2009 — ${displayMonthYear}`;
+}
 
-                myChart.setOption(option);
-            })
-            .catch(error => console.error('Error binding telemetry variables:', error));
+// Dropdown selector population (Reverse chronological order)
+displayData.forEach(row => {
+const opt = document.createElement('option');
+opt.value = row.month_date;
+opt.textContent = new Date(row.month_date + 'T00:00:00').toLocaleDateString('en-US', {month:'long', year:'numeric'});
+selector.appendChild(opt);
+});
 
-        // Ensure responsive scale matches window resizing events
-        window.addEventListener('resize', () => {
-            myChart.resize();
-        });
-    </script>
+// Timeline mapping for charts (Chronological order: past to present)
+const chronologicalData = [...displayData].reverse();
+buildCharts(chronologicalData);
+
+if (displayData.length > 0) updateDashboard(displayData[0].month_date);
+} catch (e) { console.error("Load Error:", e); }
+}
+
+function buildCharts(dataset) {
+// Formatted to display explicit 4-digit years on X axis
+const labels = dataset.map(row => {
+    return new Date(row.month_date + 'T00:00:00').toLocaleDateString('en-US', {month:'short', year:'2-digit'});
+});
+
+// Pre-calculate inflation sequence dynamically for line charting
+const inflationTimeline = dataset.map(row => {
+const currentIdx = economyData.findIndex(r => r.month_date === row.month_date);
+const yearAgoRow = economyData[currentIdx + 12];
+return yearAgoRow ? ((row.cpi_index - yearAgoRow.cpi_index) / yearAgoRow.cpi_index) * 100 : null;
+});
+
+const commonOptions = {
+responsive: true,
+maintainAspectRatio: false,
+interaction: {
+mode: 'index',       
+intersect: false     
+},
+plugins: {
+legend: { display: false },
+tooltip: { 
+    padding: 10, 
+    cornerRadius: 8,
+    callbacks: {
+        // Enforce 4-digit year format inside the tooltip title block
+        title: function(context) {
+            const index = context[0].dataIndex;
+            const rawDate = dataset[index].month_date;
+            return new Date(rawDate + 'T00:00:00').toLocaleDateString('en-US', {month:'long', year:'numeric'});
+        },
+        label: function(context) {
+            let label = context.dataset.label || '';
+            let value = context.parsed.y;
+            const chartId = context.chart.canvas.id;
+            
+            if (chartId === 'chart-debt') {
+                // Modified: Enhanced precision baseline to strict 2 decimal bounds
+                return ' Public Debt: $' + value.toFixed(2) + 'T';
+            } else if (chartId === 'chart-inflation') {
+                return ' Inflation YoY: ' + value.toFixed(1) + '%';
+            } else if (chartId === 'chart-unemployment') {
+                return ' ' + label + ': ' + value.toFixed(1) + '%';
+            }
+            return ' ' + value;
+        }
+    }
+}
+},
+scales: {
+x: {
+grid: { color: 'rgba(51, 65, 85, 0.4)' },
+ticks: { color: chartStyleDefaults.color, font: { family: chartStyleDefaults.fontFamily }, maxTicksLimit: 12 }
+},
+y: {
+grid: { color: 'rgba(51, 65, 85, 0.4)' },
+ticks: { color: chartStyleDefaults.color, font: { family: chartStyleDefaults.fontFamily } }
+}
+}
+};
+
+// --- PUBLIC DEBT (AREA) ---
+chartDebt = new Chart(document.getElementById('chart-debt').getContext('2d'), {
+type: 'line',
+data: {
+labels: labels,
+datasets: [{
+data: dataset.map(row => row.avg_monthly_debt / 1_000_000_000_000),
+borderColor: '#38bdf8',
+backgroundColor: 'rgba(56, 189, 248, 0.1)',
+fill: true,
+tension: 0.15,
+borderWidth: 2.5
+}]
+},
+options: {
+...commonOptions,
+scales: {
+...commonOptions.scales,
+y: {
+...commonOptions.scales.y,
+ticks: {
+...commonOptions.scales.y.ticks,
+callback: (value) => '$' + value.toFixed(1) + 'T'
+}
+}
+}
+}
+});
+
+// --- INFLATION YOY (LINE) ---
+chartInflation = new Chart(document.getElementById('chart-inflation').getContext('2d'), {
+type: 'line',
+data: {
+labels: labels,
+datasets: [{
+data: inflationTimeline,
+borderColor: '#ef4444',
+tension: 0.15,
+borderWidth: 2.5,
+pointRadius: 0,
+pointHoverRadius: 4
+}]
+},
+options: {
+...commonOptions,
+scales: {
+...commonOptions.scales,
+y: {
+...commonOptions.scales.y,
+ticks: {
+...commonOptions.scales.y.ticks,
+callback: (value) => value.toFixed(1) + '%'
+}
+}
+}
+}
+});
+
+// --- UNEMPLOYMENT (DUAL LINE) ---
+chartUnemployment = new Chart(document.getElementById('chart-unemployment').getContext('2d'), {
+type: 'line',
+data: {
+labels: labels,
+datasets: [
+    {
+        label: 'U3 Rate',
+        data: dataset.map(row => row.u3_rate),
+        borderColor: '#38bdf8',
+        borderWidth: 2.5,
+        pointRadius: 0,
+        tension: 0.15
+    },
+    {
+        label: 'U6 Rate',
+        data: dataset.map(row => row.u6_rate),
+        borderColor: '#94a3b8',
+        borderWidth: 2,
+        borderDash: [4, 4],
+        pointRadius: 0,
+        tension: 0.15
+    }
+]
+},
+options: {
+...commonOptions,
+plugins: {
+...commonOptions.plugins,
+legend: {
+display: true,
+position: 'bottom',
+labels: { color: chartStyleDefaults.color, font: { family: chartStyleDefaults.fontFamily } }
+}
+},
+scales: {
+...commonOptions.scales,
+y: {
+...commonOptions.scales.y,
+ticks: {
+...commonOptions.scales.y.ticks,
+callback: (value) => value.toFixed(1) + '%'
+}
+}
+}
+}
+});
+}
+
+function updateDashboard(selectedDate) {
+const idx = economyData.findIndex(r => r.month_date === selectedDate);
+if (idx === -1) return;
+const current = economyData[idx];
+
+const debtTrillions = current.avg_monthly_debt / 1_000_000_000_000;
+document.getElementById('debt-val').textContent = (debtTrillions > 0) ? "$" + debtTrillions.toFixed(2) + "T" : "N/A";
+
+const yearAgo = economyData[idx + 12];
+if (yearAgo) {
+const yoy = (current.cpi_index - yearAgo.cpi_index) / yearAgo.cpi_index;
+document.getElementById('inflation-val').textContent = percentFormat.format(yoy);
+} else {
+document.getElementById('inflation-val').textContent = "N/A";
+}
+
+document.getElementById('cpi-sub').textContent = "CPI Index: " + current.cpi_index.toFixed(1);
+document.getElementById('u3-val').textContent = current.u3_rate.toFixed(1) + "%";
+document.getElementById('u6-val').textContent = current.u6_rate.toFixed(1) + "%";
+}
+init();
+</script>
 </body>
 </html>

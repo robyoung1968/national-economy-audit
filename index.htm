@@ -79,9 +79,9 @@
         }
         
         .viz-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
-            gap: 1.5rem; 
+            display: flex;
+            flex-direction: column;
+            gap: 2rem; 
             width: 100%; 
             max-width: 1200px; 
         }
@@ -90,8 +90,8 @@
             border-radius: 16px; 
             padding: 1.5rem; 
             border: 1px solid var(--border); 
-            height: 380px;            
-            min-height: 380px; 
+            height: 400px;            /* Bumped slightly from 380px for a perfect full-screen aspect ratio */
+            min-height: 400px; 
             box-sizing: border-box;   
             position: relative;       
         }

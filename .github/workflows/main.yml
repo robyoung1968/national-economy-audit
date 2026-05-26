@@ -35,6 +35,9 @@ jobs:
         run: python run_annual_audit.py
 
       - name: Run Economic Audit Scraping Pipeline
+        env:
+          # This injects your encrypted GitHub secret into the Python environment
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: python run_audit.py
 
       - name: Generate Executive CSV Fallbacks

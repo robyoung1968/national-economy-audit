@@ -90,7 +90,7 @@
             border-radius: 16px; 
             padding: 1.5rem; 
             border: 1px solid var(--border); 
-            height: 400px;            /* Bumped slightly from 380px for a perfect full-screen aspect ratio */
+            height: 400px;            
             min-height: 400px; 
             box-sizing: border-box;   
             position: relative;       
@@ -223,12 +223,10 @@
         const commonOptions = {
             responsive: true,
             maintainAspectRatio: false,
-            // --- ADD THIS PERFORMANCE BLOCK ---
             interaction: {
-                mode: 'index',       // Looks up data by chronological index (lightning fast)
-                intersect: false     // Tooltip triggers anywhere along the vertical slice of that month
+                mode: 'index',       
+                intersect: false     
             },
-            // ----------------------------------
             plugins: {
                 legend: { display: false },
                 tooltip: { padding: 10, cornerRadius: 8 }
@@ -243,8 +241,7 @@
                     ticks: { color: chartStyleDefaults.color, font: { family: chartStyleDefaults.fontFamily } }
                 }
             }
-        };
-        };
+        }; // <-- Extra closing scope brackets cleanly removed here
 
         // --- PUBLIC DEBT (AREA) ---
         chartDebt = new Chart(document.getElementById('chart-debt').getContext('2d'), {

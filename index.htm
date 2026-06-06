@@ -223,22 +223,64 @@ fontFamily: 'system-ui, sans-serif',
 };
 
 async function init() {
-try {
-const response = await fetch('economic_data.json?v=' + new Date().getTime());
-economyData = await response.json();
-const selector = document.getElementById('date-select');
+    try {
+        console.log("Initializing data synchronization pipeline...");
+        const response = await fetch('economic_data.json?v=' + new Date().getTime());
+        
+        if (!response.ok) {
+            throw new Error(`HTTP network error! Status: ${response.status}`);
+        }
+        
+        economyData = await response.json();
+        console.log(`Payload loaded successfully. Total matrix entries: ${economyData.length}`);
 
-// Filter historical timeline starting from Jan 2009
-const displayData = economyData.filter(row => new Date(row.month_date) >= new Date('2009-01-01'));
+        const selector = document.getElementById('date-select');
+        if (!selector) throw new Error("DOM Element 'date-select' missing.");
 
-// Update Section Subtitle text to match latest actual monthly record date bounds dynamically
-if (displayData.length > 0) {
-    const latestDateStr = displayData[0].month_date;
-    const dateObj = new Date(latestDateStr + 'T00:00:00');
-    const displayMonthYear = dateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    document.getElementById('trends-subtitle').innerText = `TRENDS: JANUARY 2009 — ${displayMonthYear}`;
+        // Filter historical timeline starting from Jan 2009
+        const displayData = economyData.filter(row => row && row.month_date && new Date(row.month_date) >= new Date('2009-01-01'));
+
+        if (displayData.length === 0) {
+            console.warn("Telemetry cross-reference filter returned 0 active rows.");
+            return;
+        }
+
+        // Update Section Subtitle text dynamically using the newest entry
+        const latestDateStr = displayData[0].month_date;
+        const dateObj = new Date(latestDateStr + 'T00:00:00');
+        const displayMonthYear = isNaN(dateObj.getTime()) 
+            ? "Present" 
+            : dateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            
+        document.getElementById('trends-subtitle').innerText = `TRENDS: JANUARY 2009 — ${displayMonthYear.toUpperCase()}`;
+
+        // Dropdown selector population (Clear old elements first to prevent stacking bugs)
+        selector.innerHTML = "";
+        displayData.forEach(row => {
+            if (!row.month_date) return;
+            const opt = document.createElement('option');
+            opt.value = row.month_date;
+            
+            const optDate = new Date(row.month_date + 'T00:00:00');
+            opt.textContent = isNaN(optDate.getTime()) 
+                ? row.month_date 
+                : optDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                
+            selector.appendChild(opt);
+        });
+
+        // Timeline mapping for charts (Chronological order: past to present)
+        const chronologicalData = [...displayData].reverse();
+        buildCharts(chronologicalData);
+
+        // Force initialize dashboard panel view elements with the newest record
+        updateDashboard(displayData[0].month_date);
+        console.log("Dashboard view pipeline synchronized successfully.");
+
+    } catch (e) { 
+        console.error("FATAL UI INITIALIZATION FAILURE:", e); 
+    }
 }
-
 // Dropdown selector population (Reverse chronological order)
 displayData.forEach(row => {
 const opt = document.createElement('option');

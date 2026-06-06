@@ -425,19 +425,40 @@ callback: (value) => value.toFixed(1) + '%'
 }
 
 function updateDashboard(selectedDate) {
-const idx = economyData.findIndex(r => r.month_date === selectedDate);
-if (idx === -1) return;
-const current = economyData[idx];
+    const idx = economyData.findIndex(r => r.month_date === selectedDate);
+    if (idx === -1) return;
+    const current = economyData[idx];
 
-const debtTrillions = current.avg_monthly_debt / 1_000_000_000_000;
-document.getElementById('debt-val').textContent = (debtTrillions > 0) ? "$" + debtTrillions.toFixed(2) + "T" : "N/A";
+    // 1. Debt Safe Guard
+    if (current.avg_monthly_debt !== null && current.avg_monthly_debt > 0) {
+        const debtTrillions = current.avg_monthly_debt / 1_000_000_000_000;
+        document.getElementById('debt-val').textContent = "$" + debtTrillions.toFixed(2) + "T";
+    } else {
+        document.getElementById('debt-val').textContent = "N/A";
+    }
 
-const yearAgo = economyData[idx + 12];
-if (yearAgo) {
-const yoy = (current.cpi_index - yearAgo.cpi_index) / yearAgo.cpi_index;
-document.getElementById('inflation-val').textContent = percentFormat.format(yoy);
-} else {
-document.getElementById('inflation-val').textContent = "N/A";
+    // 2. Unemployment U3 Safe Guard
+    if (current.u3_rate !== null) {
+        document.getElementById('u3-val').textContent = current.u3_rate.toFixed(1) + "%";
+    } else {
+        document.getElementById('u3-val').textContent = "N/A";
+    }
+
+    // 3. Underemployment U6 Safe Guard
+    if (current.u6_rate !== null) {
+        document.getElementById('u6-val').textContent = current.u6_rate.toFixed(1) + "%";
+    } else {
+        document.getElementById('u6-val').textContent = "N/A";
+    }
+
+    // 4. YoY CPI Inflation Safe Guard
+    const yearAgo = economyData[idx + 12];
+    if (current.cpi_index !== null && yearAgo && yearAgo.cpi_index !== null) {
+        const yoyInflation = ((current.cpi_index - yearAgo.cpi_index) / yearAgo.cpi_index) * 100;
+        document.getElementById('inflation-val').textContent = yoyInflation.toFixed(1) + "%";
+    } else {
+        document.getElementById('inflation-val').textContent = "N/A";
+    }
 }
 
 document.getElementById('cpi-sub').textContent = "CPI Index: " + current.cpi_index.toFixed(1);

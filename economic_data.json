@@ -1,1535 +1,1556 @@
 [
     {
+        "month_date": "2026-06-01",
+        "avg_monthly_debt": 39232150577283.87,
+        "cpi_index": 332.407,
+        "u3_rate": 4.3,
+        "u6_rate": 8.1
+    },
+    {
+        "month_date": "2026-05-01",
+        "avg_monthly_debt": 39207759598302.62,
+        "cpi_index": 332.407,
+        "u3_rate": 4.3,
+        "u6_rate": 8.1
+    },
+    {
         "month_date": "2026-04-01",
         "avg_monthly_debt": 38967833861543.11,
+        "cpi_index": 332.407,
         "u3_rate": 4.3,
-        "u6_rate": 8.2,
-        "cpi_index": 332.407
+        "u6_rate": 8.2
     },
     {
         "month_date": "2026-03-01",
         "avg_monthly_debt": 39065421393640.82,
+        "cpi_index": 330.293,
         "u3_rate": 4.3,
-        "u6_rate": 8.0,
-        "cpi_index": 330.293
+        "u6_rate": 8.0
     },
     {
         "month_date": "2026-02-01",
         "avg_monthly_debt": 38769805982273.81,
+        "cpi_index": 327.46,
         "u3_rate": 4.4,
-        "u6_rate": 7.9,
-        "cpi_index": 327.46
+        "u6_rate": 7.9
     },
     {
         "month_date": "2026-01-01",
         "avg_monthly_debt": 38521368112341.66,
+        "cpi_index": 326.588,
         "u3_rate": 4.3,
-        "u6_rate": 8.1,
-        "cpi_index": 326.588
+        "u6_rate": 8.1
     },
     {
         "month_date": "2025-12-01",
         "avg_monthly_debt": 38514009184232.72,
+        "cpi_index": 326.031,
         "u3_rate": 4.4,
-        "u6_rate": 8.4,
-        "cpi_index": 326.031
+        "u6_rate": 8.4
     },
     {
         "month_date": "2025-11-01",
         "avg_monthly_debt": 38396211497613.65,
+        "cpi_index": 325.063,
         "u3_rate": 4.5,
-        "u6_rate": 8.7,
-        "cpi_index": 325.063
+        "u6_rate": 8.7
+    },
+    {
+        "month_date": "2025-10-01",
+        "avg_monthly_debt": 38040093786521.02,
+        "cpi_index": 324.245,
+        "u3_rate": 4.4,
+        "u6_rate": 8.1
     },
     {
         "month_date": "2025-09-01",
         "avg_monthly_debt": 37637553494935.61,
+        "cpi_index": 324.245,
         "u3_rate": 4.4,
-        "u6_rate": 8.1,
-        "cpi_index": 324.245
+        "u6_rate": 8.1
     },
     {
         "month_date": "2025-08-01",
         "avg_monthly_debt": 37274265917907.03,
+        "cpi_index": 323.291,
         "u3_rate": 4.3,
-        "u6_rate": 8.1,
-        "cpi_index": 323.291
+        "u6_rate": 8.1
     },
     {
         "month_date": "2025-07-01",
         "avg_monthly_debt": 36916987311998.03,
+        "cpi_index": 322.169,
         "u3_rate": 4.3,
-        "u6_rate": 7.9,
-        "cpi_index": 322.169
+        "u6_rate": 7.9
     },
     {
         "month_date": "2025-06-01",
         "avg_monthly_debt": 36211469351821.31,
+        "cpi_index": 321.435,
         "u3_rate": 4.1,
-        "u6_rate": 7.7,
-        "cpi_index": 321.435
+        "u6_rate": 7.7
     },
     {
         "month_date": "2025-05-01",
         "avg_monthly_debt": 36215818399936.85,
+        "cpi_index": 320.62,
         "u3_rate": 4.3,
-        "u6_rate": 7.8,
-        "cpi_index": 320.62
+        "u6_rate": 7.8
     },
     {
         "month_date": "2025-04-01",
         "avg_monthly_debt": 36213557195810.65,
+        "cpi_index": 320.302,
         "u3_rate": 4.2,
-        "u6_rate": 7.8,
-        "cpi_index": 320.302
+        "u6_rate": 7.8
     },
     {
         "month_date": "2025-03-01",
         "avg_monthly_debt": 36214310420174.13,
+        "cpi_index": 319.785,
         "u3_rate": 4.2,
-        "u6_rate": 7.9,
-        "cpi_index": 319.785
+        "u6_rate": 7.9
     },
     {
         "month_date": "2025-02-01",
         "avg_monthly_debt": 36218923369370.1,
+        "cpi_index": 319.679,
         "u3_rate": 4.2,
-        "u6_rate": 8.0,
-        "cpi_index": 319.679
+        "u6_rate": 8.0
     },
     {
         "month_date": "2025-01-01",
         "avg_monthly_debt": 36220206738047.96,
+        "cpi_index": 318.961,
         "u3_rate": 4.0,
-        "u6_rate": 7.5,
-        "cpi_index": 318.961
+        "u6_rate": 7.5
     },
     {
         "month_date": "2024-12-01",
         "avg_monthly_debt": 36218605311689.91,
+        "cpi_index": 317.604,
         "u3_rate": 4.1,
-        "u6_rate": 7.6,
-        "cpi_index": 317.604
+        "u6_rate": 7.6
     },
     {
         "month_date": "2024-11-01",
         "avg_monthly_debt": 36087362960612.0,
+        "cpi_index": 316.528,
         "u3_rate": 4.2,
-        "u6_rate": 7.7,
-        "cpi_index": 316.528
+        "u6_rate": 7.7
     },
     {
         "month_date": "2024-10-01",
         "avg_monthly_debt": 35951601173936.02,
+        "cpi_index": 315.631,
         "u3_rate": 4.1,
-        "u6_rate": 7.7,
-        "cpi_index": 315.631
+        "u6_rate": 7.7
     },
     {
         "month_date": "2024-09-01",
         "avg_monthly_debt": 35464673929171.69,
+        "cpi_index": 314.732,
         "u3_rate": 4.1,
-        "u6_rate": 7.7,
-        "cpi_index": 314.732
+        "u6_rate": 7.7
     },
     {
         "month_date": "2024-08-01",
         "avg_monthly_debt": 35256056842790.06,
+        "cpi_index": 314.062,
         "u3_rate": 4.2,
-        "u6_rate": 7.8,
-        "cpi_index": 314.062
+        "u6_rate": 7.8
     },
     {
         "month_date": "2024-07-01",
         "avg_monthly_debt": 35104770649301.03,
+        "cpi_index": 313.569,
         "u3_rate": 4.2,
-        "u6_rate": 7.8,
-        "cpi_index": 313.569
+        "u6_rate": 7.8
     },
     {
         "month_date": "2024-06-01",
         "avg_monthly_debt": 34831634431393.47,
+        "cpi_index": 313.044,
         "u3_rate": 4.1,
-        "u6_rate": 7.4,
-        "cpi_index": 313.044
+        "u6_rate": 7.4
     },
     {
         "month_date": "2024-05-01",
         "avg_monthly_debt": 34667115142400.83,
+        "cpi_index": 313.175,
         "u3_rate": 3.9,
-        "u6_rate": 7.4,
-        "cpi_index": 313.175
+        "u6_rate": 7.4
     },
     {
         "month_date": "2024-04-01",
         "avg_monthly_debt": 34616994016250.88,
+        "cpi_index": 313.023,
         "u3_rate": 3.9,
-        "u6_rate": 7.4,
-        "cpi_index": 313.023
+        "u6_rate": 7.4
     },
     {
         "month_date": "2024-03-01",
         "avg_monthly_debt": 34586533479349.88,
+        "cpi_index": 312.345,
         "u3_rate": 3.9,
-        "u6_rate": 7.3,
-        "cpi_index": 312.345
+        "u6_rate": 7.3
     },
     {
         "month_date": "2024-02-01",
         "avg_monthly_debt": 34471083238111.75,
+        "cpi_index": 310.967,
         "u3_rate": 3.9,
-        "u6_rate": 7.3,
-        "cpi_index": 310.967
+        "u6_rate": 7.3
     },
     {
         "month_date": "2024-01-01",
         "avg_monthly_debt": 34191150402393.64,
+        "cpi_index": 309.698,
         "u3_rate": 3.7,
-        "u6_rate": 7.2,
-        "cpi_index": 309.698
+        "u6_rate": 7.2
     },
     {
         "month_date": "2023-12-01",
         "avg_monthly_debt": 34001493655565.48,
+        "cpi_index": 308.741,
         "u3_rate": 3.8,
-        "u6_rate": 7.2,
-        "cpi_index": 308.741
+        "u6_rate": 7.2
     },
     {
         "month_date": "2023-11-01",
         "avg_monthly_debt": 33878679367501.2,
+        "cpi_index": 308.148,
         "u3_rate": 3.7,
-        "u6_rate": 7.0,
-        "cpi_index": 308.148
+        "u6_rate": 7.0
     },
     {
         "month_date": "2023-10-01",
         "avg_monthly_debt": 33699580339128.49,
+        "cpi_index": 307.696,
         "u3_rate": 3.9,
-        "u6_rate": 7.2,
-        "cpi_index": 307.696
+        "u6_rate": 7.2
     },
     {
         "month_date": "2023-09-01",
         "avg_monthly_debt": 33167334044723.16,
+        "cpi_index": 307.276,
         "u3_rate": 3.7,
-        "u6_rate": 7.0,
-        "cpi_index": 307.276
+        "u6_rate": 7.0
     },
     {
         "month_date": "2023-08-01",
         "avg_monthly_debt": 32914149363760.95,
+        "cpi_index": 306.082,
         "u3_rate": 3.7,
-        "u6_rate": 7.1,
-        "cpi_index": 306.082
+        "u6_rate": 7.1
     },
     {
         "month_date": "2023-07-01",
         "avg_monthly_debt": 32608585072666.14,
+        "cpi_index": 304.609,
         "u3_rate": 3.5,
-        "u6_rate": 6.7,
-        "cpi_index": 304.609
+        "u6_rate": 6.7
     },
     {
         "month_date": "2023-06-01",
         "avg_monthly_debt": 32332274184762.99,
+        "cpi_index": 304.014,
         "u3_rate": 3.6,
-        "u6_rate": 6.9,
-        "cpi_index": 304.014
+        "u6_rate": 6.9
     },
     {
         "month_date": "2023-05-01",
         "avg_monthly_debt": 31464457465522.98,
+        "cpi_index": 303.334,
         "u3_rate": 3.6,
-        "u6_rate": 6.7,
-        "cpi_index": 303.334
+        "u6_rate": 6.7
     },
     {
         "month_date": "2023-04-01",
         "avg_monthly_debt": 31457814648415.87,
+        "cpi_index": 302.845,
         "u3_rate": 3.4,
-        "u6_rate": 6.6,
-        "cpi_index": 302.845
+        "u6_rate": 6.6
     },
     {
         "month_date": "2023-03-01",
         "avg_monthly_debt": 31458437575028.18,
+        "cpi_index": 301.821,
         "u3_rate": 3.5,
-        "u6_rate": 6.7,
-        "cpi_index": 301.821
+        "u6_rate": 6.7
     },
     {
         "month_date": "2023-02-01",
         "avg_monthly_debt": 31459291458579.46,
+        "cpi_index": 301.45,
         "u3_rate": 3.6,
-        "u6_rate": 6.8,
-        "cpi_index": 301.45
+        "u6_rate": 6.8
     },
     {
         "month_date": "2023-01-01",
         "avg_monthly_debt": 31454982227739.16,
+        "cpi_index": 300.42,
         "u3_rate": 3.5,
-        "u6_rate": 6.7,
-        "cpi_index": 300.42
+        "u6_rate": 6.7
     },
     {
         "month_date": "2022-12-01",
         "avg_monthly_debt": 31419689421557.9,
+        "cpi_index": 298.832,
         "u3_rate": 3.5,
-        "u6_rate": 6.6,
-        "cpi_index": 298.832
+        "u6_rate": 6.6
     },
     {
         "month_date": "2022-11-01",
         "avg_monthly_debt": 31413322465316.3,
+        "cpi_index": 298.786,
         "u3_rate": 3.6,
-        "u6_rate": 6.7,
-        "cpi_index": 298.786
+        "u6_rate": 6.7
     },
     {
         "month_date": "2022-10-01",
         "avg_monthly_debt": 31238301149359.52,
+        "cpi_index": 298.007,
         "u3_rate": 3.6,
-        "u6_rate": 6.7,
-        "cpi_index": 298.007
+        "u6_rate": 6.7
     },
     {
         "month_date": "2022-09-01",
         "avg_monthly_debt": 30928911613306.73,
+        "cpi_index": 296.349,
         "u3_rate": 3.5,
-        "u6_rate": 6.7,
-        "cpi_index": 296.349
+        "u6_rate": 6.7
     },
     {
         "month_date": "2022-08-01",
         "avg_monthly_debt": 30936075214882.41,
+        "cpi_index": 295.097,
         "u3_rate": 3.6,
-        "u6_rate": 6.9,
-        "cpi_index": 295.097
+        "u6_rate": 6.9
     },
     {
         "month_date": "2022-07-01",
         "avg_monthly_debt": 30595108567190.06,
+        "cpi_index": 294.913,
         "u3_rate": 3.5,
-        "u6_rate": 6.8,
-        "cpi_index": 294.913
+        "u6_rate": 6.8
     },
     {
         "month_date": "2022-06-01",
         "avg_monthly_debt": 30568582029058.95,
+        "cpi_index": 294.957,
         "u3_rate": 3.6,
-        "u6_rate": 6.7,
-        "cpi_index": 294.957
+        "u6_rate": 6.7
     },
     {
         "month_date": "2022-05-01",
         "avg_monthly_debt": 30499618521246.79,
+        "cpi_index": 291.298,
         "u3_rate": 3.6,
-        "u6_rate": 7.1,
-        "cpi_index": 291.298
+        "u6_rate": 7.1
     },
     {
         "month_date": "2022-04-01",
         "avg_monthly_debt": 30374154511898.01,
+        "cpi_index": 288.561,
         "u3_rate": 3.7,
-        "u6_rate": 7.0,
-        "cpi_index": 288.561
+        "u6_rate": 7.0
     },
     {
         "month_date": "2022-03-01",
         "avg_monthly_debt": 30400959928180.97,
+        "cpi_index": 287.674,
         "u3_rate": 3.7,
-        "u6_rate": 7.0,
-        "cpi_index": 287.674
+        "u6_rate": 7.0
     },
     {
         "month_date": "2022-02-01",
         "avg_monthly_debt": 30290352672788.26,
+        "cpi_index": 284.5,
         "u3_rate": 3.9,
-        "u6_rate": 7.2,
-        "cpi_index": 284.5
+        "u6_rate": 7.2
     },
     {
         "month_date": "2022-01-01",
         "avg_monthly_debt": 30012386059238.29,
+        "cpi_index": 282.543,
         "u3_rate": 4.0,
-        "u6_rate": 7.1,
-        "cpi_index": 282.543
+        "u6_rate": 7.1
     },
     {
         "month_date": "2021-12-01",
         "avg_monthly_debt": 29617214856051.75,
+        "cpi_index": 280.845,
         "u3_rate": 3.9,
-        "u6_rate": 7.3,
-        "cpi_index": 280.845
+        "u6_rate": 7.3
     },
     {
         "month_date": "2021-11-01",
         "avg_monthly_debt": 28907986914620.48,
+        "cpi_index": 278.919,
         "u3_rate": 4.1,
-        "u6_rate": 7.7,
-        "cpi_index": 278.919
+        "u6_rate": 7.7
     },
     {
         "month_date": "2021-10-01",
         "avg_monthly_debt": 28908765340554.33,
+        "cpi_index": 276.55,
         "u3_rate": 4.5,
-        "u6_rate": 8.2,
-        "cpi_index": 276.55
+        "u6_rate": 8.2
     },
     {
         "month_date": "2021-09-01",
         "avg_monthly_debt": 28428918570048.68,
+        "cpi_index": 273.91,
         "u3_rate": 4.7,
-        "u6_rate": 8.4,
-        "cpi_index": 273.91
+        "u6_rate": 8.4
     },
     {
         "month_date": "2021-08-01",
         "avg_monthly_debt": 28427317184527.64,
+        "cpi_index": 272.676,
         "u3_rate": 5.1,
-        "u6_rate": 8.8,
-        "cpi_index": 272.676
+        "u6_rate": 8.8
     },
     {
         "month_date": "2021-07-01",
         "avg_monthly_debt": 28427721872418.7,
+        "cpi_index": 271.903,
         "u3_rate": 5.4,
-        "u6_rate": 9.2,
-        "cpi_index": 271.903
+        "u6_rate": 9.2
     },
     {
         "month_date": "2021-06-01",
         "avg_monthly_debt": 28529435873139.77,
+        "cpi_index": 270.654,
         "u3_rate": 5.9,
-        "u6_rate": 9.8,
-        "cpi_index": 270.654
+        "u6_rate": 9.8
     },
     {
         "month_date": "2021-05-01",
         "avg_monthly_debt": 28199008338520.65,
+        "cpi_index": 268.383,
         "u3_rate": 5.8,
-        "u6_rate": 10.1,
-        "cpi_index": 268.383
+        "u6_rate": 10.1
     },
     {
         "month_date": "2021-04-01",
         "avg_monthly_debt": 28174714484167.37,
+        "cpi_index": 266.614,
         "u3_rate": 6.1,
-        "u6_rate": 10.3,
-        "cpi_index": 266.614
+        "u6_rate": 10.3
     },
     {
         "month_date": "2021-03-01",
         "avg_monthly_debt": 28132570303600.16,
+        "cpi_index": 264.961,
         "u3_rate": 6.1,
-        "u6_rate": 10.8,
-        "cpi_index": 264.961
+        "u6_rate": 10.8
     },
     {
         "month_date": "2021-02-01",
         "avg_monthly_debt": 27902363734475.7,
+        "cpi_index": 263.579,
         "u3_rate": 6.2,
-        "u6_rate": 11.1,
-        "cpi_index": 263.579
+        "u6_rate": 11.1
     },
     {
         "month_date": "2021-01-01",
         "avg_monthly_debt": 27784553033005.01,
+        "cpi_index": 262.687,
         "u3_rate": 6.4,
-        "u6_rate": 11.2,
-        "cpi_index": 262.687
+        "u6_rate": 11.2
     },
     {
         "month_date": "2020-12-01",
         "avg_monthly_debt": 27747797947667.77,
+        "cpi_index": 262.045,
         "u3_rate": 6.7,
-        "u6_rate": 11.7,
-        "cpi_index": 262.045
+        "u6_rate": 11.7
     },
     {
         "month_date": "2020-11-01",
         "avg_monthly_debt": 27446288188250.17,
+        "cpi_index": 260.911,
         "u3_rate": 6.7,
-        "u6_rate": 11.9,
-        "cpi_index": 260.911
+        "u6_rate": 11.9
     },
     {
         "month_date": "2020-10-01",
         "avg_monthly_debt": 27135476803126.2,
+        "cpi_index": 260.319,
         "u3_rate": 6.9,
-        "u6_rate": 12.1,
-        "cpi_index": 260.319
+        "u6_rate": 12.1
     },
     {
         "month_date": "2020-09-01",
         "avg_monthly_debt": 26945391194615.15,
+        "cpi_index": 259.997,
         "u3_rate": 7.8,
-        "u6_rate": 12.8,
-        "cpi_index": 259.997
+        "u6_rate": 12.8
     },
     {
         "month_date": "2020-08-01",
         "avg_monthly_debt": 26728835852386.44,
+        "cpi_index": 259.316,
         "u3_rate": 8.4,
-        "u6_rate": 14.2,
-        "cpi_index": 259.316
+        "u6_rate": 14.2
     },
     {
         "month_date": "2020-07-01",
         "avg_monthly_debt": 26524953451577.6,
+        "cpi_index": 258.352,
         "u3_rate": 10.2,
-        "u6_rate": 16.5,
-        "cpi_index": 258.352
+        "u6_rate": 16.5
     },
     {
         "month_date": "2020-06-01",
         "avg_monthly_debt": 26477240853124.76,
+        "cpi_index": 257.042,
         "u3_rate": 11.0,
-        "u6_rate": 18.0,
-        "cpi_index": 257.042
+        "u6_rate": 18.0
     },
     {
         "month_date": "2020-05-01",
         "avg_monthly_debt": 25746260186742.66,
+        "cpi_index": 255.802,
         "u3_rate": 13.2,
-        "u6_rate": 21.1,
-        "cpi_index": 255.802
+        "u6_rate": 21.1
     },
     {
         "month_date": "2020-04-01",
         "avg_monthly_debt": 24974171868164.35,
+        "cpi_index": 256.032,
         "u3_rate": 14.8,
-        "u6_rate": 22.9,
-        "cpi_index": 256.032
+        "u6_rate": 22.9
     },
     {
         "month_date": "2020-03-01",
         "avg_monthly_debt": 23686870812640.08,
+        "cpi_index": 258.076,
         "u3_rate": 4.4,
-        "u6_rate": 8.8,
-        "cpi_index": 258.076
+        "u6_rate": 8.8
     },
     {
         "month_date": "2020-02-01",
         "avg_monthly_debt": 23409959150243.63,
+        "cpi_index": 259.25,
         "u3_rate": 3.5,
-        "u6_rate": 7.0,
-        "cpi_index": 259.25
+        "u6_rate": 7.0
     },
     {
         "month_date": "2020-01-01",
         "avg_monthly_debt": 23223812882713.14,
+        "cpi_index": 259.127,
         "u3_rate": 3.6,
-        "u6_rate": 7.0,
-        "cpi_index": 259.127
+        "u6_rate": 7.0
     },
     {
         "month_date": "2019-12-01",
         "avg_monthly_debt": 23201380134806.73,
+        "cpi_index": 258.63,
         "u3_rate": 3.6,
-        "u6_rate": 6.8,
-        "cpi_index": 258.63
+        "u6_rate": 6.8
     },
     {
         "month_date": "2019-11-01",
         "avg_monthly_debt": 23076198934547.7,
+        "cpi_index": 257.879,
         "u3_rate": 3.6,
-        "u6_rate": 6.8,
-        "cpi_index": 257.879
+        "u6_rate": 6.8
     },
     {
         "month_date": "2019-10-01",
         "avg_monthly_debt": 23008409564494.99,
+        "cpi_index": 257.155,
         "u3_rate": 3.6,
-        "u6_rate": 6.9,
-        "cpi_index": 257.155
+        "u6_rate": 6.9
     },
     {
         "month_date": "2019-09-01",
         "avg_monthly_debt": 22719401753433.78,
+        "cpi_index": 256.43,
         "u3_rate": 3.5,
-        "u6_rate": 6.9,
-        "cpi_index": 256.43
+        "u6_rate": 6.9
     },
     {
         "month_date": "2019-08-01",
         "avg_monthly_debt": 22460466625952.37,
+        "cpi_index": 256.036,
         "u3_rate": 3.6,
-        "u6_rate": 7.2,
-        "cpi_index": 256.036
+        "u6_rate": 7.2
     },
     {
         "month_date": "2019-07-01",
         "avg_monthly_debt": 22022368854863.19,
+        "cpi_index": 255.802,
         "u3_rate": 3.7,
-        "u6_rate": 6.9,
-        "cpi_index": 255.802
+        "u6_rate": 6.9
     },
     {
         "month_date": "2019-06-01",
         "avg_monthly_debt": 22023282617075.45,
+        "cpi_index": 255.213,
         "u3_rate": 3.6,
-        "u6_rate": 7.2,
-        "cpi_index": 255.213
+        "u6_rate": 7.2
     },
     {
         "month_date": "2019-05-01",
         "avg_monthly_debt": 22026423883026.38,
+        "cpi_index": 255.296,
         "u3_rate": 3.6,
-        "u6_rate": 7.1,
-        "cpi_index": 255.296
+        "u6_rate": 7.1
     },
     {
         "month_date": "2019-04-01",
         "avg_monthly_debt": 22027668200019.47,
+        "cpi_index": 255.233,
         "u3_rate": 3.7,
-        "u6_rate": 7.4,
-        "cpi_index": 255.233
+        "u6_rate": 7.4
     },
     {
         "month_date": "2019-03-01",
         "avg_monthly_debt": 22027880157027.99,
+        "cpi_index": 254.277,
         "u3_rate": 3.8,
-        "u6_rate": 7.4,
-        "cpi_index": 254.277
+        "u6_rate": 7.4
     },
     {
         "month_date": "2019-02-01",
         "avg_monthly_debt": 22115526445599.07,
+        "cpi_index": 253.319,
         "u3_rate": 3.8,
-        "u6_rate": 7.2,
-        "cpi_index": 253.319
+        "u6_rate": 7.2
     },
     {
         "month_date": "2019-01-01",
         "avg_monthly_debt": 21982423036475.23,
+        "cpi_index": 252.561,
         "u3_rate": 4.0,
-        "u6_rate": 8.0,
-        "cpi_index": 252.561
+        "u6_rate": 8.0
     },
     {
         "month_date": "2018-12-01",
         "avg_monthly_debt": 21974095705790.55,
+        "cpi_index": 252.767,
         "u3_rate": 3.9,
-        "u6_rate": 7.6,
-        "cpi_index": 252.767
+        "u6_rate": 7.6
     },
     {
         "month_date": "2018-11-01",
         "avg_monthly_debt": 21850093880675.8,
+        "cpi_index": 252.594,
         "u3_rate": 3.8,
-        "u6_rate": 7.6,
-        "cpi_index": 252.594
+        "u6_rate": 7.6
     },
     {
         "month_date": "2018-10-01",
         "avg_monthly_debt": 21702369768174.47,
+        "cpi_index": 252.772,
         "u3_rate": 3.8,
-        "u6_rate": 7.5,
-        "cpi_index": 252.772
+        "u6_rate": 7.5
     },
     {
         "month_date": "2018-09-01",
         "avg_monthly_debt": 21516058183180.23,
+        "cpi_index": 252.182,
         "u3_rate": 3.7,
-        "u6_rate": 7.5,
-        "cpi_index": 252.182
+        "u6_rate": 7.5
     },
     {
         "month_date": "2018-08-01",
         "avg_monthly_debt": 21458849674105.03,
+        "cpi_index": 251.663,
         "u3_rate": 3.8,
-        "u6_rate": 7.4,
-        "cpi_index": 251.663
+        "u6_rate": 7.4
     },
     {
         "month_date": "2018-07-01",
         "avg_monthly_debt": 21313061060202.36,
+        "cpi_index": 251.214,
         "u3_rate": 3.8,
-        "u6_rate": 7.5,
-        "cpi_index": 251.214
+        "u6_rate": 7.5
     },
     {
         "month_date": "2018-06-01",
         "avg_monthly_debt": 21195069635322.81,
+        "cpi_index": 251.018,
         "u3_rate": 4.0,
-        "u6_rate": 7.8,
-        "cpi_index": 251.018
+        "u6_rate": 7.8
     },
     {
         "month_date": "2018-05-01",
         "avg_monthly_debt": 21145215185726.27,
+        "cpi_index": 250.792,
         "u3_rate": 3.8,
-        "u6_rate": 7.8,
-        "cpi_index": 250.792
+        "u6_rate": 7.8
     },
     {
         "month_date": "2018-04-01",
         "avg_monthly_debt": 21068200197433.39,
+        "cpi_index": 250.227,
         "u3_rate": 4.0,
-        "u6_rate": 7.9,
-        "cpi_index": 250.227
+        "u6_rate": 7.9
     },
     {
         "month_date": "2018-03-01",
         "avg_monthly_debt": 21089642954195.85,
+        "cpi_index": 249.577,
         "u3_rate": 4.0,
-        "u6_rate": 8.0,
-        "cpi_index": 249.577
+        "u6_rate": 8.0
     },
     {
         "month_date": "2018-02-01",
         "avg_monthly_debt": 20855671542905.95,
+        "cpi_index": 249.529,
         "u3_rate": 4.1,
-        "u6_rate": 8.1,
-        "cpi_index": 249.529
+        "u6_rate": 8.1
     },
     {
         "month_date": "2018-01-01",
         "avg_monthly_debt": 20493729921939.72,
+        "cpi_index": 248.859,
         "u3_rate": 4.0,
-        "u6_rate": 8.0,
-        "cpi_index": 248.859
+        "u6_rate": 8.0
     },
     {
         "month_date": "2017-12-01",
         "avg_monthly_debt": 20492746546193.75,
+        "cpi_index": 247.805,
         "u3_rate": 4.1,
-        "u6_rate": 8.1,
-        "cpi_index": 247.805
+        "u6_rate": 8.1
     },
     {
         "month_date": "2017-11-01",
         "avg_monthly_debt": 20590391942312.26,
+        "cpi_index": 247.284,
         "u3_rate": 4.2,
-        "u6_rate": 8.0,
-        "cpi_index": 247.284
+        "u6_rate": 8.0
     },
     {
         "month_date": "2017-10-01",
         "avg_monthly_debt": 20442473549889.39,
+        "cpi_index": 246.626,
         "u3_rate": 4.2,
-        "u6_rate": 8.1,
-        "cpi_index": 246.626
+        "u6_rate": 8.1
     },
     {
         "month_date": "2017-09-01",
         "avg_monthly_debt": 20244900016053.51,
+        "cpi_index": 246.435,
         "u3_rate": 4.3,
-        "u6_rate": 8.3,
-        "cpi_index": 246.435
+        "u6_rate": 8.3
     },
     {
         "month_date": "2017-08-01",
         "avg_monthly_debt": 19844533441924.39,
+        "cpi_index": 245.183,
         "u3_rate": 4.4,
-        "u6_rate": 8.6,
-        "cpi_index": 245.183
+        "u6_rate": 8.6
     },
     {
         "month_date": "2017-07-01",
         "avg_monthly_debt": 19844908989217.09,
+        "cpi_index": 244.243,
         "u3_rate": 4.3,
-        "u6_rate": 8.5,
-        "cpi_index": 244.243
+        "u6_rate": 8.5
     },
     {
         "month_date": "2017-06-01",
         "avg_monthly_debt": 19844554182651.33,
+        "cpi_index": 244.163,
         "u3_rate": 4.3,
-        "u6_rate": 8.5,
-        "cpi_index": 244.163
+        "u6_rate": 8.5
     },
     {
         "month_date": "2017-05-01",
         "avg_monthly_debt": 19845941916894.67,
+        "cpi_index": 244.004,
         "u3_rate": 4.4,
-        "u6_rate": 8.5,
-        "cpi_index": 244.004
+        "u6_rate": 8.5
     },
     {
         "month_date": "2017-04-01",
         "avg_monthly_debt": 19846129308635.72,
+        "cpi_index": 244.193,
         "u3_rate": 4.4,
-        "u6_rate": 8.6,
-        "cpi_index": 244.193
+        "u6_rate": 8.6
     },
     {
         "month_date": "2017-03-01",
         "avg_monthly_debt": 19846420062676.87,
+        "cpi_index": 243.892,
         "u3_rate": 4.4,
-        "u6_rate": 8.8,
-        "cpi_index": 243.892
+        "u6_rate": 8.8
     },
     {
         "month_date": "2017-02-01",
         "avg_monthly_debt": 19959593604841.58,
+        "cpi_index": 244.006,
         "u3_rate": 4.6,
-        "u6_rate": 9.0,
-        "cpi_index": 244.006
+        "u6_rate": 9.0
     },
     {
         "month_date": "2017-01-01",
         "avg_monthly_debt": 19937261314503.29,
+        "cpi_index": 243.618,
         "u3_rate": 4.7,
-        "u6_rate": 9.2,
-        "cpi_index": 243.618
+        "u6_rate": 9.2
     },
     {
         "month_date": "2016-12-01",
         "avg_monthly_debt": 19976826951047.8,
+        "cpi_index": 242.637,
         "u3_rate": 4.7,
-        "u6_rate": 9.2,
-        "cpi_index": 242.637
+        "u6_rate": 9.2
     },
     {
         "month_date": "2016-11-01",
         "avg_monthly_debt": 19948064697245.75,
+        "cpi_index": 242.026,
         "u3_rate": 4.7,
-        "u6_rate": 9.4,
-        "cpi_index": 242.026
+        "u6_rate": 9.4
     },
     {
         "month_date": "2016-10-01",
         "avg_monthly_debt": 19805715214641.75,
+        "cpi_index": 241.741,
         "u3_rate": 4.9,
-        "u6_rate": 9.6,
-        "cpi_index": 241.741
+        "u6_rate": 9.6
     },
     {
         "month_date": "2016-09-01",
         "avg_monthly_debt": 19573444713936.79,
+        "cpi_index": 241.176,
         "u3_rate": 5.0,
-        "u6_rate": 9.7,
-        "cpi_index": 241.176
+        "u6_rate": 9.7
     },
     {
         "month_date": "2016-08-01",
         "avg_monthly_debt": 19510296242765.66,
+        "cpi_index": 240.545,
         "u3_rate": 4.9,
-        "u6_rate": 9.6,
-        "cpi_index": 240.545
+        "u6_rate": 9.6
     },
     {
         "month_date": "2016-07-01",
         "avg_monthly_debt": 19427694579786.64,
+        "cpi_index": 240.101,
         "u3_rate": 4.8,
-        "u6_rate": 9.6,
-        "cpi_index": 240.101
+        "u6_rate": 9.6
     },
     {
         "month_date": "2016-06-01",
         "avg_monthly_debt": 19381591140792.22,
+        "cpi_index": 240.222,
         "u3_rate": 4.9,
-        "u6_rate": 9.5,
-        "cpi_index": 240.222
+        "u6_rate": 9.5
     },
     {
         "month_date": "2016-05-01",
         "avg_monthly_debt": 19265451572330.71,
+        "cpi_index": 239.557,
         "u3_rate": 4.8,
-        "u6_rate": 9.9,
-        "cpi_index": 239.557
+        "u6_rate": 9.9
     },
     {
         "month_date": "2016-04-01",
         "avg_monthly_debt": 19187387483983.37,
+        "cpi_index": 238.992,
         "u3_rate": 5.1,
-        "u6_rate": 9.9,
-        "cpi_index": 238.992
+        "u6_rate": 9.9
     },
     {
         "month_date": "2016-03-01",
         "avg_monthly_debt": 19264938619643.07,
+        "cpi_index": 238.08,
         "u3_rate": 5.0,
-        "u6_rate": 9.8,
-        "cpi_index": 238.08
+        "u6_rate": 9.8
     },
     {
         "month_date": "2016-02-01",
         "avg_monthly_debt": 19125455057425.8,
+        "cpi_index": 237.336,
         "u3_rate": 4.9,
-        "u6_rate": 9.6,
-        "cpi_index": 237.336
+        "u6_rate": 9.6
     },
     {
         "month_date": "2016-01-01",
         "avg_monthly_debt": 19012827698417.93,
+        "cpi_index": 237.652,
         "u3_rate": 4.8,
-        "u6_rate": 9.7,
-        "cpi_index": 237.652
+        "u6_rate": 9.7
     },
     {
         "month_date": "2015-12-01",
         "avg_monthly_debt": 18922179009420.89,
+        "cpi_index": 237.761,
         "u3_rate": 5.0,
-        "u6_rate": 9.9,
-        "cpi_index": 237.761
+        "u6_rate": 9.9
     },
     {
         "month_date": "2015-11-01",
         "avg_monthly_debt": 18827322966908.8,
+        "cpi_index": 238.017,
         "u3_rate": 5.1,
-        "u6_rate": 10.0,
-        "cpi_index": 238.017
+        "u6_rate": 10.0
     },
     {
         "month_date": "2015-10-01",
         "avg_monthly_debt": 18152981685747.52,
+        "cpi_index": 237.733,
         "u3_rate": 5.0,
-        "u6_rate": 9.8,
-        "cpi_index": 237.733
+        "u6_rate": 9.8
     },
     {
         "month_date": "2015-09-01",
         "avg_monthly_debt": 18150617666484.33,
+        "cpi_index": 237.498,
         "u3_rate": 5.0,
-        "u6_rate": 10.0,
-        "cpi_index": 237.498
+        "u6_rate": 10.0
     },
     {
         "month_date": "2015-08-01",
         "avg_monthly_debt": 18151150179588.05,
+        "cpi_index": 238.033,
         "u3_rate": 5.1,
-        "u6_rate": 10.2,
-        "cpi_index": 238.033
+        "u6_rate": 10.2
     },
     {
         "month_date": "2015-07-01",
         "avg_monthly_debt": 18151322549156.91,
+        "cpi_index": 238.034,
         "u3_rate": 5.2,
-        "u6_rate": 10.3,
-        "cpi_index": 238.034
+        "u6_rate": 10.3
     },
     {
         "month_date": "2015-06-01",
         "avg_monthly_debt": 18151997510872.44,
+        "cpi_index": 237.657,
         "u3_rate": 5.3,
-        "u6_rate": 10.4,
-        "cpi_index": 237.657
+        "u6_rate": 10.4
     },
     {
         "month_date": "2015-05-01",
         "avg_monthly_debt": 18152851678150.27,
+        "cpi_index": 237.001,
         "u3_rate": 5.6,
-        "u6_rate": 10.9,
-        "cpi_index": 237.001
+        "u6_rate": 10.9
     },
     {
         "month_date": "2015-04-01",
         "avg_monthly_debt": 18152560126787.71,
+        "cpi_index": 236.222,
         "u3_rate": 5.4,
-        "u6_rate": 10.9,
-        "cpi_index": 236.222
+        "u6_rate": 10.9
     },
     {
         "month_date": "2015-03-01",
         "avg_monthly_debt": 18152056197489.27,
+        "cpi_index": 235.976,
         "u3_rate": 5.4,
-        "u6_rate": 10.9,
-        "cpi_index": 235.976
+        "u6_rate": 10.9
     },
     {
         "month_date": "2015-02-01",
         "avg_monthly_debt": 18155853840783.67,
+        "cpi_index": 235.342,
         "u3_rate": 5.5,
-        "u6_rate": 10.9,
-        "cpi_index": 235.342
+        "u6_rate": 10.9
     },
     {
         "month_date": "2015-01-01",
         "avg_monthly_debt": 18082294157510.2,
+        "cpi_index": 234.747,
         "u3_rate": 5.7,
-        "u6_rate": 11.2,
-        "cpi_index": 234.747
+        "u6_rate": 11.2
     },
     {
         "month_date": "2014-12-01",
         "avg_monthly_debt": 18141444135563.3,
+        "cpi_index": 236.252,
         "u3_rate": 5.6,
-        "u6_rate": 11.2,
-        "cpi_index": 236.252
+        "u6_rate": 11.2
     },
     {
         "month_date": "2014-11-01",
         "avg_monthly_debt": 18005549328561.45,
+        "cpi_index": 236.983,
         "u3_rate": 5.8,
-        "u6_rate": 11.4,
-        "cpi_index": 236.983
+        "u6_rate": 11.4
     },
     {
         "month_date": "2014-10-01",
         "avg_monthly_debt": 17937160394872.6,
+        "cpi_index": 237.43,
         "u3_rate": 5.7,
-        "u6_rate": 11.5,
-        "cpi_index": 237.43
+        "u6_rate": 11.5
     },
     {
         "month_date": "2014-09-01",
         "avg_monthly_debt": 17824071380733.82,
+        "cpi_index": 237.477,
         "u3_rate": 5.9,
-        "u6_rate": 11.7,
-        "cpi_index": 237.477
+        "u6_rate": 11.7
     },
     {
         "month_date": "2014-08-01",
         "avg_monthly_debt": 17749172392528.1,
+        "cpi_index": 237.46,
         "u3_rate": 6.1,
-        "u6_rate": 12.0,
-        "cpi_index": 237.46
+        "u6_rate": 12.0
     },
     {
         "month_date": "2014-07-01",
         "avg_monthly_debt": 17687136723410.59,
+        "cpi_index": 237.498,
         "u3_rate": 6.2,
-        "u6_rate": 12.1,
-        "cpi_index": 237.498
+        "u6_rate": 12.1
     },
     {
         "month_date": "2014-06-01",
         "avg_monthly_debt": 17632606234365.92,
+        "cpi_index": 237.231,
         "u3_rate": 6.1,
-        "u6_rate": 12.0,
-        "cpi_index": 237.231
+        "u6_rate": 12.0
     },
     {
         "month_date": "2014-05-01",
         "avg_monthly_debt": 17516958495107.78,
+        "cpi_index": 236.918,
         "u3_rate": 6.3,
-        "u6_rate": 12.3,
-        "cpi_index": 236.918
+        "u6_rate": 12.3
     },
     {
         "month_date": "2014-04-01",
         "avg_monthly_debt": 17508437127661.62,
+        "cpi_index": 236.468,
         "u3_rate": 6.2,
-        "u6_rate": 12.3,
-        "cpi_index": 236.468
+        "u6_rate": 12.3
     },
     {
         "month_date": "2014-03-01",
         "avg_monthly_debt": 17601227291213.89,
+        "cpi_index": 236.028,
         "u3_rate": 6.7,
-        "u6_rate": 12.7,
-        "cpi_index": 236.028
+        "u6_rate": 12.7
     },
     {
         "month_date": "2014-02-01",
         "avg_monthly_debt": 17463228562652.94,
+        "cpi_index": 235.547,
         "u3_rate": 6.7,
-        "u6_rate": 12.6,
-        "cpi_index": 235.547
+        "u6_rate": 12.6
     },
     {
         "month_date": "2014-01-01",
         "avg_monthly_debt": 17293019654983.61,
+        "cpi_index": 235.288,
         "u3_rate": 6.6,
-        "u6_rate": 12.6,
-        "cpi_index": 235.288
+        "u6_rate": 12.6
     },
     {
         "month_date": "2013-12-01",
         "avg_monthly_debt": 17351970784950.15,
+        "cpi_index": 234.719,
         "u3_rate": 6.7,
-        "u6_rate": 13.1,
-        "cpi_index": 234.719
+        "u6_rate": 13.1
     },
     {
         "month_date": "2013-11-01",
         "avg_monthly_debt": 17217151645105.86,
+        "cpi_index": 234.1,
         "u3_rate": 6.9,
-        "u6_rate": 13.1,
-        "cpi_index": 234.1
+        "u6_rate": 13.1
     },
     {
         "month_date": "2013-10-01",
         "avg_monthly_debt": 17156117102204.49,
+        "cpi_index": 233.669,
         "u3_rate": 7.2,
-        "u6_rate": 13.6,
-        "cpi_index": 233.669
+        "u6_rate": 13.6
     },
     {
         "month_date": "2013-09-01",
         "avg_monthly_debt": 16738183526697.32,
+        "cpi_index": 233.544,
         "u3_rate": 7.2,
-        "u6_rate": 13.5,
-        "cpi_index": 233.544
+        "u6_rate": 13.5
     },
     {
         "month_date": "2013-08-01",
         "avg_monthly_debt": 16738649841392.7,
+        "cpi_index": 233.456,
         "u3_rate": 7.2,
-        "u6_rate": 13.6,
-        "cpi_index": 233.456
+        "u6_rate": 13.6
     },
     {
         "month_date": "2013-07-01",
         "avg_monthly_debt": 16738599194294.87,
+        "cpi_index": 232.9,
         "u3_rate": 7.3,
-        "u6_rate": 13.8,
-        "cpi_index": 232.9
+        "u6_rate": 13.8
     },
     {
         "month_date": "2013-06-01",
         "avg_monthly_debt": 16738320054489.27,
+        "cpi_index": 232.445,
         "u3_rate": 7.5,
-        "u6_rate": 14.2,
-        "cpi_index": 232.445
+        "u6_rate": 14.2
     },
     {
         "month_date": "2013-05-01",
         "avg_monthly_debt": 16738821943986.12,
+        "cpi_index": 231.893,
         "u3_rate": 7.5,
-        "u6_rate": 13.9,
-        "cpi_index": 231.893
+        "u6_rate": 13.9
     },
     {
         "month_date": "2013-04-01",
         "avg_monthly_debt": 16828845497183.9,
+        "cpi_index": 231.797,
         "u3_rate": 7.6,
-        "u6_rate": 14.0,
-        "cpi_index": 231.797
+        "u6_rate": 14.0
     },
     {
         "month_date": "2013-03-01",
         "avg_monthly_debt": 16771379006760.38,
+        "cpi_index": 232.282,
         "u3_rate": 7.5,
-        "u6_rate": 13.9,
-        "cpi_index": 232.282
+        "u6_rate": 13.9
     },
     {
         "month_date": "2013-02-01",
         "avg_monthly_debt": 16687289180215.37,
+        "cpi_index": 232.937,
         "u3_rate": 7.7,
-        "u6_rate": 14.3,
-        "cpi_index": 232.937
+        "u6_rate": 14.3
     },
     {
         "month_date": "2013-01-01",
         "avg_monthly_debt": 16433791850294.04,
+        "cpi_index": 231.679,
         "u3_rate": 8.0,
-        "u6_rate": 14.5,
-        "cpi_index": 231.679
+        "u6_rate": 14.5
     },
     {
         "month_date": "2012-12-01",
         "avg_monthly_debt": 16432730050569.12,
+        "cpi_index": 231.221,
         "u3_rate": 7.9,
-        "u6_rate": 14.4,
-        "cpi_index": 231.221
+        "u6_rate": 14.4
     },
     {
         "month_date": "2012-11-01",
         "avg_monthly_debt": 16369548799604.93,
+        "cpi_index": 231.249,
         "u3_rate": 7.7,
-        "u6_rate": 14.4,
-        "cpi_index": 231.249
+        "u6_rate": 14.4
     },
     {
         "month_date": "2012-10-01",
         "avg_monthly_debt": 16261470510720.74,
+        "cpi_index": 231.638,
         "u3_rate": 7.8,
-        "u6_rate": 14.4,
-        "cpi_index": 231.638
+        "u6_rate": 14.4
     },
     {
         "month_date": "2012-09-01",
         "avg_monthly_debt": 16066241407385.89,
+        "cpi_index": 231.015,
         "u3_rate": 7.8,
-        "u6_rate": 14.8,
-        "cpi_index": 231.015
+        "u6_rate": 14.8
     },
     {
         "month_date": "2012-08-01",
         "avg_monthly_debt": 16015769788215.8,
+        "cpi_index": 229.918,
         "u3_rate": 8.1,
-        "u6_rate": 14.6,
-        "cpi_index": 229.918
+        "u6_rate": 14.6
     },
     {
         "month_date": "2012-07-01",
         "avg_monthly_debt": 15933234637493.55,
+        "cpi_index": 228.59,
         "u3_rate": 8.2,
-        "u6_rate": 14.7,
-        "cpi_index": 228.59
+        "u6_rate": 14.7
     },
     {
         "month_date": "2012-06-01",
         "avg_monthly_debt": 15856367214324.44,
+        "cpi_index": 228.524,
         "u3_rate": 8.2,
-        "u6_rate": 14.7,
-        "cpi_index": 228.524
+        "u6_rate": 14.7
     },
     {
         "month_date": "2012-05-01",
         "avg_monthly_debt": 15770685085364.14,
+        "cpi_index": 228.713,
         "u3_rate": 8.2,
-        "u6_rate": 14.8,
-        "cpi_index": 228.713
+        "u6_rate": 14.8
     },
     {
         "month_date": "2012-04-01",
         "avg_monthly_debt": 15692368067305.23,
+        "cpi_index": 229.187,
         "u3_rate": 8.2,
-        "u6_rate": 14.7,
-        "cpi_index": 229.187
+        "u6_rate": 14.7
     },
     {
         "month_date": "2012-03-01",
         "avg_monthly_debt": 15582078681188.69,
+        "cpi_index": 228.807,
         "u3_rate": 8.2,
-        "u6_rate": 14.6,
-        "cpi_index": 228.807
+        "u6_rate": 14.6
     },
     {
         "month_date": "2012-02-01",
         "avg_monthly_debt": 15488891296248.02,
+        "cpi_index": 228.329,
         "u3_rate": 8.3,
-        "u6_rate": 15.0,
-        "cpi_index": 228.329
+        "u6_rate": 15.0
     },
     {
         "month_date": "2012-01-01",
         "avg_monthly_debt": 15356140493616.06,
+        "cpi_index": 227.842,
         "u3_rate": 8.3,
-        "u6_rate": 15.1,
-        "cpi_index": 227.842
+        "u6_rate": 15.1
     },
     {
         "month_date": "2011-12-01",
         "avg_monthly_debt": 15222940045451.09,
+        "cpi_index": 227.223,
         "u3_rate": 8.5,
-        "u6_rate": 15.2,
-        "cpi_index": 227.223
+        "u6_rate": 15.2
     },
     {
         "month_date": "2011-11-01",
         "avg_monthly_debt": 15110498560876.77,
+        "cpi_index": 227.169,
         "u3_rate": 8.6,
-        "u6_rate": 15.6,
-        "cpi_index": 227.169
+        "u6_rate": 15.6
     },
     {
         "month_date": "2011-10-01",
         "avg_monthly_debt": 14993709044140.78,
+        "cpi_index": 226.75,
         "u3_rate": 8.8,
-        "u6_rate": 15.8,
-        "cpi_index": 226.75
+        "u6_rate": 15.8
     },
     {
         "month_date": "2011-09-01",
         "avg_monthly_debt": 14790340328557.15,
+        "cpi_index": 226.597,
         "u3_rate": 9.0,
-        "u6_rate": 16.4,
-        "cpi_index": 226.597
+        "u6_rate": 16.4
     },
     {
         "month_date": "2011-08-01",
         "avg_monthly_debt": 14684292994743.93,
+        "cpi_index": 226.106,
         "u3_rate": 9.0,
-        "u6_rate": 16.1,
-        "cpi_index": 226.106
+        "u6_rate": 16.1
     },
     {
         "month_date": "2011-07-01",
         "avg_monthly_debt": 14342369286195.61,
+        "cpi_index": 225.395,
         "u3_rate": 9.0,
-        "u6_rate": 15.9,
-        "cpi_index": 225.395
+        "u6_rate": 15.9
     },
     {
         "month_date": "2011-06-01",
         "avg_monthly_debt": 14343087640008.4,
+        "cpi_index": 224.806,
         "u3_rate": 9.1,
-        "u6_rate": 16.1,
-        "cpi_index": 224.806
+        "u6_rate": 16.1
     },
     {
         "month_date": "2011-05-01",
         "avg_monthly_debt": 14344668281211.01,
+        "cpi_index": 224.806,
         "u3_rate": 9.0,
-        "u6_rate": 15.9,
-        "cpi_index": 224.806
+        "u6_rate": 15.9
     },
     {
         "month_date": "2011-04-01",
         "avg_monthly_debt": 14287630052323.12,
+        "cpi_index": 224.093,
         "u3_rate": 9.1,
-        "u6_rate": 16.1,
-        "cpi_index": 224.093
+        "u6_rate": 16.1
     },
     {
         "month_date": "2011-03-01",
         "avg_monthly_debt": 14270114530800.38,
+        "cpi_index": 223.046,
         "u3_rate": 9.0,
-        "u6_rate": 16.0,
-        "cpi_index": 223.046
+        "u6_rate": 16.0
     },
     {
         "month_date": "2011-02-01",
         "avg_monthly_debt": 14194764339462.64,
+        "cpi_index": 221.898,
         "u3_rate": 9.0,
-        "u6_rate": 16.0,
-        "cpi_index": 221.898
+        "u6_rate": 16.0
     },
     {
         "month_date": "2011-01-01",
         "avg_monthly_debt": 14131051056010.84,
+        "cpi_index": 221.187,
         "u3_rate": 9.1,
-        "u6_rate": 16.1,
-        "cpi_index": 221.187
+        "u6_rate": 16.1
     },
     {
         "month_date": "2010-12-01",
         "avg_monthly_debt": 14025215218708.52,
+        "cpi_index": 220.472,
         "u3_rate": 9.3,
-        "u6_rate": 16.6,
-        "cpi_index": 220.472
+        "u6_rate": 16.6
     },
     {
         "month_date": "2010-11-01",
         "avg_monthly_debt": 13860773759018.43,
+        "cpi_index": 219.59,
         "u3_rate": 9.8,
-        "u6_rate": 16.9,
-        "cpi_index": 219.59
+        "u6_rate": 16.9
     },
     {
         "month_date": "2010-10-01",
         "avg_monthly_debt": 13668825497341.36,
+        "cpi_index": 219.035,
         "u3_rate": 9.4,
-        "u6_rate": 16.6,
-        "cpi_index": 219.035
+        "u6_rate": 16.6
     },
     {
         "month_date": "2010-09-01",
         "avg_monthly_debt": 13561623030891.79,
+        "cpi_index": 218.275,
         "u3_rate": 9.5,
-        "u6_rate": 16.9,
-        "cpi_index": 218.275
+        "u6_rate": 16.9
     },
     {
         "month_date": "2010-08-01",
         "avg_monthly_debt": 13449652537035.05,
+        "cpi_index": 217.923,
         "u3_rate": 9.5,
-        "u6_rate": 16.5,
-        "cpi_index": 217.923
+        "u6_rate": 16.5
     },
     {
         "month_date": "2010-07-01",
         "avg_monthly_debt": 13237726976890.03,
+        "cpi_index": 217.605,
         "u3_rate": 9.4,
-        "u6_rate": 16.4,
-        "cpi_index": 217.605
+        "u6_rate": 16.4
     },
     {
         "month_date": "2010-06-01",
         "avg_monthly_debt": 13203473753968.1,
+        "cpi_index": 217.199,
         "u3_rate": 9.4,
-        "u6_rate": 16.4,
-        "cpi_index": 217.199
+        "u6_rate": 16.4
     },
     {
         "month_date": "2010-05-01",
         "avg_monthly_debt": 12992539130957.22,
+        "cpi_index": 217.29,
         "u3_rate": 9.6,
-        "u6_rate": 16.7,
-        "cpi_index": 217.29
+        "u6_rate": 16.7
     },
     {
         "month_date": "2010-04-01",
         "avg_monthly_debt": 12948738915856.86,
+        "cpi_index": 217.403,
         "u3_rate": 9.9,
-        "u6_rate": 17.2,
-        "cpi_index": 217.403
+        "u6_rate": 17.2
     },
     {
         "month_date": "2010-03-01",
         "avg_monthly_debt": 12773123096139.43,
+        "cpi_index": 217.353,
         "u3_rate": 9.9,
-        "u6_rate": 17.1,
-        "cpi_index": 217.353
+        "u6_rate": 17.1
     },
     {
         "month_date": "2010-02-01",
         "avg_monthly_debt": 12440068020714.47,
+        "cpi_index": 217.281,
         "u3_rate": 9.8,
-        "u6_rate": 17.0,
-        "cpi_index": 217.281
+        "u6_rate": 17.0
     },
     {
         "month_date": "2010-01-01",
         "avg_monthly_debt": 12278635997966.88,
+        "cpi_index": 217.488,
         "u3_rate": 9.8,
-        "u6_rate": 16.6,
-        "cpi_index": 217.488
+        "u6_rate": 16.6
     },
     {
         "month_date": "2009-12-01",
         "avg_monthly_debt": 12311349677512.03,
+        "cpi_index": 217.347,
         "u3_rate": 9.9,
-        "u6_rate": 17.2,
-        "cpi_index": 217.347
+        "u6_rate": 17.2
     },
     {
         "month_date": "2009-11-01",
         "avg_monthly_debt": 12113047538115.42,
+        "cpi_index": 217.234,
         "u3_rate": 9.9,
-        "u6_rate": 17.1,
-        "cpi_index": 217.234
+        "u6_rate": 17.1
     },
     {
         "month_date": "2009-10-01",
         "avg_monthly_debt": 11893091028361.01,
+        "cpi_index": 216.509,
         "u3_rate": 10.0,
-        "u6_rate": 17.1,
-        "cpi_index": 216.509
+        "u6_rate": 17.1
     },
     {
         "month_date": "2009-09-01",
         "avg_monthly_debt": 11909829003511.75,
+        "cpi_index": 215.861,
         "u3_rate": 9.8,
-        "u6_rate": 16.7,
-        "cpi_index": 215.861
+        "u6_rate": 16.7
     },
     {
         "month_date": "2009-08-01",
         "avg_monthly_debt": 11812870150873.53,
+        "cpi_index": 215.445,
         "u3_rate": 9.6,
-        "u6_rate": 16.7,
-        "cpi_index": 215.445
+        "u6_rate": 16.7
     },
     {
         "month_date": "2009-07-01",
         "avg_monthly_debt": 11669251349504.65,
+        "cpi_index": 214.726,
         "u3_rate": 9.5,
-        "u6_rate": 16.4,
-        "cpi_index": 214.726
+        "u6_rate": 16.4
     },
     {
         "month_date": "2009-06-01",
         "avg_monthly_debt": 11545275346431.39,
+        "cpi_index": 214.79,
         "u3_rate": 9.5,
-        "u6_rate": 16.5,
-        "cpi_index": 214.79
+        "u6_rate": 16.5
     },
     {
         "month_date": "2009-05-01",
         "avg_monthly_debt": 11321599905356.4,
+        "cpi_index": 213.022,
         "u3_rate": 9.4,
-        "u6_rate": 16.5,
-        "cpi_index": 213.022
+        "u6_rate": 16.5
     },
     {
         "month_date": "2009-04-01",
         "avg_monthly_debt": 11238592141958.64,
+        "cpi_index": 212.709,
         "u3_rate": 9.0,
-        "u6_rate": 15.9,
-        "cpi_index": 212.709
+        "u6_rate": 15.9
     },
     {
         "month_date": "2009-03-01",
         "avg_monthly_debt": 11126941485713.37,
+        "cpi_index": 212.495,
         "u3_rate": 8.7,
-        "u6_rate": 15.8,
-        "cpi_index": 212.495
+        "u6_rate": 15.8
     },
     {
         "month_date": "2009-02-01",
         "avg_monthly_debt": 10877144501237.52,
+        "cpi_index": 212.705,
         "u3_rate": 8.3,
-        "u6_rate": 15.1,
-        "cpi_index": 212.705
+        "u6_rate": 15.1
     },
     {
         "month_date": "2009-01-01",
         "avg_monthly_debt": 10632005246736.97,
+        "cpi_index": 211.933,
         "u3_rate": 7.8,
-        "u6_rate": 14.1,
-        "cpi_index": 211.933
+        "u6_rate": 14.1
     },
     {
         "month_date": "2008-12-01",
         "avg_monthly_debt": 10699804864612.13,
+        "cpi_index": 211.398,
         "u3_rate": 7.3,
-        "u6_rate": 13.6,
-        "cpi_index": 211.398
+        "u6_rate": 13.6
     },
     {
         "month_date": "2008-11-01",
         "avg_monthly_debt": 10661174903807.68,
+        "cpi_index": 213.153,
         "u3_rate": 6.8,
-        "u6_rate": 12.7,
-        "cpi_index": 213.153
+        "u6_rate": 12.7
     },
     {
         "month_date": "2008-10-01",
         "avg_monthly_debt": 10574094462968.23,
+        "cpi_index": 216.995,
         "u3_rate": 6.5,
-        "u6_rate": 11.8,
-        "cpi_index": 216.995
+        "u6_rate": 11.8
     },
     {
         "month_date": "2008-09-01",
         "avg_monthly_debt": 10024724896912.49,
+        "cpi_index": 218.877,
         "u3_rate": 6.1,
-        "u6_rate": 11.1,
-        "cpi_index": 218.877
+        "u6_rate": 11.1
     },
     {
         "month_date": "2008-08-01",
         "avg_monthly_debt": 9645725555640.02,
+        "cpi_index": 218.69,
         "u3_rate": 6.1,
-        "u6_rate": 10.8,
-        "cpi_index": 218.69
+        "u6_rate": 10.8
     },
     {
         "month_date": "2008-07-01",
         "avg_monthly_debt": 9585479639200.33,
+        "cpi_index": 219.016,
         "u3_rate": 5.8,
-        "u6_rate": 10.5,
-        "cpi_index": 219.016
+        "u6_rate": 10.5
     },
     {
         "month_date": "2008-06-01",
         "avg_monthly_debt": 9492006123003.8,
+        "cpi_index": 217.463,
         "u3_rate": 5.6,
-        "u6_rate": 10.0,
-        "cpi_index": 217.463
+        "u6_rate": 10.0
     },
     {
         "month_date": "2008-05-01",
         "avg_monthly_debt": 9388666879582.79,
+        "cpi_index": 215.208,
         "u3_rate": 5.4,
-        "u6_rate": 9.7,
-        "cpi_index": 215.208
+        "u6_rate": 9.7
     },
     {
         "month_date": "2008-04-01",
         "avg_monthly_debt": 9377557217133.44,
+        "cpi_index": 213.942,
         "u3_rate": 5.0,
-        "u6_rate": 9.2,
-        "cpi_index": 213.942
+        "u6_rate": 9.2
     },
     {
         "month_date": "2008-03-01",
         "avg_monthly_debt": 9437594138091.39,
+        "cpi_index": 213.448,
         "u3_rate": 5.1,
-        "u6_rate": 9.1,
-        "cpi_index": 213.448
+        "u6_rate": 9.1
     },
     {
         "month_date": "2008-02-01",
         "avg_monthly_debt": 9358051423747.64,
+        "cpi_index": 212.687,
         "u3_rate": 4.9,
-        "u6_rate": 9.0,
-        "cpi_index": 212.687
+        "u6_rate": 9.0
     },
     {
         "month_date": "2008-01-01",
         "avg_monthly_debt": 9238008288942.11,
+        "cpi_index": 212.174,
         "u3_rate": 5.0,
-        "u6_rate": 9.1,
-        "cpi_index": 212.174
+        "u6_rate": 9.1
     }
 ]

@@ -2,14 +2,14 @@
     {
         "month_date": "2026-06-01",
         "avg_monthly_debt": 39232150577283.87,
-        "cpi_index": 332.407,
-        "u3_rate": 4.3,
-        "u6_rate": 8.1
+        "cpi_index": null,
+        "u3_rate": null,
+        "u6_rate": null
     },
     {
         "month_date": "2026-05-01",
         "avg_monthly_debt": 39207759598302.62,
-        "cpi_index": 332.407,
+        "cpi_index": null,
         "u3_rate": 4.3,
         "u6_rate": 8.1
     },
@@ -58,9 +58,9 @@
     {
         "month_date": "2025-10-01",
         "avg_monthly_debt": 38040093786521.02,
-        "cpi_index": 324.245,
-        "u3_rate": 4.4,
-        "u6_rate": 8.1
+        "cpi_index": null,
+        "u3_rate": null,
+        "u6_rate": null
     },
     {
         "month_date": "2025-09-01",

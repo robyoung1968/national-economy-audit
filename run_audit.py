@@ -37,7 +37,7 @@ if not debt_map or not cpi_data or not u3_data or not u6_data:
     print("Aborting run to protect historical database integrity.")
     exit(1) # Force GitHub Actions to fail loudly so you get an email notification
 
-# --- REVISED HISTORICAL PROCESSING LOOP ---
+# --- REVISED HISTORICAL PROCESSING LOOP (EXPLICIT NULLS) ---
 
 # 1. Dynamically gather every unique YYYY-MM present across all datasets
 all_months = set()
@@ -46,40 +46,33 @@ all_months.update(obs['date'][:7] for obs in cpi_data)
 all_months.update(obs['date'][:7] for obs in u3_data)
 all_months.update(obs['date'][:7] for obs in u6_data)
 
-# Sort chronologically so we can reliably carry forward baseline variables 
+# Sort chronologically
 sorted_months = sorted(list(all_months))
-
-# Initialize state trackers for carry-forward fallback logic
-last_known_debt = 0.0
-last_known_cpi = 0.0
-last_known_u3 = 0.0
-last_known_u6 = 0.0
 
 economy_data = []
 
 # Loop sequentially to build out the true telemetry timeline matrices
 for month_key in sorted_months:
-    # Match observations for the current loop month or retain last known value
+    # Match observations for the current loop month
     cpi_match = next((d for d in cpi_data if d['date'][:7] == month_key), None)
     u3_match = next((d for d in u3_data if d['date'][:7] == month_key), None)
     u6_match = next((d for d in u6_data if d['date'][:7] == month_key), None)
     
-    # Update state trackers if data exists, otherwise fall back to previous month's rate
-    if month_key in debt_map: last_known_debt = debt_map[month_key]
-    if cpi_match:            last_known_cpi = cpi_match['value']
-    if u3_match:             last_known_u3 = u3_match['value']
-    if u6_match:             last_known_u6 = u6_match['value']
+    # Assign actual value if present, otherwise explicit None (null in JSON)
+    debt_val = debt_map[month_key] if month_key in debt_map else None
+    cpi_val  = cpi_match['value'] if cpi_match else None
+    u3_val   = u3_match['value'] if u3_match else None
+    u6_val   = u6_match['value'] if u6_match else None
     
-    # Generate the standard standardized string representation for the date field
-    # If a FRED observation matches, use its precise YYYY-MM-DD date, else construct an audit baseline
+    # Construct fallback precise date string if CPI isn't available
     precise_date = cpi_match['date'] if cpi_match else (u3_match['date'] if u3_match else f"{month_key}-01")
     
     economy_data.append({
         "month_date": precise_date,
-        "avg_monthly_debt": last_known_debt,
-        "cpi_index": last_known_cpi,
-        "u3_rate": last_known_u3,
-        "u6_rate": last_known_u6
+        "avg_monthly_debt": debt_val,
+        "cpi_index": cpi_val,
+        "u3_rate": u3_val,
+        "u6_rate": u6_val
     })
 
 # Invert array order to preserve the dashboard's descending chronology (Newest first)
@@ -89,5 +82,5 @@ economy_data.reverse()
 with open('economic_data.json', 'w') as f:
     json.dump(economy_data, f, indent=4)
 
-print(f"Pipeline executed successfully. Matrix generated with {len(economy_data)} historical rows.")
+print(f"Pipeline executed successfully. Matrix generated with {len(economy_data)} rows containing explicit null flags.")
 print(f"Success: Telemetry matrix updated with {len(economy_data)} historical rows.")

@@ -4,40 +4,40 @@
         "gdp_nominal": 31819.464,
         "gdp_growth_real": 0.012671201096910435,
         "trade_total": -895.042,
-        "trade_goods": -1021.8880000000001,
-        "trade_services": 330.848
+        "trade_goods": -1003.6379999999999,
+        "trade_services": 338.751
     },
     {
         "year": "2025",
         "gdp_nominal": 30762.09875,
         "gdp_growth_real": 0.021063376260688858,
         "trade_total": -926.4870000000001,
-        "trade_goods": -1240.815,
-        "trade_services": 329.129
+        "trade_goods": -1259.621,
+        "trade_services": 327.66
     },
     {
         "year": "2024",
         "gdp_nominal": 29298.01275,
         "gdp_growth_real": 0.027931871846460007,
         "trade_total": -898.45975,
-        "trade_goods": -1215.403,
-        "trade_services": 311.871
+        "trade_goods": -1212.785,
+        "trade_services": 327.315
     },
     {
         "year": "2023",
         "gdp_nominal": 27811.517,
         "gdp_growth_real": 0.029343609230527864,
         "trade_total": -786.4955,
-        "trade_goods": -1057.496,
-        "trade_services": 283.292
+        "trade_goods": -1057.508,
+        "trade_services": 307.916
     },
     {
         "year": "2022",
         "gdp_nominal": 26054.61425,
         "gdp_growth_real": 0.025242150122835882,
         "trade_total": -937.889,
-        "trade_goods": -1174.565,
-        "trade_services": 250.837
+        "trade_goods": -1174.566,
+        "trade_services": 271.677
     },
     {
         "year": "2021",
@@ -45,7 +45,7 @@
         "gdp_growth_real": 0.06152022480218883,
         "trade_total": -849.23325,
         "trade_goods": -1083.191,
-        "trade_services": 245.916
+        "trade_services": 256.083
     },
     {
         "year": "2020",
@@ -53,7 +53,7 @@
         "gdp_growth_real": -0.02081378341995819,
         "trade_total": -618.55375,
         "trade_goods": -912.875,
-        "trade_services": 266.833
+        "trade_services": 275.823
     },
     {
         "year": "2019",
@@ -61,7 +61,7 @@
         "gdp_growth_real": 0.025838316161415117,
         "trade_total": -577.2905,
         "trade_goods": -857.261,
-        "trade_services": 297.989
+        "trade_services": 321.853
     },
     {
         "year": "2018",
@@ -69,7 +69,7 @@
         "gdp_growth_real": 0.029664986199210437,
         "trade_total": -593.07675,
         "trade_goods": -878.747,
-        "trade_services": 301.253
+        "trade_services": 321.532
     },
     {
         "year": "2017",
@@ -77,7 +77,7 @@
         "gdp_growth_real": 0.02457623575704057,
         "trade_total": -543.3285,
         "trade_goods": -799.343,
-        "trade_services": 282.404
+        "trade_services": 301.499
     },
     {
         "year": "2016",
@@ -85,7 +85,7 @@
         "gdp_growth_real": 0.01819452806019186,
         "trade_total": -503.27175000000005,
         "trade_goods": -749.803,
-        "trade_services": 270.343
+        "trade_services": 287.208
     },
     {
         "year": "2015",
@@ -93,7 +93,7 @@
         "gdp_growth_real": 0.029455490466893174,
         "trade_total": -524.3197500000001,
         "trade_goods": -761.868,
-        "trade_services": 271.093
+        "trade_services": 289.605
     },
     {
         "year": "2014",
@@ -101,7 +101,7 @@
         "gdp_growth_real": 0.025238212172611896,
         "trade_total": -508.9,
         "trade_goods": -749.917,
-        "trade_services": 265.966
+        "trade_services": 286.294
     },
     {
         "year": "2013",
@@ -109,7 +109,7 @@
         "gdp_growth_real": 0.02117828634251213,
         "trade_total": -478.45349999999996,
         "trade_goods": -700.539,
-        "trade_services": 253.678
+        "trade_services": 272.586
     },
     {
         "year": "2012",
@@ -117,7 +117,7 @@
         "gdp_growth_real": 0.022891118531306823,
         "trade_total": -551.61725,
         "trade_goods": -741.121,
-        "trade_services": 215.213
+        "trade_services": 239.396
     },
     {
         "year": "2011",
@@ -125,7 +125,7 @@
         "gdp_growth_real": 0.015644068087848965,
         "trade_total": -579.61675,
         "trade_goods": -741.0,
-        "trade_services": 186.477
+        "trade_services": 208.876
     },
     {
         "year": "2010",
@@ -133,7 +133,7 @@
         "gdp_growth_real": 0.026951924999222394,
         "trade_total": -532.30875,
         "trade_goods": -648.671,
-        "trade_services": 145.586
+        "trade_services": 165.265
     },
     {
         "year": "2009",
@@ -141,7 +141,7 @@
         "gdp_growth_real": -0.025764958014218447,
         "trade_total": -419.15299999999996,
         "trade_goods": -509.694,
-        "trade_services": 114.922
+        "trade_services": 131.971
     },
     {
         "year": "2008",
@@ -149,6 +149,6 @@
         "gdp_growth_real": 0.0,
         "trade_total": -740.87,
         "trade_goods": -832.492,
-        "trade_services": 120.143
+        "trade_services": 140.887
     }
 ]

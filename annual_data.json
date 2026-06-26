@@ -1,9 +1,9 @@
 [
     {
         "year": "2026",
-        "gdp_nominal": 31819.464,
-        "gdp_growth_real": 0.012671201096910435,
-        "trade_total": -895.042,
+        "gdp_nominal": 31865.721,
+        "gdp_growth_real": 0.013835246597995541,
+        "trade_total": -819.956,
         "trade_goods": -1003.6379999999999,
         "trade_services": 338.751
     },

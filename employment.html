@@ -46,7 +46,6 @@ cursor: pointer;
 }
 .grid { 
 display: grid; 
-/* Restored original index.htm size profiles by creating 2 balanced rows of 3 columns */
 grid-template-columns: repeat(3, 1fr); 
 gap: 1.5rem; 
 width: 100%; 
@@ -56,7 +55,7 @@ margin-bottom: 2rem;
 .card { 
 background: var(--card-bg); 
 border-radius: 16px; 
-padding: 1.5rem; /* Reverted to the full index.htm box padding format */
+padding: 1.5rem; 
 border: 1px solid var(--border); 
 box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); 
 }
@@ -178,15 +177,15 @@ color: var(--text-main);
 <div class="card-subtext">Broad Rate</div>
 </div>
 <div class="card">
-<div class="card-title">Participation Rate</div>
-<div id="lfpr-val" class="card-value">--</div>
-<div id="not-lf-sub" class="card-subtext">Not In Force: --</div>
-</div>
-
-<div class="card">
 <div class="card-title">Long-Term Unemployed</div>
 <div id="lt-count-val" class="card-value">--</div>
 <div id="lt-pct-sub" class="card-subtext">Share of Unemp: --</div>
+</div>
+
+<div class="card">
+<div class="card-title">Participation Rate</div>
+<div id="lfpr-val" class="card-value">--</div>
+<div id="not-lf-sub" class="card-subtext">Not In Force: --</div>
 </div>
 <div class="card">
 <div class="card-title">Job Openings Rate</div>
@@ -324,13 +323,14 @@ y: { grid: { color: 'rgba(51, 65, 85, 0.4)' }, ticks: { color: chartStyleDefault
 };
 
 // --- CHART 1: UNEMPLOYMENT TRAJECTORY (U3 VS U6) ---
+// Swapped dataset array order to place U6 on top inside the tooltip index
 chartUnemployment = new Chart(document.getElementById('chart-unemployment').getContext('2d'), {
 type: 'line',
 data: {
 labels: labels,
 datasets: [
-    { label: 'U3 Rate', data: dataset.map(row => row.u3_rate), borderColor: '#38bdf8', borderWidth: 2.5, pointRadius: 0, tension: 0.15, spanGaps: false },
-    { label: 'U6 Rate', data: dataset.map(row => row.u6_rate), borderColor: '#94a3b8', borderWidth: 2, borderDash: [4, 4], pointRadius: 0, tension: 0.15, spanGaps: false }
+    { label: 'U6 Rate', data: dataset.map(row => row.u6_rate), borderColor: '#94a3b8', borderWidth: 2, borderDash: [4, 4], pointRadius: 0, tension: 0.15, spanGaps: false },
+    { label: 'U3 Rate', data: dataset.map(row => row.u3_rate), borderColor: '#38bdf8', borderWidth: 2.5, pointRadius: 0, tension: 0.15, spanGaps: false }
 ]
 },
 options: {
@@ -372,13 +372,14 @@ scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, ticks: { ...c
 });
 
 // --- CHART 4: HIGH-FREQUENCY JOBLESS CLAIMS (AREA/LINE) ---
+// Swapped dataset array order to place Continued Claims on top inside the tooltip index
 chartClaims = new Chart(document.getElementById('chart-jobless-claims').getContext('2d'), {
 type: 'line',
 data: {
 labels: labels,
 datasets: [
-    { label: 'Initial Claims (Monthly Avg)', data: dataset.map(row => row.initial_claims_monthly_avg), borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, borderWidth: 2.5, pointRadius: 0, tension: 0.15, spanGaps: false },
-    { label: 'Continued Claims (Monthly Avg)', data: dataset.map(row => row.continued_claims_monthly_avg), borderColor: '#f59e0b', borderWidth: 2, pointRadius: 0, tension: 0.15, spanGaps: false }
+    { label: 'Continued Claims (Monthly Avg)', data: dataset.map(row => row.continued_claims_monthly_avg), borderColor: '#f59e0b', borderWidth: 2, pointRadius: 0, tension: 0.15, spanGaps: false },
+    { label: 'Initial Claims (Monthly Avg)', data: dataset.map(row => row.initial_claims_monthly_avg), borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, borderWidth: 2.5, pointRadius: 0, tension: 0.15, spanGaps: false }
 ]
 },
 options: {
@@ -399,22 +400,22 @@ function updateDashboard(selectedDate) {
     // 2. U6 Underemployment Rate
     document.getElementById('u6-val').textContent = current.u6_rate !== null ? current.u6_rate.toFixed(1) + "%" : "N/A";
 
-    // 3. Participation Details
-    if (current.lfpr_rate !== null) {
-        document.getElementById('lfpr-val').textContent = current.lfpr_rate.toFixed(1) + "%";
-        document.getElementById('not-lf-sub').textContent = current.not_in_labor_force ? "Not In Force: " + (current.not_in_labor_force / 1000).toFixed(2) + "M" : "Not In Force: N/A";
-    } else {
-        document.getElementById('lfpr-val').textContent = "N/A";
-        document.getElementById('not-lf-sub').textContent = "Not In Force: N/A";
-    }
-
-    // 4. Long-Term Hardship Details
+    // 3. Long-Term Hardship Details
     if (current.long_term_unemp_count !== null) {
         document.getElementById('lt-count-val').textContent = (current.long_term_unemp_count / 1000).toFixed(2) + "M";
         document.getElementById('lt-pct-sub').textContent = current.long_term_unemp_pct ? "Share of Unemp: " + current.long_term_unemp_pct.toFixed(1) + "%" : "Share of Unemp: N/A";
     } else {
         document.getElementById('lt-count-val').textContent = "N/A";
         document.getElementById('lt-pct-sub').textContent = "Share of Unemp: N/A";
+    }
+
+    // 4. Participation Details
+    if (current.lfpr_rate !== null) {
+        document.getElementById('lfpr-val').textContent = current.lfpr_rate.toFixed(1) + "%";
+        document.getElementById('not-lf-sub').textContent = current.not_in_labor_force ? "Not In Force: " + (current.not_in_labor_force / 1000).toFixed(2) + "M" : "Not In Force: N/A";
+    } else {
+        document.getElementById('lfpr-val').textContent = "N/A";
+        document.getElementById('not-lf-sub').textContent = "Not In Force: N/A";
     }
 
     // 5. Job Openings Rate

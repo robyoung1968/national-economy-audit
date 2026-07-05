@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>National Key Economic Indicators - Employment Profile</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root { 
+--bg-color: #0f172a; 
+--card-bg: #1e293b; 
+--text-main: #f8fafc; 
+--text-muted: #94a3b8; 
+--accent: #38bdf8; 
+--border: #334155; 
+--grid-color: rgba(51, 65, 85, 0.4);
+}
+body { 
+background-color: var(--bg-color); 
+color: var(--text-main); 
+font-family: system-ui, sans-serif; 
+margin: 0; 
+padding: 2rem; 
+display: flex; 
+flex-direction: column; 
+align-items: center; 
+}
+header { text-align: center; margin-bottom: 2rem; width: 100%; max-width: 1200px; }
+.controls { 
+background: var(--card-bg); 
+padding: 1rem 2rem; 
+border-radius: 12px; 
+display: flex; 
+align-items: center; 
+gap: 1rem; 
+margin-bottom: 2rem; 
+border: 1px solid var(--border); 
+}
+select { 
+background: var(--bg-color); 
+color: var(--text-main); 
+border: 1px solid #475569; 
+padding: 0.5rem 1rem; 
+border-radius: 6px; 
+font-size: 1rem; 
+cursor: pointer; 
+}
+.grid { 
+display: grid; 
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+gap: 1.5rem; 
+width: 100%; 
+max-width: 1200px; 
+margin-bottom: 2rem;
+}
+.card { 
+background: var(--card-bg); 
+border-radius: 16px; 
+padding: 1.5rem; 
+border: 1px solid var(--border); 
+box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); 
+}
+.card-title { 
+color: var(--text-muted); 
+font-size: 0.85rem; 
+text-transform: uppercase; 
+letter-spacing: 0.05em; 
+margin-bottom: 0.75rem; 
+}
+.card-value { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
+.card-subtext { font-size: 0.8rem; color: var(--accent); margin-top: 0.5rem; }
+
+.section-divider {
+width: 100%;
+max-width: 1200px;
+border: 0;
+height: 1px;
+background: var(--border);
+margin: 2rem 0;
+}
+
+.section-subtitle {
+color: var(--text-muted);
+font-size: 1.2rem;
+font-weight: 500;
+margin: 0 0 1.5rem 0;
+text-align: left;
+width: 100%;
+max-width: 1200px;
+letter-spacing: 0.05em;
+text-transform: uppercase;
+}
+
+.viz-grid { 
+display: flex;
+flex-direction: column;
+gap: 2rem; 
+width: 100%; 
+max-width: 1200px; 
+}
+.chart-card { 
+background: var(--card-bg); 
+border-radius: 16px; 
+padding: 1.5rem; 
+border: 1px solid var(--border); 
+height: 400px;                
+min-height: 400px; 
+box-sizing: border-box;   
+position: relative;        
+}
+.chart-title {
+color: var(--text-muted);
+font-size: 0.9rem;
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+margin-bottom: 1rem;
+}
+.chart-card canvas {
+max-height: calc(100% - 2rem) !important;
+width: 100% !important;
+}
+footer {
+margin-top: 3rem;
+margin-bottom: 2rem;
+text-align: center;
+display: flex;
+flex-direction: column;
+gap: 1rem;
+align-items: center;
+}
+.nav-link { 
+color: var(--text-muted); 
+text-decoration: none; 
+font-size: 0.9rem; 
+border-bottom: 1px solid var(--border); 
+padding-bottom: 4px; 
+transition: color 0.2s;
+}
+.nav-link:hover { color: var(--accent); }
+
+.download-link {
+color: var(--text-muted);
+font-size: 0.85rem;
+text-decoration: underline;
+transition: color 0.2s ease;
+}
+.download-link:hover {
+color: var(--text-main);
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>National Key Economic Indicators</h1>
+<p style="color: var(--text-muted); margin: 0;">Labor Market Telemetry & Structural Employment Monitor</p>
+</header>
+
+<div class="controls">
+<label for="date-select">Select Reporting Date:</label>
+<select id="date-select" onchange="updateDashboard(this.value)"></select>
+</div>
+
+<div class="grid">
+<div class="card">
+<div class="card-title">Participation Rate</div>
+<div id="lfpr-val" class="card-value">--</div>
+<div id="not-lf-sub" class="card-subtext">Not In Force: --</div>
+</div>
+<div class="card">
+<div class="card-title">Long-Term Unemployed</div>
+<div id="lt-count-val" class="card-value">--</div>
+<div id="lt-pct-sub" class="card-subtext">Share of Unemp: --</div>
+</div>
+<div class="card">
+<div class="card-title">Job Openings Rate</div>
+<div id="jts-job-val" class="card-value">--</div>
+<div class="card-subtext">Labor Demand Velocity</div>
+</div>
+<div class="card">
+<div class="card-title">Quits Rate</div>
+<div id="jts-quit-val" class="card-value">--</div>
+<div class="card-subtext">Worker Confidence</div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<div id="trends-subtitle" class="section-subtitle">Trends 2009 — Present</div>
+
+<div class="viz-grid">
+<div class="chart-card">
+<div class="chart-title">Labor Pool Dynamics: Participation vs Chronic Unemployment Share</div>
+<canvas id="chart-pool-dynamics"></canvas>
+</div>
+<div class="chart-card">
+<div class="chart-title">The Momentum Matrix: Market Openings vs Volitional Quits</div>
+<canvas id="chart-momentum-matrix"></canvas>
+</div>
+<div class="chart-card">
+<div class="chart-title">High-Frequency Trajectory Matrix: Monthly Aggregated Jobless Claims</div>
+<canvas id="chart-jobless-claims"></canvas>
+</div>
+</div>
+
+<footer>
+    <div style="display: flex; gap: 2rem;">
+        <a href="index.htm" class="nav-link">← BACK TO MONTHLY CORE</a>
+        <a href="annual.html" class="nav-link">VIEW ANNUAL ANALYSIS →</a>
+    </div>
+    <div style="margin-top: 1rem;">
+        <a class="download-link" href="https://robyoung1968.github.io/national-economy-audit/economic_data.csv">
+            Download raw monthly data file (CSV) for use in spreadsheets
+        </a>
+    </div>
+</footer>
+
+<script>
+let economyData = [];
+let chartPool, chartMomentum, chartClaims;
+
+const chartStyleDefaults = {
+color: '#94a3b8',
+fontFamily: 'system-ui, sans-serif',
+};
+
+async function init() {
+    try {
+        const response = await fetch('economic_data.json?v=' + new Date().getTime());
+        if (!response.ok) throw new Error(`HTTP network error! Status: ${response.status}`);
+        
+        economyData = await response.json();
+
+        const selector = document.getElementById('date-select');
+        if (!selector) throw new Error("DOM Element 'date-select' missing.");
+
+        const displayData = economyData.filter(row => row && row.month_date && new Date(row.month_date) >= new Date('2009-01-01'));
+        if (displayData.length === 0) return;
+
+        const latestDateStr = displayData[0].month_date;
+        const dateObj = new Date(latestDateStr + 'T00:00:00');
+        const displayMonthYear = isNaN(dateObj.getTime()) 
+            ? "Present" 
+            : dateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            
+        document.getElementById('trends-subtitle').innerText = `TRENDS: JANUARY 2009 — ${displayMonthYear.toUpperCase()}`;
+
+        selector.innerHTML = "";
+        displayData.forEach(row => {
+            if (!row.month_date) return;
+            const opt = document.createElement('option');
+            opt.value = row.month_date;
+            const optDate = new Date(row.month_date + 'T00:00:00');
+            opt.textContent = isNaN(optDate.getTime()) 
+                ? row.month_date 
+                : optDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            selector.appendChild(opt);
+        });
+
+        const chronologicalData = [...displayData].reverse();
+        buildCharts(chronologicalData);
+        updateDashboard(displayData[0].month_date);
+
+    } catch (e) { console.error("FATAL UI INITIALIZATION FAILURE:", e); }
+}
+
+function buildCharts(dataset) {
+const labels = dataset.map(row => {
+    return new Date(row.month_date + 'T00:00:00').toLocaleDateString('en-US', {month:'short', year:'2-digit'});
+});
+
+const commonOptions = {
+responsive: true,
+maintainAspectRatio: false,
+interaction: { mode: 'index', intersect: false },
+plugins: {
+legend: { display: true, position: 'bottom', labels: { color: chartStyleDefaults.color, font: { family: chartStyleDefaults.fontFamily } } },
+tooltip: { 
+    padding: 10, 
+    cornerRadius: 8,
+    callbacks: {
+        title: function(context) {
+            const index = context[0].dataIndex;
+            return new Date(dataset[index].month_date + 'T00:00:00').toLocaleDateString('en-US', {month:'long', year:'numeric'});
+        },
+        label: function(context) {
+            let label = context.dataset.label || '';
+            let value = context.parsed.y;
+            if (value === null || value === undefined || isNaN(value)) return ' ' + label + ': N/A';
+            
+            const id = context.chart.canvas.id;
+            if (id === 'chart-jobless-claims') {
+                return ' ' + label + ': ' + Math.round(value).toLocaleString();
+            }
+            return ' ' + label + ': ' + value.toFixed(1) + '%';
+        }
+    }
+}
+},
+scales: {
+x: { grid: { color: 'rgba(51, 65, 85, 0.4)' }, ticks: { color: chartStyleDefaults.color, font: { family: chartStyleDefaults.fontFamily }, maxTicksLimit: 12 } },
+y: { grid: { color: 'rgba(51, 65, 85, 0.4)' }, ticks: { color: chartStyleDefaults.color, font: { family: chartStyleDefaults.fontFamily } } }
+}
+};
+
+// --- CHART 1: LABOR POOL DYNAMICS (DUAL LINE) ---
+chartPool = new Chart(document.getElementById('chart-pool-dynamics').getContext('2d'), {
+type: 'line',
+data: {
+labels: labels,
+datasets: [
+    { label: 'Labor Force Participation Rate', data: dataset.map(row => row.lfpr_rate), borderColor: '#38bdf8', borderWidth: 2.5, pointRadius: 0, tension: 0.15, spanGaps: false },
+    { label: 'Long-Term Unemployed % of Total', data: dataset.map(row => row.long_term_unemp_pct), borderColor: '#94a3b8', borderWidth: 2, borderDash: [4, 4], pointRadius: 0, tension: 0.15, spanGaps: false }
+]
+},
+options: {
+...commonOptions,
+scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, ticks: { ...commonOptions.scales.y.ticks, callback: (v) => v.toFixed(1) + '%' } } }
+}
+});
+
+// --- CHART 2: MOMENTUM MATRIX (DUAL LINE) ---
+chartMomentum = new Chart(document.getElementById('chart-momentum-matrix').getContext('2d'), {
+type: 'line',
+data: {
+labels: labels,
+datasets: [
+    { label: 'Job Openings Rate', data: dataset.map(row => row.job_openings_rate), borderColor: '#10b981', borderWidth: 2.5, pointRadius: 0, tension: 0.15, spanGaps: false },
+    { label: 'Quits Rate', data: dataset.map(row => row.quits_rate), borderColor: '#a855f7', borderWidth: 2, borderDash: [4, 4], pointRadius: 0, tension: 0.15, spanGaps: false }
+]
+},
+options: {
+...commonOptions,
+scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, ticks: { ...commonOptions.scales.y.ticks, callback: (v) => v.toFixed(1) + '%' } } }
+}
+});
+
+// --- CHART 3: HIGH-FREQUENCY JOBLESS CLAIMS (AREA/LINE) ---
+chartClaims = new Chart(document.getElementById('chart-jobless-claims').getContext('2d'), {
+type: 'line',
+data: {
+labels: labels,
+datasets: [
+    { label: 'Initial Claims (Monthly Avg)', data: dataset.map(row => row.initial_claims_monthly_avg), borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, borderWidth: 2.5, pointRadius: 0, tension: 0.15, spanGaps: false },
+    { label: 'Continued Claims (Monthly Avg)', data: dataset.map(row => row.continued_claims_monthly_avg), borderColor: '#f59e0b', borderWidth: 2, pointRadius: 0, tension: 0.15, spanGaps: false }
+]
+},
+options: {
+...commonOptions,
+scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, ticks: { ...commonOptions.scales.y.ticks, callback: (v) => v.toLocaleString() } } }
+}
+});
+}
+
+function updateDashboard(selectedDate) {
+    const idx = economyData.findIndex(r => r.month_date === selectedDate);
+    if (idx === -1) return;
+    const current = economyData[idx];
+
+    // 1. Participation Details
+    if (current.lfpr_rate !== null) {
+        document.getElementById('lfpr-val').textContent = current.lfpr_rate.toFixed(1) + "%";
+        document.getElementById('not-lf-sub').textContent = current.not_in_labor_force ? "Not In Force: " + (current.not_in_labor_force / 1000).toFixed(2) + "M" : "Not In Force: N/A";
+    } else {
+        document.getElementById('lfpr-val').textContent = "N/A";
+        document.getElementById('not-lf-sub').textContent = "Not In Force: N/A";
+    }
+
+    // 2. Long-Term Hardship Details
+    if (current.long_term_unemp_count !== null) {
+        document.getElementById('lt-count-val').textContent = (current.long_term_unemp_count / 1000).toFixed(2) + "M";
+        document.getElementById('lt-pct-sub').textContent = current.long_term_unemp_pct ? "Share of Unemp: " + current.long_term_unemp_pct.toFixed(1) + "%" : "Share of Unemp: N/A";
+    } else {
+        document.getElementById('lt-count-val').textContent = "N/A";
+        document.getElementById('lt-pct-sub').textContent = "Share of Unemp: N/A";
+    }
+
+    // 3. Job Openings Rate
+    document.getElementById('jts-job-val').textContent = current.job_openings_rate !== null ? current.job_openings_rate.toFixed(1) + "%" : "N/A";
+
+    // 4. Quits Rate
+    document.getElementById('jts-quit-val').textContent = current.quits_rate !== null ? current.quits_rate.toFixed(1) + "%" : "N/A";
+}
+init();
+</script>
+</body>
+</html>

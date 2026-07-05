@@ -323,7 +323,6 @@ y: { grid: { color: 'rgba(51, 65, 85, 0.4)' }, ticks: { color: chartStyleDefault
 };
 
 // --- CHART 1: UNEMPLOYMENT TRAJECTORY (U3 VS U6) ---
-// Swapped dataset array order to place U6 on top inside the tooltip index
 chartUnemployment = new Chart(document.getElementById('chart-unemployment').getContext('2d'), {
 type: 'line',
 data: {
@@ -335,6 +334,18 @@ datasets: [
 },
 options: {
 ...commonOptions,
+plugins: {
+    ...commonOptions.plugins,
+    tooltip: {
+        ...commonOptions.plugins.tooltip,
+        // Explicit sort function forcing U6 above U3 in tooltip display
+        itemSort: function(a, b) {
+            if (a.datasetIndex === 0) return -1;
+            if (b.datasetIndex === 0) return 1;
+            return 0;
+        }
+    }
+},
 scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, ticks: { ...commonOptions.scales.y.ticks, callback: (v) => v.toFixed(1) + '%' } } }
 }
 });
@@ -372,7 +383,6 @@ scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, ticks: { ...c
 });
 
 // --- CHART 4: HIGH-FREQUENCY JOBLESS CLAIMS (AREA/LINE) ---
-// Swapped dataset array order to place Continued Claims on top inside the tooltip index
 chartClaims = new Chart(document.getElementById('chart-jobless-claims').getContext('2d'), {
 type: 'line',
 data: {
@@ -384,6 +394,18 @@ datasets: [
 },
 options: {
 ...commonOptions,
+plugins: {
+    ...commonOptions.plugins,
+    tooltip: {
+        ...commonOptions.plugins.tooltip,
+        // Explicit sort function forcing Continued Claims above Initial Claims in tooltip display
+        itemSort: function(a, b) {
+            if (a.datasetIndex === 0) return -1;
+            if (b.datasetIndex === 0) return 1;
+            return 0;
+        }
+    }
+},
 scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, ticks: { ...commonOptions.scales.y.ticks, callback: (v) => v.toLocaleString() } } }
 }
 });

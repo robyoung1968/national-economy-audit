@@ -46,8 +46,9 @@ cursor: pointer;
 }
 .grid { 
 display: grid; 
-grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
-gap: 1.5rem; 
+/* Explicitly enforce a single row of 6 metrics across desktop displays */
+grid-template-columns: repeat(6, 1fr); 
+gap: 1rem; 
 width: 100%; 
 max-width: 1200px; 
 margin-bottom: 2rem;
@@ -55,7 +56,7 @@ margin-bottom: 2rem;
 .card { 
 background: var(--card-bg); 
 border-radius: 16px; 
-padding: 1.5rem; 
+padding: 0.75rem; /* Reduced internal cell spacing to fit single row clearance */
 border: 1px solid var(--border); 
 box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); 
 }
@@ -68,6 +69,10 @@ margin-bottom: 0.75rem;
 }
 .card-value { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
 .card-subtext { font-size: 0.8rem; color: var(--accent); margin-top: 0.5rem; }
+
+@media (max-width: 1024px) {
+    .grid { grid-template-columns: repeat(3, 1fr); } /* Graceful fallback wrap for smaller viewport constraints */
+}
 
 .section-divider {
 width: 100%;
@@ -163,6 +168,16 @@ color: var(--text-main);
 
 <div class="grid">
 <div class="card">
+<div class="card-title">Unemployment (U3)</div>
+<div id="u3-val" class="card-value">--</div>
+<div class="card-subtext">Official Metric</div>
+</div>
+<div class="card">
+<div class="card-title">Unemployment (U6)</div>
+<div id="u6-val" class="card-value">--</div>
+<div class="card-subtext">Broad Rate</div>
+</div>
+<div class="card">
 <div class="card-title">Participation Rate</div>
 <div id="lfpr-val" class="card-value">--</div>
 <div id="not-lf-sub" class="card-subtext">Not In Force: --</div>
@@ -189,6 +204,10 @@ color: var(--text-main);
 <div id="trends-subtitle" class="section-subtitle">Trends 2009 — Present</div>
 
 <div class="viz-grid">
+<div class="chart-card">
+<div class="chart-title">Unemployment Trajectory (U3 vs U6)</div>
+<canvas id="chart-unemployment"></canvas>
+</div>
 <div class="chart-card">
 <div class="chart-title">Labor Pool Dynamics: Participation vs Chronic Unemployment Share</div>
 <canvas id="chart-pool-dynamics"></canvas>
@@ -217,7 +236,7 @@ color: var(--text-main);
 
 <script>
 let economyData = [];
-let chartPool, chartMomentum, chartClaims;
+let chartUnemployment, chartPool, chartMomentum, chartClaims;
 
 const chartStyleDefaults = {
 color: '#94a3b8',
@@ -303,7 +322,23 @@ y: { grid: { color: 'rgba(51, 65, 85, 0.4)' }, ticks: { color: chartStyleDefault
 }
 };
 
-// --- CHART 1: LABOR POOL DYNAMICS (DUAL LINE) ---
+// --- CHART 1: UNEMPLOYMENT TRAJECTORY (U3 VS U6) ---
+chartUnemployment = new Chart(document.getElementById('chart-unemployment').getContext('2d'), {
+type: 'line',
+data: {
+labels: labels,
+datasets: [
+    { label: 'U3 Rate', data: dataset.map(row => row.u3_rate), borderColor: '#38bdf8', borderWidth: 2.5, pointRadius: 0, tension: 0.15, spanGaps: false },
+    { label: 'U6 Rate', data: dataset.map(row => row.u6_rate), borderColor: '#94a3b8', borderWidth: 2, borderDash: [4, 4], pointRadius: 0, tension: 0.15, spanGaps: false }
+]
+},
+options: {
+...commonOptions,
+scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, ticks: { ...commonOptions.scales.y.ticks, callback: (v) => v.toFixed(1) + '%' } } }
+}
+});
+
+// --- CHART 2: LABOR POOL DYNAMICS (DUAL LINE) ---
 chartPool = new Chart(document.getElementById('chart-pool-dynamics').getContext('2d'), {
 type: 'line',
 data: {
@@ -319,7 +354,7 @@ scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, ticks: { ...c
 }
 });
 
-// --- CHART 2: MOMENTUM MATRIX (DUAL LINE) ---
+// --- CHART 3: MOMENTUM MATRIX (DUAL LINE) ---
 chartMomentum = new Chart(document.getElementById('chart-momentum-matrix').getContext('2d'), {
 type: 'line',
 data: {
@@ -335,7 +370,7 @@ scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, ticks: { ...c
 }
 });
 
-// --- CHART 3: HIGH-FREQUENCY JOBLESS CLAIMS (AREA/LINE) ---
+// --- CHART 4: HIGH-FREQUENCY JOBLESS CLAIMS (AREA/LINE) ---
 chartClaims = new Chart(document.getElementById('chart-jobless-claims').getContext('2d'), {
 type: 'line',
 data: {
@@ -357,7 +392,13 @@ function updateDashboard(selectedDate) {
     if (idx === -1) return;
     const current = economyData[idx];
 
-    // 1. Participation Details
+    // 1. U3 Unemployment Rate
+    document.getElementById('u3-val').textContent = current.u3_rate !== null ? current.u3_rate.toFixed(1) + "%" : "N/A";
+
+    // 2. U6 Underemployment Rate
+    document.getElementById('u6-val').textContent = current.u6_rate !== null ? current.u6_rate.toFixed(1) + "%" : "N/A";
+
+    // 3. Participation Details
     if (current.lfpr_rate !== null) {
         document.getElementById('lfpr-val').textContent = current.lfpr_rate.toFixed(1) + "%";
         document.getElementById('not-lf-sub').textContent = current.not_in_labor_force ? "Not In Force: " + (current.not_in_labor_force / 1000).toFixed(2) + "M" : "Not In Force: N/A";
@@ -366,7 +407,7 @@ function updateDashboard(selectedDate) {
         document.getElementById('not-lf-sub').textContent = "Not In Force: N/A";
     }
 
-    // 2. Long-Term Hardship Details
+    // 4. Long-Term Hardship Details
     if (current.long_term_unemp_count !== null) {
         document.getElementById('lt-count-val').textContent = (current.long_term_unemp_count / 1000).toFixed(2) + "M";
         document.getElementById('lt-pct-sub').textContent = current.long_term_unemp_pct ? "Share of Unemp: " + current.long_term_unemp_pct.toFixed(1) + "%" : "Share of Unemp: N/A";
@@ -375,10 +416,10 @@ function updateDashboard(selectedDate) {
         document.getElementById('lt-pct-sub').textContent = "Share of Unemp: N/A";
     }
 
-    // 3. Job Openings Rate
+    // 5. Job Openings Rate
     document.getElementById('jts-job-val').textContent = current.job_openings_rate !== null ? current.job_openings_rate.toFixed(1) + "%" : "N/A";
 
-    // 4. Quits Rate
+    // 6. Quits Rate
     document.getElementById('jts-quit-val').textContent = current.quits_rate !== null ? current.quits_rate.toFixed(1) + "%" : "N/A";
 }
 init();

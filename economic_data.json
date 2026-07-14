@@ -17,7 +17,7 @@
     {
         "month_date": "2026-06-01",
         "avg_monthly_debt": 39462398380774.37,
-        "cpi_index": null,
+        "cpi_index": 332.568,
         "u3_rate": 4.2,
         "u6_rate": 7.9,
         "lfpr_rate": 61.5,

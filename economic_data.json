@@ -1,7 +1,7 @@
 [
     {
         "month_date": "2026-07-01",
-        "avg_monthly_debt": 39470152218599.01,
+        "avg_monthly_debt": 39488616467668.43,
         "cpi_index": null,
         "u3_rate": null,
         "u6_rate": null,
@@ -11,8 +11,8 @@
         "long_term_unemp_pct": null,
         "job_openings_rate": null,
         "quits_rate": null,
-        "initial_claims_monthly_avg": 215000.0,
-        "continued_claims_monthly_avg": null
+        "initial_claims_monthly_avg": 212000.0,
+        "continued_claims_monthly_avg": 1805000.0
     },
     {
         "month_date": "2026-06-01",
@@ -27,7 +27,7 @@
         "job_openings_rate": null,
         "quits_rate": null,
         "initial_claims_monthly_avg": 222500.0,
-        "continued_claims_monthly_avg": 1808000.0
+        "continued_claims_monthly_avg": 1809750.0
     },
     {
         "month_date": "2026-05-01",

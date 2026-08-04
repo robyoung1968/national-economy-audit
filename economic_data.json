@@ -1,5 +1,20 @@
 [
     {
+        "month_date": "2026-08-01",
+        "avg_monthly_debt": 39739223157130.73,
+        "cpi_index": null,
+        "u3_rate": null,
+        "u6_rate": null,
+        "lfpr_rate": null,
+        "not_in_labor_force": null,
+        "long_term_unemp_count": null,
+        "long_term_unemp_pct": null,
+        "job_openings_rate": null,
+        "quits_rate": null,
+        "initial_claims_monthly_avg": null,
+        "continued_claims_monthly_avg": null
+    },
+    {
         "month_date": "2026-07-01",
         "avg_monthly_debt": 39771617162466.97,
         "cpi_index": null,
@@ -24,8 +39,8 @@
         "not_in_labor_force": 105808.0,
         "long_term_unemp_count": 1937.0,
         "long_term_unemp_pct": 27.3,
-        "job_openings_rate": null,
-        "quits_rate": null,
+        "job_openings_rate": 4.4,
+        "quits_rate": 2.0,
         "initial_claims_monthly_avg": 222500.0,
         "continued_claims_monthly_avg": 1809750.0
     },
@@ -39,8 +54,8 @@
         "not_in_labor_force": 104976.0,
         "long_term_unemp_count": 1988.0,
         "long_term_unemp_pct": 27.5,
-        "job_openings_rate": 4.6,
-        "quits_rate": 1.9,
+        "job_openings_rate": 4.5,
+        "quits_rate": 2.0,
         "initial_claims_monthly_avg": 211600.0,
         "continued_claims_monthly_avg": 1777800.0
     },

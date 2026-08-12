@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employment Sector Breakdown - Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-6 font-sans">
+
+    <div class="max-w-7xl mx-auto space-y-8">
+        
+        <!-- Header & Controls -->
+        <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-800 pb-6">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight text-white">Macro Employment Dynamics</h1>
+                <p class="text-slate-400 text-sm mt-1">Nonfarm payroll trends, private vs. public sectors, and goods/services split.</p>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <label for="startDateSelect" class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Start Date:</label>
+                <select id="startDateSelect" class="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                    <!-- Dynamic options generated via JS -->
+                </select>
+            </div>
+        </header>
+
+        <!-- Dynamic Summary KPI Cards -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="kpiContainer">
+            <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
+                <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Total Nonfarm (PAYEMS)</p>
+                <h2 id="kpiPayems" class="text-2xl font-bold text-white mt-1">--</h2>
+                <span id="kpiPayemsYoY" class="text-xs font-medium">--</span>
+            </div>
+            <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
+                <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Total Private (USPRIV)</p>
+                <h2 id="kpiUspriv" class="text-2xl font-bold text-white mt-1">--</h2>
+                <span id="kpiUsprivYoY" class="text-xs font-medium">--</span>
+            </div>
+            <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
+                <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Goods-Producing (USGOOD)</p>
+                <h2 id="kpiUsgood" class="text-2xl font-bold text-emerald-400 mt-1">--</h2>
+                <span id="kpiUsgoodYoY" class="text-xs font-medium">--</span>
+            </div>
+            <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
+                <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Service-Providing (SRVPRD)</p>
+                <h2 id="kpiSrvprd" class="text-2xl font-bold text-blue-400 mt-1">--</h2>
+                <span id="kpiSrvprdYoY" class="text-xs font-medium">--</span>
+            </div>
+        </section>
+
+        <!-- Primary Stacked Area Chart -->
+        <section class="bg-slate-800/40 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <div class="mb-4">
+                <h3 class="text-lg font-semibold text-white">Sector Composition (Stacked Nonfarm Total)</h3>
+                <p class="text-xs text-slate-400">Goods-Producing + Private Services + Government = Total Nonfarm Payrolls</p>
+            </div>
+            <div class="h-80 w-full">
+                <canvas id="stackedAreaChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Secondary Line Charts Grid -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Chart 1: Nonfarm, Private, & Government -->
+            <div class="bg-slate-800/40 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold text-white">Headline vs. Private vs. Government</h3>
+                    <p class="text-xs text-slate-400">Comparing total nonfarm payrolls against private and public sub-components.</p>
+                </div>
+                <div class="h-72 w-full">
+                    <canvas id="headlineLineChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Goods-Producing vs. Service-Providing -->
+            <div class="bg-slate-800/40 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold text-white">Goods-Producing vs. Service-Providing</h3>
+                    <p class="text-xs text-slate-400">Isolating structural cyclicality in goods sectors against service expansion.</p>
+                </div>
+                <div class="h-72 w-full">
+                    <canvas id="sectorLineChart"></canvas>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        let rawEconomyData = [];
+        let chartInstances = {};
+
+        // Fetch economic dataset
+        async function initDashboard() {
+            try {
+                const response = await fetch('economic_data.json');
+                rawEconomyData = await response.json();
+                
+                populateDropdown();
+                renderDashboard();
+
+                // Dropdown Event Listener
+                document.getElementById('startDateSelect').addEventListener('change', () => {
+                    renderDashboard();
+                });
+            } catch (err) {
+                console.error("Error loading economic_data.json:", err);
+            }
+        }
+
+        // Populate Start Date Select (Default bounds to >= 2009-01-01)
+        function populateDropdown() {
+            const select = document.getElementById('startDateSelect');
+            select.innerHTML = '';
+            
+            // Available dropdown dates start from 2009-01-01
+            const filteredDates = rawEconomyData
+                .map(d => d.month_date)
+                .filter(d => d >= '2009-01-01');
+
+            filteredDates.forEach((dateStr, idx) => {
+                const opt = document.createElement('option');
+                opt.value = dateStr;
+                opt.textContent = dateStr;
+                // Default select January 2009
+                if (idx === 0) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        // Main Render Controller
+        function renderDashboard() {
+            const selectedStartDate = document.getElementById('startDateSelect').value || '2009-01-01';
+            
+            // Filter view dataset based on dropdown
+            const viewData = rawEconomyData.filter(d => d.month_date >= selectedStartDate);
+
+            updateKPIs(viewData);
+            renderStackedAreaChart(viewData);
+            renderHeadlineLineChart(viewData);
+            renderSectorLineChart(viewData);
+        }
+
+        // Calculate KPIs and YoY changes leveraging baseline in rawEconomyData
+        function updateKPIs(viewData) {
+            if (!viewData || viewData.length === 0) return;
+            
+            const latest = viewData[viewData.length - 1];
+            
+            // Utility to derive YoY using full dataset
+            const getYoY = (field) => {
+                const latestIdx = rawEconomyData.findIndex(d => d.month_date === latest.month_date);
+                if (latestIdx < 12) return null;
+                const priorYearVal = rawEconomyData[latestIdx - 12][field];
+                const currentVal = latest[field];
+                if (!priorYearVal || !currentVal) return null;
+                return (((currentVal - priorYearVal) / priorYearVal) * 100).toFixed(2);
+            };
+
+            const formatKPI = (elemId, yoyElemId, field) => {
+                const val = latest[field];
+                document.getElementById(elemId).textContent = val ? (val / 1000).toFixed(2) + 'M' : 'N/A';
+                
+                const yoy = getYoY(field);
+                const yoySpan = document.getElementById(yoyElemId);
+                if (yoy !== null) {
+                    const isPos = parseFloat(yoy) >= 0;
+                    yoySpan.textContent = `${isPos ? '+' : ''}${yoy}% YoY`;
+                    yoySpan.className = `text-xs font-semibold ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+                } else {
+                    yoySpan.textContent = 'YoY N/A';
+                    yoySpan.className = 'text-xs text-slate-500';
+                }
+            };
+
+            formatKPI('kpiPayems', 'kpiPayemsYoY', 'PAYEMS');
+            formatKPI('kpiUspriv', 'kpiUsprivYoY', 'USPRIV');
+            formatKPI('kpiUsgood', 'kpiUsgoodYoY', 'USGOOD');
+            formatKPI('kpiSrvprd', 'kpiSrvprdYoY', 'SRVPRD');
+        }
+
+        // Chart 1: Stacked Area Chart (USGOOD + USSERV + USGOVT)
+        function renderStackedAreaChart(data) {
+            const ctx = document.getElementById('stackedAreaChart').getContext('2d');
+            if (chartInstances.stacked) chartInstances.stacked.destroy();
+
+            const labels = data.map(d => d.month_date);
+            const goods = data.map(d => d.USGOOD);
+            // Calculate Private Services = USPRIV - USGOOD (or USSERV if provided)
+            const privateServices = data.map(d => (d.USPRIV && d.USGOOD) ? (d.USPRIV - d.USGOOD) : d.USSERV);
+            const govt = data.map(d => d.USGOVT);
+
+            chartInstances.stacked = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Goods-Producing (USGOOD)',
+                            data: goods,
+                            fill: 'origin',
+                            backgroundColor: 'rgba(16, 185, 129, 0.4)',
+                            borderColor: '#10b981',
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Private Services (USSERV)',
+                            data: privateServices,
+                            fill: '-1',
+                            backgroundColor: 'rgba(59, 130, 246, 0.4)',
+                            borderColor: '#3b82f6',
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Government (USGOVT)',
+                            data: govt,
+                            fill: '-1',
+                            backgroundColor: 'rgba(245, 158, 11, 0.4)',
+                            borderColor: '#f59e0b',
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8', maxTicksLimit: 12 } },
+                        y: { 
+                            stacked: true, 
+                            grid: { color: '#334155' }, 
+                            ticks: { color: '#94a3b8', callback: v => (v / 1000).toFixed(0) + 'M' } 
+                        }
+                    },
+                    plugins: {
+                        legend: { labels: { color: '#e2e8f0' } }
+                    }
+                }
+            });
+        }
+
+        // Chart 2: Headline Line Chart (PAYEMS / USPRIV / USGOVT)
+        function renderHeadlineLineChart(data) {
+            const ctx = document.getElementById('headlineLineChart').getContext('2d');
+            if (chartInstances.headline) chartInstances.headline.destroy();
+
+            chartInstances.headline = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => d.month_date),
+                    datasets: [
+                        { label: 'Total Nonfarm', data: data.map(d => d.PAYEMS), borderColor: '#f8fafc', borderWidth: 2, pointRadius: 0 },
+                        { label: 'Total Private', data: data.map(d => d.USPRIV), borderColor: '#3b82f6', borderWidth: 2, pointRadius: 0 },
+                        { label: 'Government', data: data.map(d => d.USGOVT), borderColor: '#f59e0b', borderWidth: 2, pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8', maxTicksLimit: 8 } },
+                        y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8', callback: v => (v / 1000).toFixed(0) + 'M' } }
+                    },
+                    plugins: { legend: { labels: { color: '#e2e8f0' } } }
+                }
+            });
+        }
+
+        // Chart 3: Sector Line Chart (USGOOD vs. SRVPRD)
+        function renderSectorLineChart(data) {
+            const ctx = document.getElementById('sectorLineChart').getContext('2d');
+            if (chartInstances.sector) chartInstances.sector.destroy();
+
+            chartInstances.sector = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => d.month_date),
+                    datasets: [
+                        { label: 'Goods-Producing', data: data.map(d => d.USGOOD), borderColor: '#10b981', borderWidth: 2, pointRadius: 0 },
+                        { label: 'Service-Providing', data: data.map(d => d.SRVPRD), borderColor: '#8b5cf6', borderWidth: 2, pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8', maxTicksLimit: 8 } },
+                        y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8', callback: v => (v / 1000).toFixed(0) + 'M' } }
+                    },
+                    plugins: { legend: { labels: { color: '#e2e8f0' } } }
+                }
+            });
+        }
+
+        // Initialize on DOM load
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>

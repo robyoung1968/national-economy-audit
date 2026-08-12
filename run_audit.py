@@ -1,128 +1,141 @@
-import os, json, requests
-from collections import defaultdict
+import os
+import json
+import logging
+import requests
+from datetime import datetime
 
-def fetch_treasury_debt(limit=5000):
-    url = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny"
-    params = {'sort': '-record_date', 'page[size]': limit, 'filter': 'record_date:gte:2008-01-01'}
-    try:
-        response = requests.get(url, params=params, timeout=15)
-        raw_data = response.json().get('data', [])
-        monthly_debt = {}
-        for d in raw_data:
-            month_key = d['record_date'][:7]
-            if month_key not in monthly_debt:
-                monthly_debt[month_key] = float(d['tot_pub_debt_out_amt'])
-        return monthly_debt
-    except: 
+# Configure logging for GitHub Actions / CI environment
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+
+FRED_API_KEY = os.environ.get("FRED_API_KEY")
+FRED_BASE_URL = "https://api.stlouisfed.org/fred/series/observations"
+OUTPUT_JSON = "economic_data.json"
+START_DATE = "2008-01-01"
+
+# Existing FRED & BLS series mappings retained
+EXISTING_SERIES = {
+    "cpi_index": "CPIAUCSL",
+    "u3_rate": "UNRATE",
+    "u6_rate": "U6RATE",
+    "lfpr_rate": "CIVPART",
+    "not_in_labor_force": "LNS15000000",
+    "long_term_unemp_count": "UEMP27OV",
+    "long_term_unemp_pct": "LNS13025703",
+    "job_openings_rate": "JTSJOR",
+    "quits_rate": "JTSQUR",
+    "initial_claims_monthly_avg": "ICSA",
+    "continued_claims_monthly_avg": "CCSA"
+}
+
+# New employment series to append
+NEW_EMPLOYMENT_SERIES = {
+    "PAYEMS": "PAYEMS",     # Total Nonfarm
+    "USPRIV": "USPRIV",     # Total Private
+    "USGOOD": "USGOOD",     # Goods-Producing
+    "SRVPRD": "SRVPRD",     # Service-Providing
+    "USSERV": "USSERV",     # Private Services
+    "USGOVT": "USGOVT"      # Government (Fallback calculated if API fails/missing)
+}
+
+# Combine all series endpoints
+ALL_SERIES_TO_FETCH = {**EXISTING_SERIES, **NEW_EMPLOYMENT_SERIES}
+
+
+def fetch_fred_series(series_id: str, start_date: str = "2008-01-01") -> dict:
+    """Fetches observation data from FRED API for a given series ID."""
+    if not FRED_API_KEY:
+        logging.warning(f"FRED_API_KEY not set. Skipping fetch for {series_id}.")
         return {}
 
-def fetch_fred_series(series_id, limit=1000):  # Increased limit slightly to handle weekly series back to 2008
-    api_key = os.environ.get('FRED_API_KEY')
-    url = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key={api_key}&file_type=json&sort_order=desc&limit={limit}&observation_start=2008-01-01"
+    params = {
+        "series_id": series_id,
+        "api_key": FRED_API_KEY,
+        "file_type": "json",
+        "observation_start": start_date,
+        "frequency": "m"  # Monthly
+    }
+
     try:
-        res = requests.get(url, timeout=15).json()
-        return [{"value": float(obs['value']), "date": obs['date']} for obs in res.get('observations', []) if obs['value'] != '.']
-    except: 
-        return []
+        response = requests.get(FRED_BASE_URL, params=params, timeout=15)
+        response.raise_for_status()
+        data = response.json()
+        
+        series_data = {}
+        for obs in data.get("observations", []):
+            date_str = obs["date"]
+            val_str = obs["value"]
+            if val_str != ".":  # Filter out missing FRED observation markers
+                series_data[date_str] = float(val_str)
+        
+        logging.info(f"Fetched {len(series_data)} records for series '{series_id}'")
+        return series_data
 
-def aggregate_weekly_to_monthly(weekly_data):
-    """Computes monthly averages and ongoing MTD averages from raw weekly FRED observations."""
-    monthly_groups = defaultdict(list)
-    for obs in weekly_data:
-        month_key = obs['date'][:7]
-        monthly_groups[month_key].append(obs['value'])
+    except Exception as e:
+        logging.error(f"Error fetching series '{series_id}': {e}")
+        return {}
+
+
+def load_existing_dataset(filepath: str) -> dict:
+    """Loads existing JSON file, maintaining dictionary mapping by month_date."""
+    if os.path.exists(filepath):
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                raw = json.load(f)
+                if isinstance(raw, list):
+                    return {row["month_date"]: row for row in raw if "month_date" in row}
+                elif isinstance(raw, dict):
+                    return raw
+        except Exception as e:
+            logging.warning(f"Could not parse existing {filepath}: {e}. Initializing clean map.")
+    return {}
+
+
+def update_economic_data():
+    """Main execution function to fetch all series and update economic_data.json."""
+    logging.info("Starting run_audit.py execution...")
     
-    # Calculate the mean for each month group
-    return {month_key: round(sum(values) / len(values), 2) for month_key, values in monthly_groups.items()}
-
-# Fetch core existing datasets
-debt_map = fetch_treasury_debt()
-cpi_data = fetch_fred_series('CPIAUCSL')
-u3_data = fetch_fred_series('UNRATE')
-u6_data = fetch_fred_series('U6RATE')
-
-# Fetch new expanded employment datasets
-lfpr_data = fetch_fred_series('CIVPART')
-not_lf_data = fetch_fred_series('LNS15000000')
-lt_count_data = fetch_fred_series('UEMP27OV')
-lt_pct_data = fetch_fred_series('LNS13025703')
-jts_job_data = fetch_fred_series('JTSJOR')
-jts_quit_data = fetch_fred_series('JTSQUR')
-
-# Fetch weekly data and instantly aggregate them into monthly averages
-initial_claims_map = aggregate_weekly_to_monthly(fetch_fred_series('ICSA', limit=1500))
-continued_claims_map = aggregate_weekly_to_monthly(fetch_fred_series('CCSA', limit=1500))
-
-# CRITICAL SECURITY GUARD: Do not overwrite the database if core upstream macro APIs returned blank
-if not debt_map or not cpi_data or not u3_data or not u6_data or not lfpr_data:
-    print("CRITICAL: One or more upstream macro APIs returned an empty response.")
-    print("Aborting run to protect historical database integrity.")
-    exit(1)
-
-# Gather every unique YYYY-MM across all datasets
-all_months = set()
-all_months.update(debt_map.keys())
-all_months.update(obs['date'][:7] for obs in cpi_data)
-all_months.update(obs['date'][:7] for obs in u3_data)
-all_months.update(obs['date'][:7] for obs in u6_data)
-all_months.update(obs['date'][:7] for obs in lfpr_data)
-
-sorted_months = sorted(list(all_months))
-economy_data = []
-
-for month_key in sorted_months:
-    # Match standard observations
-    cpi_match = next((d for d in cpi_data if d['date'][:7] == month_key), None)
-    u3_match = next((d for d in u3_data if d['date'][:7] == month_key), None)
-    u6_match = next((d for d in u6_data if d['date'][:7] == month_key), None)
+    # Preserve existing data entries (including avg_monthly_debt, Treasury data, etc.)
+    dataset_by_date = load_existing_dataset(OUTPUT_JSON)
     
-    # Match new expanded observations
-    lfpr_match = next((d for d in lfpr_data if d['date'][:7] == month_key), None)
-    not_lf_match = next((d for d in not_lf_data if d['date'][:7] == month_key), None)
-    lt_count_match = next((d for d in lt_count_data if d['date'][:7] == month_key), None)
-    lt_pct_match = next((d for d in lt_pct_data if d['date'][:7] == month_key), None)
-    jts_job_match = next((d for d in jts_job_data if d['date'][:7] == month_key), None)
-    jts_quit_match = next((d for d in jts_quit_data if d['date'][:7] == month_key), None)
-    
-    # Value parsing (Value if present, else explicit None)
-    debt_val = debt_map[month_key] if month_key in debt_map else None
-    cpi_val  = cpi_match['value'] if cpi_match else None
-    u3_val   = u3_match['value'] if u3_match else None
-    u6_val   = u6_match['value'] if u6_match else None
-    
-    lfpr_val = lfpr_match['value'] if lfpr_match else None
-    not_lf_val = not_lf_match['value'] if not_lf_match else None
-    lt_count_val = lt_count_match['value'] if lt_count_match else None
-    lt_pct_val = lt_pct_match['value'] if lt_pct_match else None
-    jts_job_val = jts_job_match['value'] if jts_job_match else None
-    jts_quit_val = jts_quit_match['value'] if jts_quit_match else None
-    
-    # Map pre-aggregated weekly dictionaries
-    initial_claims_val = initial_claims_map.get(month_key, None)
-    continued_claims_val = continued_claims_map.get(month_key, None)
-    
-    precise_date = cpi_match['date'] if cpi_match else (u3_match['date'] if u3_match else f"{month_key}-01")
-    
-    economy_data.append({
-        "month_date": precise_date,
-        "avg_monthly_debt": debt_val,
-        "cpi_index": cpi_val,
-        "u3_rate": u3_val,
-        "u6_rate": u6_val,
-        "lfpr_rate": lfpr_val,
-        "not_in_labor_force": not_lf_val,
-        "long_term_unemp_count": lt_count_val,
-        "long_term_unemp_pct": lt_pct_val,
-        "job_openings_rate": jts_job_val,
-        "quits_rate": jts_quit_val,
-        "initial_claims_monthly_avg": initial_claims_val,
-        "continued_claims_monthly_avg": continued_claims_val
-    })
+    # 1. Fetch data for all defined FRED series
+    fetched_results = {}
+    for field_name, series_id in ALL_SERIES_TO_FETCH.items():
+        fetched_results[field_name] = fetch_fred_series(series_id, START_DATE)
 
-# Invert array order to preserve descending chronology (Newest first)
-economy_data.reverse()
+    # 2. Gather all unique dates across incoming data and existing data
+    all_dates = set(dataset_by_date.keys())
+    for series_dict in fetched_results.values():
+        all_dates.update(series_dict.keys())
 
-with open('economic_data.json', 'w') as f:
-    json.dump(economy_data, f, indent=4)
+    # 3. Merge incoming metrics without overwriting existing non-FRED fields
+    for date_key in sorted(all_dates):
+        if date_key not in dataset_by_date:
+            dataset_by_date[date_key] = {"month_date": date_key}
+        
+        # Ingest/update FRED values
+        for field_name in ALL_SERIES_TO_FETCH.keys():
+            if date_key in fetched_results[field_name]:
+                dataset_by_date[date_key][field_name] = fetched_results[field_name][date_key]
 
-print(f"Pipeline executed successfully. Matrix generated with {len(economy_data)} rows.")
+        # Explicit fallback calculation for USGOVT (PAYEMS - USPRIV)
+        payems = dataset_by_date[date_key].get("PAYEMS")
+        uspriv = dataset_by_date[date_key].get("USPRIV")
+        
+        if dataset_by_date[date_key].get("USGOVT") is None and payems is not None and uspriv is not None:
+            dataset_by_date[date_key]["USGOVT"] = round(payems - uspriv, 3)
+
+    # 4. Save sorted output list back to economic_data.json
+    final_output = [dataset_by_date[d] for d in sorted(dataset_by_date.keys())]
+    
+    with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
+        json.dump(final_output, f, indent=2)
+    
+    logging.info(f"Audit update complete. Output written to {OUTPUT_JSON} ({len(final_output)} total rows).")
+
+
+if __name__ == "__main__":
+    update_economic_data()

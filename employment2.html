@@ -33,35 +33,35 @@
             <!-- Row 1 -->
             <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
                 <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Total Nonfarm (PAYEMS)</p>
-                <h2 id="kpiPayems" class="text-2xl font-bold text-white mt-1">--</h2>
-                <span id="kpiPayemsYoY" class="text-xs font-medium">--</span>
+                <h2 id="kpiPayems" class="text-2xl font-bold text-white mt-1">N/A</h2>
+                <span id="kpiPayemsYoY" class="text-xs font-medium text-slate-500">YoY N/A</span>
             </div>
             <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
                 <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Total Nonfarm Change MoM</p>
-                <h2 id="kpiPayemsMom" class="text-2xl font-bold text-white mt-1">--</h2>
-                <span id="kpiPayemsMomPct" class="text-xs font-medium">--</span>
+                <h2 id="kpiPayemsMom" class="text-2xl font-bold text-slate-400 mt-1">N/A</h2>
+                <span id="kpiPayemsMomPct" class="text-xs font-medium text-slate-500">MoM N/A</span>
             </div>
             <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
                 <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Total Private (USPRIV)</p>
-                <h2 id="kpiUspriv" class="text-2xl font-bold text-white mt-1">--</h2>
-                <span id="kpiUsprivYoY" class="text-xs font-medium">--</span>
+                <h2 id="kpiUspriv" class="text-2xl font-bold text-white mt-1">N/A</h2>
+                <span id="kpiUsprivYoY" class="text-xs font-medium text-slate-500">YoY N/A</span>
             </div>
 
             <!-- Row 2 -->
             <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
                 <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Goods-Producing (USGOOD)</p>
-                <h2 id="kpiUsgood" class="text-2xl font-bold text-emerald-400 mt-1">--</h2>
-                <span id="kpiUsgoodYoY" class="text-xs font-medium">--</span>
+                <h2 id="kpiUsgood" class="text-2xl font-bold text-emerald-400 mt-1">N/A</h2>
+                <span id="kpiUsgoodYoY" class="text-xs font-medium text-slate-500">YoY N/A</span>
             </div>
             <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
                 <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Service-Providing (SRVPRD)</p>
-                <h2 id="kpiSrvprd" class="text-2xl font-bold text-blue-400 mt-1">--</h2>
-                <span id="kpiSrvprdYoY" class="text-xs font-medium">--</span>
+                <h2 id="kpiSrvprd" class="text-2xl font-bold text-blue-400 mt-1">N/A</h2>
+                <span id="kpiSrvprdYoY" class="text-xs font-medium text-slate-500">YoY N/A</span>
             </div>
             <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
                 <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Government (USGOVT)</p>
-                <h2 id="kpiUsgovt" class="text-2xl font-bold text-amber-400 mt-1">--</h2>
-                <span id="kpiUsgovtYoY" class="text-xs font-medium">--</span>
+                <h2 id="kpiUsgovt" class="text-2xl font-bold text-amber-400 mt-1">N/A</h2>
+                <span id="kpiUsgovtYoY" class="text-xs font-medium text-slate-500">YoY N/A</span>
             </div>
         </section>
 
@@ -101,7 +101,7 @@
             </div>
         </section>
 
-        <!-- New Section: MoM Net Job Creation Bar Chart -->
+        <!-- MoM Net Job Creation Bar Chart -->
         <section class="bg-slate-800/40 border border-slate-800 rounded-2xl p-6 shadow-xl">
             <div class="mb-4">
                 <h3 class="text-lg font-semibold text-white">Monthly Net Job Creation (MoM PAYEMS Change)</h3>
@@ -181,18 +181,26 @@
             // Compute YoY change against the month 12 periods prior
             const getYoY = (field) => {
                 if (targetIdx < 12) return null;
-                const priorYearVal = rawEconomyData[targetIdx - 12][field];
+                const priorYearRecord = rawEconomyData[targetIdx - 12];
+                if (!priorYearRecord) return null;
+                const priorYearVal = priorYearRecord[field];
                 const currentVal = targetRecord[field];
-                if (!priorYearVal || !currentVal) return null;
+                if (priorYearVal === null || priorYearVal === undefined || currentVal === null || currentVal === undefined) return null;
                 return (((currentVal - priorYearVal) / priorYearVal) * 100).toFixed(2);
             };
 
             const formatKPI = (elemId, yoyElemId, field) => {
                 const val = targetRecord[field];
-                document.getElementById(elemId).textContent = val ? (val / 1000).toFixed(2) + 'M' : 'N/A';
+                const elem = document.getElementById(elemId);
+                const yoySpan = document.getElementById(yoyElemId);
+
+                if (val !== null && val !== undefined) {
+                    elem.textContent = (val / 1000).toFixed(2) + 'M';
+                } else {
+                    elem.textContent = 'N/A';
+                }
                 
                 const yoy = getYoY(field);
-                const yoySpan = document.getElementById(yoyElemId);
                 if (yoy !== null) {
                     const isPos = parseFloat(yoy) >= 0;
                     yoySpan.textContent = `${isPos ? '+' : ''}${yoy}% YoY`;
@@ -210,15 +218,19 @@
             formatKPI('kpiSrvprd', 'kpiSrvprdYoY', 'SRVPRD');
             formatKPI('kpiUsgovt', 'kpiUsgovtYoY', 'USGOVT');
 
-            // Format New MoM PAYEMS Card
+            // Format New MoM PAYEMS Card with guaranteed reset fallback
             const payemsMomElem = document.getElementById('kpiPayemsMom');
             const payemsMomPctSpan = document.getElementById('kpiPayemsMomPct');
+            let momRendered = false;
 
             if (targetIdx > 0) {
                 const prevRecord = rawEconomyData[targetIdx - 1];
-                if (targetRecord.PAYEMS && prevRecord.PAYEMS) {
-                    const momNominal = targetRecord.PAYEMS - prevRecord.PAYEMS; // In thousands
-                    const momPct = ((momNominal / prevRecord.PAYEMS) * 100).toFixed(2);
+                const curVal = targetRecord ? targetRecord.PAYEMS : null;
+                const prevVal = prevRecord ? prevRecord.PAYEMS : null;
+
+                if (curVal !== null && curVal !== undefined && prevVal !== null && prevVal !== undefined) {
+                    const momNominal = curVal - prevVal; // In thousands
+                    const momPct = ((momNominal / prevVal) * 100).toFixed(2);
                     const isPos = momNominal >= 0;
 
                     payemsMomElem.textContent = `${isPos ? '+' : ''}${momNominal.toFixed(0)}K`;
@@ -226,9 +238,14 @@
                     
                     payemsMomPctSpan.textContent = `${isPos ? '+' : ''}${momPct}% MoM`;
                     payemsMomPctSpan.className = `text-xs font-semibold ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+                    momRendered = true;
                 }
-            } else {
+            }
+
+            // Fallback reset if data is missing, null, or targetIdx is 0
+            if (!momRendered) {
                 payemsMomElem.textContent = 'N/A';
+                payemsMomElem.className = 'text-2xl font-bold mt-1 text-slate-400';
                 payemsMomPctSpan.textContent = 'MoM N/A';
                 payemsMomPctSpan.className = 'text-xs text-slate-500';
             }
@@ -364,12 +381,11 @@
             const momValues = [];
             const bgColors = [];
 
-            // Compute MoM net change using rawEconomyData reference to support baseline for Jan 2009
             data.forEach((item) => {
                 const idx = rawEconomyData.findIndex(d => d.month_date === item.month_date);
                 if (idx > 0) {
                     const prev = rawEconomyData[idx - 1];
-                    if (item.PAYEMS && prev.PAYEMS) {
+                    if (item.PAYEMS !== null && item.PAYEMS !== undefined && prev && prev.PAYEMS !== null && prev.PAYEMS !== undefined) {
                         const change = item.PAYEMS - prev.PAYEMS;
                         labels.push(formatMonthYear(item.month_date));
                         momValues.push(change);

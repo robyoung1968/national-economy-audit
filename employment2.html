@@ -21,9 +21,9 @@
             </div>
             
             <div class="flex items-center gap-3">
-                <label for="startDateSelect" class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Start Date:</label>
+                <label for="startDateSelect" class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Select Month:</label>
                 <select id="startDateSelect" class="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none">
-                    <!-- Dynamic options generated via JS -->
+                    <!-- Dynamic options generated via JS in descending order -->
                 </select>
             </div>
         </header>
@@ -56,7 +56,7 @@
         <section class="bg-slate-800/40 border border-slate-800 rounded-2xl p-6 shadow-xl">
             <div class="mb-4">
                 <h3 class="text-lg font-semibold text-white">Sector Composition (Stacked Nonfarm Total)</h3>
-                <p class="text-xs text-slate-400">Goods-Producing + Private Services + Government = Total Nonfarm Payrolls</p>
+                <p class="text-xs text-slate-400">Goods-Producing + Private Services + Government = Total Nonfarm Payrolls (Jan 2009 – Present)</p>
             </div>
             <div class="h-80 w-full">
                 <canvas id="stackedAreaChart"></canvas>
@@ -95,6 +95,7 @@
     <!-- Application Script -->
     <script>
         let rawEconomyData = [];
+        let chartDataStatic = [];
         let chartInstances = {};
 
         // Fetch economic dataset
@@ -103,69 +104,61 @@
                 const response = await fetch('economic_data.json');
                 rawEconomyData = await response.json();
                 
-                populateDropdown();
-                renderDashboard();
+                // Static charts dataset: January 2009 to present, ascending (Left = Old, Right = New)
+                chartDataStatic = rawEconomyData.filter(d => d.month_date >= '2009-01-01');
 
-                // Dropdown Event Listener
+                populateDropdown();
+                renderStaticCharts();
+                updateKPIsForSelectedMonth();
+
+                // Dropdown Event Listener: Updates KPI cards only
                 document.getElementById('startDateSelect').addEventListener('change', () => {
-                    renderDashboard();
+                    updateKPIsForSelectedMonth();
                 });
             } catch (err) {
                 console.error("Error loading economic_data.json:", err);
             }
         }
 
-        // Populate Start Date Select (Default bounds to >= 2009-01-01)
+        // Populate Dropdown in Descending Order (Newest First)
         function populateDropdown() {
             const select = document.getElementById('startDateSelect');
             select.innerHTML = '';
             
-            // Available dropdown dates start from 2009-01-01
-            const filteredDates = rawEconomyData
+            // Extract dates >= 2009-01-01 and sort descending
+            const datesDescending = rawEconomyData
                 .map(d => d.month_date)
-                .filter(d => d >= '2009-01-01');
+                .filter(d => d >= '2009-01-01')
+                .reverse();
 
-            filteredDates.forEach((dateStr, idx) => {
+            datesDescending.forEach((dateStr, idx) => {
                 const opt = document.createElement('option');
                 opt.value = dateStr;
                 opt.textContent = dateStr;
-                // Default select January 2009
-                if (idx === 0) opt.selected = true;
+                if (idx === 0) opt.selected = true; // Defaults to latest month
                 select.appendChild(opt);
             });
         }
 
-        // Main Render Controller
-        function renderDashboard() {
-            const selectedStartDate = document.getElementById('startDateSelect').value || '2009-01-01';
+        // Update KPI Cards based on selected month from dropdown
+        function updateKPIsForSelectedMonth() {
+            const selectedMonth = document.getElementById('startDateSelect').value;
+            const targetRecord = rawEconomyData.find(d => d.month_date === selectedMonth);
             
-            // Filter view dataset based on dropdown
-            const viewData = rawEconomyData.filter(d => d.month_date >= selectedStartDate);
+            if (!targetRecord) return;
 
-            updateKPIs(viewData);
-            renderStackedAreaChart(viewData);
-            renderHeadlineLineChart(viewData);
-            renderSectorLineChart(viewData);
-        }
-
-        // Calculate KPIs and YoY changes leveraging baseline in rawEconomyData
-        function updateKPIs(viewData) {
-            if (!viewData || viewData.length === 0) return;
-            
-            const latest = viewData[viewData.length - 1];
-            
-            // Utility to derive YoY using full dataset
+            // Compute YoY change against the month 12 periods prior in rawEconomyData
             const getYoY = (field) => {
-                const latestIdx = rawEconomyData.findIndex(d => d.month_date === latest.month_date);
-                if (latestIdx < 12) return null;
-                const priorYearVal = rawEconomyData[latestIdx - 12][field];
-                const currentVal = latest[field];
+                const targetIdx = rawEconomyData.findIndex(d => d.month_date === selectedMonth);
+                if (targetIdx < 12) return null;
+                const priorYearVal = rawEconomyData[targetIdx - 12][field];
+                const currentVal = targetRecord[field];
                 if (!priorYearVal || !currentVal) return null;
                 return (((currentVal - priorYearVal) / priorYearVal) * 100).toFixed(2);
             };
 
             const formatKPI = (elemId, yoyElemId, field) => {
-                const val = latest[field];
+                const val = targetRecord[field];
                 document.getElementById(elemId).textContent = val ? (val / 1000).toFixed(2) + 'M' : 'N/A';
                 
                 const yoy = getYoY(field);
@@ -186,6 +179,13 @@
             formatKPI('kpiSrvprd', 'kpiSrvprdYoY', 'SRVPRD');
         }
 
+        // Render Static Charts (Jan 2009 -> Present)
+        function renderStaticCharts() {
+            renderStackedAreaChart(chartDataStatic);
+            renderHeadlineLineChart(chartDataStatic);
+            renderSectorLineChart(chartDataStatic);
+        }
+
         // Chart 1: Stacked Area Chart (USGOOD + USSERV + USGOVT)
         function renderStackedAreaChart(data) {
             const ctx = document.getElementById('stackedAreaChart').getContext('2d');
@@ -193,7 +193,6 @@
 
             const labels = data.map(d => d.month_date);
             const goods = data.map(d => d.USGOOD);
-            // Calculate Private Services = USPRIV - USGOOD (or USSERV if provided)
             const privateServices = data.map(d => (d.USPRIV && d.USGOOD) ? (d.USPRIV - d.USGOOD) : d.USSERV);
             const govt = data.map(d => d.USGOVT);
 

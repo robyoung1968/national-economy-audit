@@ -28,18 +28,26 @@
             </div>
         </header>
 
-        <!-- Dynamic Summary KPI Cards -->
-        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="kpiContainer">
+        <!-- Dynamic Summary KPI Cards (2 Rows of 3 Cards) -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="kpiContainer">
+            <!-- Row 1 -->
             <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
                 <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Total Nonfarm (PAYEMS)</p>
                 <h2 id="kpiPayems" class="text-2xl font-bold text-white mt-1">--</h2>
                 <span id="kpiPayemsYoY" class="text-xs font-medium">--</span>
             </div>
             <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
+                <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Total Nonfarm Change MoM</p>
+                <h2 id="kpiPayemsMom" class="text-2xl font-bold text-white mt-1">--</h2>
+                <span id="kpiPayemsMomPct" class="text-xs font-medium">--</span>
+            </div>
+            <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
                 <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Total Private (USPRIV)</p>
                 <h2 id="kpiUspriv" class="text-2xl font-bold text-white mt-1">--</h2>
                 <span id="kpiUsprivYoY" class="text-xs font-medium">--</span>
             </div>
+
+            <!-- Row 2 -->
             <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
                 <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Goods-Producing (USGOOD)</p>
                 <h2 id="kpiUsgood" class="text-2xl font-bold text-emerald-400 mt-1">--</h2>
@@ -49,6 +57,11 @@
                 <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Service-Providing (SRVPRD)</p>
                 <h2 id="kpiSrvprd" class="text-2xl font-bold text-blue-400 mt-1">--</h2>
                 <span id="kpiSrvprdYoY" class="text-xs font-medium">--</span>
+            </div>
+            <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
+                <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Government (USGOVT)</p>
+                <h2 id="kpiUsgovt" class="text-2xl font-bold text-amber-400 mt-1">--</h2>
+                <span id="kpiUsgovtYoY" class="text-xs font-medium">--</span>
             </div>
         </section>
 
@@ -65,7 +78,6 @@
 
         <!-- Secondary Line Charts Grid -->
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
             <!-- Chart 1: Nonfarm, Private, & Government -->
             <div class="bg-slate-800/40 border border-slate-800 rounded-2xl p-6 shadow-xl">
                 <div class="mb-4">
@@ -87,7 +99,17 @@
                     <canvas id="sectorLineChart"></canvas>
                 </div>
             </div>
+        </section>
 
+        <!-- New Section: MoM Net Job Creation Bar Chart -->
+        <section class="bg-slate-800/40 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <div class="mb-4">
+                <h3 class="text-lg font-semibold text-white">Monthly Net Job Creation (MoM PAYEMS Change)</h3>
+                <p class="text-xs text-slate-400">Net monthly change in total nonfarm payrolls in thousands (Jan 2009 – Present).</p>
+            </div>
+            <div class="h-72 w-full">
+                <canvas id="momBarChart"></canvas>
+            </div>
         </section>
 
     </div>
@@ -97,6 +119,14 @@
         let rawEconomyData = [];
         let chartDataStatic = [];
         let chartInstances = {};
+
+        // Utility: Format ISO date string "YYYY-MM-DD" to "Month Name Year" (e.g. "August 2026")
+        function formatMonthYear(dateStr) {
+            if (!dateStr) return '';
+            const [year, month] = dateStr.split('-');
+            const dateObj = new Date(parseInt(year), parseInt(month) - 1, 1);
+            return dateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        }
 
         // Fetch economic dataset
         async function initDashboard() {
@@ -120,7 +150,7 @@
             }
         }
 
-        // Populate Dropdown in Descending Order (Newest First)
+        // Populate Dropdown in Descending Order with "Month Name Year" Labels
         function populateDropdown() {
             const select = document.getElementById('startDateSelect');
             select.innerHTML = '';
@@ -134,7 +164,7 @@
             datesDescending.forEach((dateStr, idx) => {
                 const opt = document.createElement('option');
                 opt.value = dateStr;
-                opt.textContent = dateStr;
+                opt.textContent = formatMonthYear(dateStr);
                 if (idx === 0) opt.selected = true; // Defaults to latest month
                 select.appendChild(opt);
             });
@@ -143,13 +173,13 @@
         // Update KPI Cards based on selected month from dropdown
         function updateKPIsForSelectedMonth() {
             const selectedMonth = document.getElementById('startDateSelect').value;
-            const targetRecord = rawEconomyData.find(d => d.month_date === selectedMonth);
+            const targetIdx = rawEconomyData.findIndex(d => d.month_date === selectedMonth);
             
-            if (!targetRecord) return;
+            if (targetIdx === -1) return;
+            const targetRecord = rawEconomyData[targetIdx];
 
-            // Compute YoY change against the month 12 periods prior in rawEconomyData
+            // Compute YoY change against the month 12 periods prior
             const getYoY = (field) => {
-                const targetIdx = rawEconomyData.findIndex(d => d.month_date === selectedMonth);
                 if (targetIdx < 12) return null;
                 const priorYearVal = rawEconomyData[targetIdx - 12][field];
                 const currentVal = targetRecord[field];
@@ -173,10 +203,35 @@
                 }
             };
 
+            // Format standard 5 cards
             formatKPI('kpiPayems', 'kpiPayemsYoY', 'PAYEMS');
             formatKPI('kpiUspriv', 'kpiUsprivYoY', 'USPRIV');
             formatKPI('kpiUsgood', 'kpiUsgoodYoY', 'USGOOD');
             formatKPI('kpiSrvprd', 'kpiSrvprdYoY', 'SRVPRD');
+            formatKPI('kpiUsgovt', 'kpiUsgovtYoY', 'USGOVT');
+
+            // Format New MoM PAYEMS Card
+            const payemsMomElem = document.getElementById('kpiPayemsMom');
+            const payemsMomPctSpan = document.getElementById('kpiPayemsMomPct');
+
+            if (targetIdx > 0) {
+                const prevRecord = rawEconomyData[targetIdx - 1];
+                if (targetRecord.PAYEMS && prevRecord.PAYEMS) {
+                    const momNominal = targetRecord.PAYEMS - prevRecord.PAYEMS; // In thousands
+                    const momPct = ((momNominal / prevRecord.PAYEMS) * 100).toFixed(2);
+                    const isPos = momNominal >= 0;
+
+                    payemsMomElem.textContent = `${isPos ? '+' : ''}${momNominal.toFixed(0)}K`;
+                    payemsMomElem.className = `text-2xl font-bold mt-1 ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+                    
+                    payemsMomPctSpan.textContent = `${isPos ? '+' : ''}${momPct}% MoM`;
+                    payemsMomPctSpan.className = `text-xs font-semibold ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+                }
+            } else {
+                payemsMomElem.textContent = 'N/A';
+                payemsMomPctSpan.textContent = 'MoM N/A';
+                payemsMomPctSpan.className = 'text-xs text-slate-500';
+            }
         }
 
         // Render Static Charts (Jan 2009 -> Present)
@@ -184,6 +239,7 @@
             renderStackedAreaChart(chartDataStatic);
             renderHeadlineLineChart(chartDataStatic);
             renderSectorLineChart(chartDataStatic);
+            renderMomBarChart(chartDataStatic);
         }
 
         // Chart 1: Stacked Area Chart (USGOOD + USSERV + USGOVT)
@@ -191,7 +247,7 @@
             const ctx = document.getElementById('stackedAreaChart').getContext('2d');
             if (chartInstances.stacked) chartInstances.stacked.destroy();
 
-            const labels = data.map(d => d.month_date);
+            const labels = data.map(d => formatMonthYear(d.month_date));
             const goods = data.map(d => d.USGOOD);
             const privateServices = data.map(d => (d.USPRIV && d.USGOOD) ? (d.USPRIV - d.USGOOD) : d.USSERV);
             const govt = data.map(d => d.USGOVT);
@@ -239,9 +295,7 @@
                             ticks: { color: '#94a3b8', callback: v => (v / 1000).toFixed(0) + 'M' } 
                         }
                     },
-                    plugins: {
-                        legend: { labels: { color: '#e2e8f0' } }
-                    }
+                    plugins: { legend: { labels: { color: '#e2e8f0' } } }
                 }
             });
         }
@@ -254,7 +308,7 @@
             chartInstances.headline = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: data.map(d => d.month_date),
+                    labels: data.map(d => formatMonthYear(d.month_date)),
                     datasets: [
                         { label: 'Total Nonfarm', data: data.map(d => d.PAYEMS), borderColor: '#f8fafc', borderWidth: 2, pointRadius: 0 },
                         { label: 'Total Private', data: data.map(d => d.USPRIV), borderColor: '#3b82f6', borderWidth: 2, pointRadius: 0 },
@@ -282,7 +336,7 @@
             chartInstances.sector = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: data.map(d => d.month_date),
+                    labels: data.map(d => formatMonthYear(d.month_date)),
                     datasets: [
                         { label: 'Goods-Producing', data: data.map(d => d.USGOOD), borderColor: '#10b981', borderWidth: 2, pointRadius: 0 },
                         { label: 'Service-Providing', data: data.map(d => d.SRVPRD), borderColor: '#8b5cf6', borderWidth: 2, pointRadius: 0 }
@@ -297,6 +351,62 @@
                         y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8', callback: v => (v / 1000).toFixed(0) + 'M' } }
                     },
                     plugins: { legend: { labels: { color: '#e2e8f0' } } }
+                }
+            });
+        }
+
+        // Chart 4: MoM Net Job Creation Bar Chart
+        function renderMomBarChart(data) {
+            const ctx = document.getElementById('momBarChart').getContext('2d');
+            if (chartInstances.mom) chartInstances.mom.destroy();
+
+            const labels = [];
+            const momValues = [];
+            const bgColors = [];
+
+            // Compute MoM net change using rawEconomyData reference to support baseline for Jan 2009
+            data.forEach((item) => {
+                const idx = rawEconomyData.findIndex(d => d.month_date === item.month_date);
+                if (idx > 0) {
+                    const prev = rawEconomyData[idx - 1];
+                    if (item.PAYEMS && prev.PAYEMS) {
+                        const change = item.PAYEMS - prev.PAYEMS;
+                        labels.push(formatMonthYear(item.month_date));
+                        momValues.push(change);
+                        bgColors.push(change >= 0 ? 'rgba(16, 185, 129, 0.7)' : 'rgba(244, 63, 94, 0.7)');
+                    }
+                }
+            });
+
+            chartInstances.mom = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'MoM Net Change (Thousands)',
+                        data: momValues,
+                        backgroundColor: bgColors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8', maxTicksLimit: 12 } },
+                        y: { 
+                            grid: { color: '#334155' }, 
+                            ticks: { color: '#94a3b8', callback: v => v >= 0 ? `+${v}K` : `${v}K` } 
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `Net Change: ${ctx.parsed.y >= 0 ? '+' : ''}${ctx.parsed.y}K jobs`
+                            }
+                        }
+                    }
                 }
             });
         }

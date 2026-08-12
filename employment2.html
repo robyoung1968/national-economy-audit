@@ -372,7 +372,7 @@
             });
         }
 
-        // Chart 4: MoM Net Job Creation Bar Chart
+       // Chart 4: MoM Net Job Creation Bar Chart
         function renderMomBarChart(data) {
             const ctx = document.getElementById('momBarChart').getContext('2d');
             if (chartInstances.mom) chartInstances.mom.destroy();
@@ -410,23 +410,31 @@
                     maintainAspectRatio: false,
                     scales: {
                         x: { grid: { display: false }, ticks: { color: '#94a3b8', maxTicksLimit: 12 } },
-                        y: { 
-                            grid: { color: '#334155' }, 
-                            ticks: { color: '#94a3b8', callback: v => v >= 0 ? `+${v}K` : `${v}K` } 
+                        y: {
+                            min: -1000,
+                            max: 1000,
+                            grid: { color: '#334155' },
+                            ticks: { 
+                                color: '#94a3b8', 
+                                callback: v => v >= 0 ? `+${v}K` : `${v}K` 
+                            }
                         }
                     },
                     plugins: {
                         legend: { display: false },
                         tooltip: {
                             callbacks: {
-                                label: ctx => `Net Change: ${ctx.parsed.y >= 0 ? '+' : ''}${ctx.parsed.y}K jobs`
+                                label: ctx => {
+                                    const rawVal = ctx.raw;
+                                    const isOutlier = rawVal < -1000 || rawVal > 1000;
+                                    return `Net Change: ${rawVal >= 0 ? '+' : ''}${rawVal}K jobs${isOutlier ? ' (Off-chart outlier)' : ''}`;
+                                }
                             }
                         }
                     }
                 }
             });
         }
-
         // Initialize on DOM load
         document.addEventListener('DOMContentLoaded', initDashboard);
     </script>

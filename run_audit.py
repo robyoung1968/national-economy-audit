@@ -129,7 +129,7 @@ def update_economic_data():
             dataset_by_date[date_key]["USGOVT"] = round(payems - uspriv, 3)
 
     # 4. Save sorted output list back to economic_data.json
-    final_output = [dataset_by_date[d] for d in sorted(dataset_by_date.keys())]
+    final_output = [dataset_by_date[d] for d in sorted(dataset_by_date.keys(),reverse=True)]
     
     with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
         json.dump(final_output, f, indent=2)

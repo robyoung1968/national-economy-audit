@@ -18,6 +18,7 @@ START_DATE = "2008-01-01"
 
 # Existing FRED & BLS series mappings retained
 EXISTING_SERIES = {
+    "avg_monthly_debt": "GFDEBTN",
     "cpi_index": "CPIAUCSL",
     "u3_rate": "UNRATE",
     "u6_rate": "U6RATE",

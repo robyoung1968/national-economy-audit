@@ -1,49 +1,49 @@
 [
     {
         "year": "2026",
-        "gdp_nominal": 32175.8935,
-        "gdp_growth_real": 0.01570510710341244,
-        "trade_total": -847.8895,
+        "gdp_nominal": 32234.652000000002,
+        "gdp_growth_real": 0.016618079494266934,
+        "trade_total": -850.5250000000001,
         "trade_goods": -1134.5554285714284,
         "trade_services": 367.89428571428573
     },
     {
         "year": "2025",
-        "gdp_nominal": 30762.09875,
-        "gdp_growth_real": 0.021063376260688858,
-        "trade_total": -926.4870000000001,
+        "gdp_nominal": 30861.29225,
+        "gdp_growth_real": 0.023441580751900948,
+        "trade_total": -921.211,
         "trade_goods": -1259.621,
         "trade_services": 327.66
     },
     {
         "year": "2024",
-        "gdp_nominal": 29298.01275,
-        "gdp_growth_real": 0.027931871846460007,
-        "trade_total": -898.45975,
+        "gdp_nominal": 29380.990749999997,
+        "gdp_growth_real": 0.029517383169920502,
+        "trade_total": -881.45575,
         "trade_goods": -1212.785,
         "trade_services": 327.315
     },
     {
         "year": "2023",
-        "gdp_nominal": 27811.517,
-        "gdp_growth_real": 0.029343609230527864,
-        "trade_total": -786.4955,
+        "gdp_nominal": 27825.886250000003,
+        "gdp_growth_real": 0.029185552393177328,
+        "trade_total": -762.9092499999999,
         "trade_goods": -1057.508,
         "trade_services": 307.916
     },
     {
         "year": "2022",
-        "gdp_nominal": 26054.61425,
-        "gdp_growth_real": 0.025242150122835882,
-        "trade_total": -937.889,
+        "gdp_nominal": 26059.709,
+        "gdp_growth_real": 0.024295971024682516,
+        "trade_total": -918.3877500000001,
         "trade_goods": -1174.566,
         "trade_services": 271.677
     },
     {
         "year": "2021",
-        "gdp_nominal": 23725.6455,
-        "gdp_growth_real": 0.06152022480218883,
-        "trade_total": -849.23325,
+        "gdp_nominal": 23745.847999999998,
+        "gdp_growth_real": 0.06268342823338019,
+        "trade_total": -841.0725,
         "trade_goods": -1083.191,
         "trade_services": 256.083
     },

@@ -1,7 +1,8 @@
 [
   {
     "month_date": "2026-09-01",
-    "initial_claims_monthly_avg": 200667.0
+    "initial_claims_monthly_avg": 200000.0,
+    "continued_claims_monthly_avg": 1710000.0
   },
   {
     "month_date": "2026-08-01",

@@ -2,7 +2,19 @@
   {
     "month_date": "2026-09-01",
     "initial_claims_monthly_avg": 200000.0,
-    "continued_claims_monthly_avg": 1710000.0
+    "continued_claims_monthly_avg": 1710000.0,
+    "u3_rate": 4.2,
+    "u6_rate": 7.6,
+    "lfpr_rate": 61.8,
+    "not_in_labor_force": 105292.0,
+    "long_term_unemp_count": 1944.0,
+    "long_term_unemp_pct": 27.1,
+    "PAYEMS": 159044.0,
+    "USPRIV": 135717.0,
+    "USGOOD": 21623.0,
+    "SRVPRD": 137421.0,
+    "USSERV": 6039.0,
+    "USGOVT": 23327.0
   },
   {
     "month_date": "2026-08-01",
@@ -18,12 +30,12 @@
     "quits_rate": 1.9,
     "initial_claims_monthly_avg": 206000.0,
     "continued_claims_monthly_avg": 1777600.0,
-    "PAYEMS": 159075.0,
-    "USPRIV": 135752.0,
-    "USGOOD": 21606.0,
-    "SRVPRD": 137469.0,
-    "USSERV": 6035.0,
-    "USGOVT": 23323.0
+    "PAYEMS": 159015.0,
+    "USPRIV": 135671.0,
+    "USGOOD": 21605.0,
+    "SRVPRD": 137410.0,
+    "USSERV": 6033.0,
+    "USGOVT": 23344.0
   },
   {
     "month_date": "2026-07-01",
@@ -39,12 +51,12 @@
     "quits_rate": 1.9,
     "initial_claims_monthly_avg": 203250.0,
     "continued_claims_monthly_avg": 1790750.0,
-    "PAYEMS": 158913.0,
-    "USPRIV": 135625.0,
-    "USGOOD": 21565.0,
-    "SRVPRD": 137348.0,
-    "USSERV": 6032.0,
-    "USGOVT": 23288.0
+    "PAYEMS": 158882.0,
+    "USPRIV": 135582.0,
+    "USGOOD": 21571.0,
+    "SRVPRD": 137311.0,
+    "USSERV": 6030.0,
+    "USGOVT": 23300.0
   },
   {
     "month_date": "2026-06-01",

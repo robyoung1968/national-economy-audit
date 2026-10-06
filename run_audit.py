@@ -1,4 +1,5 @@
 import os
+import csv
 import json
 import logging
 import requests
@@ -14,10 +15,34 @@ logging.basicConfig(
 FRED_API_KEY = os.environ.get("FRED_API_KEY")
 FRED_BASE_URL = "https://api.stlouisfed.org/fred/series/observations"
 OUTPUT_JSON = "economic_data.json"
+OUTPUT_CSV = "economic_data.csv"
 START_DATE = "2008-01-01"
 
-# Existing FRED & BLS series mappings retained
-EXISTING_SERIES = {
+# Explicit canonical field order requested for JSON and CSV output
+ORDERED_FIELDS = [
+    "month_date",
+    "avg_monthly_debt",
+    "cpi_index",
+    "u3_rate",
+    "u6_rate",
+    "lfpr_rate",
+    "not_in_labor_force",
+    "long_term_unemp_count",
+    "long_term_unemp_pct",
+    "job_openings_rate",
+    "quits_rate",
+    "initial_claims_monthly_avg",
+    "continued_claims_monthly_avg",
+    "PAYEMS",
+    "USPRIV",
+    "USGOOD",
+    "SRVPRD",
+    "USSERV",
+    "USGOVT"
+]
+
+# FRED series mappings corresponding to fields
+SERIES_MAPPINGS = {
     "avg_monthly_debt": "GFDEBTN",
     "cpi_index": "CPIAUCSL",
     "u3_rate": "UNRATE",
@@ -29,21 +54,14 @@ EXISTING_SERIES = {
     "job_openings_rate": "JTSJOR",
     "quits_rate": "JTSQUR",
     "initial_claims_monthly_avg": "ICSA",
-    "continued_claims_monthly_avg": "CCSA"
+    "continued_claims_monthly_avg": "CCSA",
+    "PAYEMS": "PAYEMS",     # Total Nonfarm
+    "USPRIV": "USPRIV",     # Total Private
+    "USGOOD": "USGOOD",     # Goods-Producing
+    "SRVPRD": "SRVPRD",     # Service-Providing
+    "USSERV": "USSERV",     # Private Services
+    "USGOVT": "USGOVT"      # Government
 }
-
-# New employment series to append
-NEW_EMPLOYMENT_SERIES = {
-    "PAYEMS": "PAYEMS",      # Total Nonfarm
-    "USPRIV": "USPRIV",      # Total Private
-    "USGOOD": "USGOOD",      # Goods-Producing
-    "SRVPRD": "SRVPRD",      # Service-Providing
-    "USSERV": "USSERV",      # Private Services
-    "USGOVT": "USGOVT"       # Government (Fallback calculated if API fails/missing)
-}
-
-# Combine all series endpoints
-ALL_SERIES_TO_FETCH = {**EXISTING_SERIES, **NEW_EMPLOYMENT_SERIES}
 
 
 def fetch_fred_series(series_id: str, start_date: str = "2008-01-01") -> dict:
@@ -96,15 +114,15 @@ def load_existing_dataset(filepath: str) -> dict:
 
 
 def update_economic_data():
-    """Main execution function to fetch all series and update economic_data.json."""
+    """Main execution function to fetch all series and update JSON & CSV outputs."""
     logging.info("Starting run_audit.py execution...")
     
-    # Preserve existing data entries (including avg_monthly_debt, Treasury data, etc.)
+    # Preserve existing data entries
     dataset_by_date = load_existing_dataset(OUTPUT_JSON)
     
     # 1. Fetch data for all defined FRED series
     fetched_results = {}
-    for field_name, series_id in ALL_SERIES_TO_FETCH.items():
+    for field_name, series_id in SERIES_MAPPINGS.items():
         fetched_results[field_name] = fetch_fred_series(series_id, START_DATE)
 
     # 2. Gather all unique dates across incoming data and existing data
@@ -118,7 +136,7 @@ def update_economic_data():
             dataset_by_date[date_key] = {"month_date": date_key}
         
         # Ingest/update FRED values
-        for field_name in ALL_SERIES_TO_FETCH.keys():
+        for field_name in SERIES_MAPPINGS.keys():
             if date_key in fetched_results[field_name]:
                 dataset_by_date[date_key][field_name] = fetched_results[field_name][date_key]
 
@@ -129,7 +147,7 @@ def update_economic_data():
         if dataset_by_date[date_key].get("USGOVT") is None and payems is not None and uspriv is not None:
             dataset_by_date[date_key]["USGOVT"] = round(payems - uspriv, 3)
 
-    # 4. Forward-fill quarterly/lagging series (e.g., Public Debt) chronologically
+    # 4. Forward-fill quarterly/lagging series (Public Debt) chronologically
     last_known_debt = None
     for date_key in sorted(dataset_by_date.keys()):
         row = dataset_by_date[date_key]
@@ -138,13 +156,29 @@ def update_economic_data():
         elif last_known_debt is not None:
             row["avg_monthly_debt"] = last_known_debt
 
-    # 5. Save sorted output list back to economic_data.json (newest first)
-    final_output = [dataset_by_date[d] for d in sorted(dataset_by_date.keys(), reverse=True)]
+    # 5. Build strictly ordered records with null defaults for missing values
+    final_output = []
+    for date_key in sorted(dataset_by_date.keys(), reverse=True):
+        raw_row = dataset_by_date[date_key]
+        ordered_row = {}
+        
+        for field in ORDERED_FIELDS:
+            # Re-key with exact schema order and populate None (null) if key is missing/unreleased
+            ordered_row[field] = raw_row.get(field, None)
+            
+        final_output.append(ordered_row)
     
+    # 6. Save JSON output
     with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
         json.dump(final_output, f, indent=2)
-    
-    logging.info(f"Audit update complete. Output written to {OUTPUT_JSON} ({len(final_output)} total rows).")
+    logging.info(f"JSON update complete. Written to {OUTPUT_JSON} ({len(final_output)} rows).")
+
+    # 7. Save CSV output
+    with open(OUTPUT_CSV, "w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=ORDERED_FIELDS)
+        writer.writeheader()
+        writer.writerows(final_output)
+    logging.info(f"CSV update complete. Written to {OUTPUT_CSV} ({len(final_output)} rows).")
 
 
 if __name__ == "__main__":

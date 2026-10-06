@@ -34,12 +34,12 @@ EXISTING_SERIES = {
 
 # New employment series to append
 NEW_EMPLOYMENT_SERIES = {
-    "PAYEMS": "PAYEMS",     # Total Nonfarm
-    "USPRIV": "USPRIV",     # Total Private
-    "USGOOD": "USGOOD",     # Goods-Producing
-    "SRVPRD": "SRVPRD",     # Service-Providing
-    "USSERV": "USSERV",     # Private Services
-    "USGOVT": "USGOVT"      # Government (Fallback calculated if API fails/missing)
+    "PAYEMS": "PAYEMS",      # Total Nonfarm
+    "USPRIV": "USPRIV",      # Total Private
+    "USGOOD": "USGOOD",      # Goods-Producing
+    "SRVPRD": "SRVPRD",      # Service-Providing
+    "USSERV": "USSERV",      # Private Services
+    "USGOVT": "USGOVT"       # Government (Fallback calculated if API fails/missing)
 }
 
 # Combine all series endpoints
@@ -129,8 +129,17 @@ def update_economic_data():
         if dataset_by_date[date_key].get("USGOVT") is None and payems is not None and uspriv is not None:
             dataset_by_date[date_key]["USGOVT"] = round(payems - uspriv, 3)
 
-    # 4. Save sorted output list back to economic_data.json
-    final_output = [dataset_by_date[d] for d in sorted(dataset_by_date.keys(),reverse=True)]
+    # 4. Forward-fill quarterly/lagging series (e.g., Public Debt) chronologically
+    last_known_debt = None
+    for date_key in sorted(dataset_by_date.keys()):
+        row = dataset_by_date[date_key]
+        if row.get("avg_monthly_debt") is not None:
+            last_known_debt = row["avg_monthly_debt"]
+        elif last_known_debt is not None:
+            row["avg_monthly_debt"] = last_known_debt
+
+    # 5. Save sorted output list back to economic_data.json (newest first)
+    final_output = [dataset_by_date[d] for d in sorted(dataset_by_date.keys(), reverse=True)]
     
     with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
         json.dump(final_output, f, indent=2)

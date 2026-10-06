@@ -292,8 +292,7 @@ const labels = dataset.map(row => {
 const inflationTimeline = dataset.map(row => {
 const currentIdx = economyData.findIndex(r => r.month_date === row.month_date);
 const yearAgoRow = economyData[currentIdx + 12];
-// Fix: Explicitly pass null down if either parsing component is unreleased
-if (row.cpi_index === null || !yearAgoRow || yearAgoRow.cpi_index === null) {
+if (typeof row.cpi_index !== 'number' || !yearAgoRow || typeof yearAgoRow.cpi_index !== 'number') {
     return null;
 }
 return ((row.cpi_index - yearAgoRow.cpi_index) / yearAgoRow.cpi_index) * 100;
@@ -323,7 +322,6 @@ tooltip: {
             let value = context.parsed.y;
             const chartId = context.chart.canvas.id;
             
-            // Fix: Guard label rendering from throwing formatting exceptions on explicit null markers
             if (value === null || value === undefined || isNaN(value)) {
                 return ' ' + label + ': N/A';
             }
@@ -358,7 +356,7 @@ type: 'line',
 data: {
 labels: labels,
 datasets: [{
-data: dataset.map(row => row.avg_monthly_debt ? (row.avg_monthly_debt / 1_000_000_000_000) : null),
+data: dataset.map(row => typeof row.avg_monthly_debt === 'number' ? (row.avg_monthly_debt / 1_000_000_000_000) : null),
 borderColor: '#38bdf8',
 backgroundColor: 'rgba(56, 189, 248, 0.1)',
 fill: true,
@@ -395,7 +393,7 @@ tension: 0.15,
 borderWidth: 2.5,
 pointRadius: 0,
 pointHoverRadius: 4,
-spanGaps: false // Fix: Forces the graph line segment to stop drawing entirely on unreleased fields
+spanGaps: false
 }]
 },
 options: {
@@ -421,7 +419,7 @@ labels: labels,
 datasets: [
     {
         label: 'U3 Rate',
-        data: dataset.map(row => row.u3_rate),
+        data: dataset.map(row => typeof row.u3_rate === 'number' ? row.u3_rate : null),
         borderColor: '#38bdf8',
         borderWidth: 2.5,
         pointRadius: 0,
@@ -430,7 +428,7 @@ datasets: [
     },
     {
         label: 'U6 Rate',
-        data: dataset.map(row => row.u6_rate),
+        data: dataset.map(row => typeof row.u6_rate === 'number' ? row.u6_rate : null),
         borderColor: '#94a3b8',
         borderWidth: 2,
         borderDash: [4, 4],
@@ -469,37 +467,37 @@ function updateDashboard(selectedDate) {
     if (idx === -1) return;
     const current = economyData[idx];
 
-    // 1. Debt Display (Handles zero or null)
-    if (current.avg_monthly_debt !== null && current.avg_monthly_debt > 0) {
+    // 1. Debt Display
+    if (typeof current.avg_monthly_debt === 'number' && current.avg_monthly_debt > 0) {
         const debtTrillions = current.avg_monthly_debt / 1_000_000_000_000;
         document.getElementById('debt-val').textContent = "$" + debtTrillions.toFixed(2) + "T";
     } else {
-        document.getElementById('debt-val').textContent = "N/A";
+        document.getElementById('debt-val').textContent = "--";
     }
 
-    // 2. CPI Inflation YoY Math (Checks that both current and historical data exist)
+    // 2. Inflation YoY Math
     const yearAgo = economyData[idx + 12];
-    if (current.cpi_index !== null && yearAgo && yearAgo.cpi_index !== null) {
+    if (typeof current.cpi_index === 'number' && yearAgo && typeof yearAgo.cpi_index === 'number') {
         const yoy = ((current.cpi_index - yearAgo.cpi_index) / yearAgo.cpi_index) * 100;
         document.getElementById('inflation-val').textContent = yoy.toFixed(1) + "%";
         document.getElementById('cpi-sub').textContent = "CPI Index: " + current.cpi_index.toFixed(3);
     } else {
-        document.getElementById('inflation-val').textContent = "N/A";
-        document.getElementById('cpi-sub').textContent = "CPI Index: N/A";
+        document.getElementById('inflation-val').textContent = "--";
+        document.getElementById('cpi-sub').textContent = "CPI Index: --";
     }
 
     // 3. U3 Unemployment Rate
-    if (current.u3_rate !== null) {
+    if (typeof current.u3_rate === 'number') {
         document.getElementById('u3-val').textContent = current.u3_rate.toFixed(1) + "%";
     } else {
-        document.getElementById('u3-val').textContent = "N/A";
+        document.getElementById('u3-val').textContent = "--";
     }
 
     // 4. U6 Underemployment Rate
-    if (current.u6_rate !== null) {
+    if (typeof current.u6_rate === 'number') {
         document.getElementById('u6-val').textContent = current.u6_rate.toFixed(1) + "%";
     } else {
-        document.getElementById('u6-val').textContent = "N/A";
+        document.getElementById('u6-val').textContent = "--";
     }
 }
 init();

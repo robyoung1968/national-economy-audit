@@ -13,7 +13,7 @@ logging.basicConfig(
 )
 
 FRED_API_KEY = os.environ.get("FRED_API_KEY")
-FRED_BASE_URL = "https://stlouisfed.org"
+FRED_BASE_URL = "https://api.stlouisfed.org/fred/series/observations"
 OUTPUT_JSON = "economic_data.json"
 OUTPUT_CSV = "economic_data.csv"
 START_DATE = "2008-01-01"
@@ -43,7 +43,7 @@ ORDERED_FIELDS = [
 
 # FRED series mappings corresponding to fields
 SERIES_MAPPINGS = {
-    "avg_monthly_debt": "MVGFD027MNFRBDAL",
+    "avg_monthly_debt": "GFDEBTN",
     "cpi_index": "CPIAUCSL",
     "u3_rate": "UNRATE",
     "u6_rate": "U6RATE",
@@ -75,11 +75,8 @@ def fetch_fred_series(series_id: str, start_date: str = "2008-01-01") -> dict:
         "api_key": FRED_API_KEY,
         "file_type": "json",
         "observation_start": start_date,
+        "frequency": "m"  # Monthly
     }
-
-    # Only pass frequency conversion for native non-monthly (quarterly) trackers
-    if series_id != "MVGFD027MNFRBDAL":
-        params["frequency"] = "m"
 
     try:
         response = requests.get(FRED_BASE_URL, params=params, timeout=15)
@@ -91,14 +88,7 @@ def fetch_fred_series(series_id: str, start_date: str = "2008-01-01") -> dict:
             date_str = obs["date"]
             val_str = obs["value"]
             if val_str != ".":  # Filter out missing FRED observation markers
-                raw_val = float(val_str)
-                
-                # SCALE CORRECTION: MVGFD027MNFRBDAL is in Billions. 
-                # Convert to Millions to align seamlessly with original dataset baseline.
-                if series_id == "MVGFD027MNFRBDAL":
-                    raw_val = raw_val * 1000.0
-                    
-                series_data[date_str] = raw_val
+                series_data[date_str] = float(val_str)
         
         logging.info(f"Fetched {len(series_data)} records for series '{series_id}'")
         return series_data
@@ -157,7 +147,7 @@ def update_economic_data():
         if dataset_by_date[date_key].get("USGOVT") is None and payems is not None and uspriv is not None:
             dataset_by_date[date_key]["USGOVT"] = round(payems - uspriv, 3)
 
-    # 4. Forward-fill quarterly/lagging series chronologically
+    # 4. Forward-fill quarterly/lagging series (Public Debt) chronologically
     last_known_debt = None
     for date_key in sorted(dataset_by_date.keys()):
         row = dataset_by_date[date_key]
